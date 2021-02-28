@@ -7,8 +7,8 @@ function AlumnCard({ alumn, updateIdArray }) {
     return (
         <Card>
             <Card.Header>
-                <Accordion.Toggle as={Button} variant="link" eventKey={id}>
-                    <h3>{display_name}</h3>
+                <Accordion.Toggle as={Card.Header} eventKey={id}>
+                    {display_name}
                 </Accordion.Toggle>
             </Card.Header>
             <Accordion.Collapse eventKey={id}>
