@@ -1,4 +1,4 @@
-import { Card, Accordion, Button } from 'react-bootstrap'
+import { Card, Accordion } from 'react-bootstrap'
 import PublicationDisplayCheck from '../Containers/PublicationDisplayCheck'
 
 function AlumnCard({ alumn, updateIdArray }) {

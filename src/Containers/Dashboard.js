@@ -1,20 +1,9 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import AlumnCard from '../Components/AlumnCard'
 import Accordion from 'react-bootstrap/Accordion'
-function Dashboard() {
+function Dashboard({ alumns }) {
 
-  const [alumns, setAlumns] = useState([])
   const [idObj, setIdObj] = useState({})
-
-  useEffect(() => {
-    fetchAlumns()
-  }, [])
-
-  const fetchAlumns = () => {
-    fetch('http://localhost:3000/api/v1/alumns')
-      .then(res => res.json())
-      .then((alumnsArray) => setAlumns(alumnsArray))
-  }
 
   const updateIdArray = (id, display) => {
     let newIdObj = { ...idObj }
@@ -45,7 +34,7 @@ function Dashboard() {
         .then(console.log)
     }
   }
-  console.log(idObj)
+
   return (
     <div className="dashboard">
       <Accordion>
