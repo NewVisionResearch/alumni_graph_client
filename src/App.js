@@ -40,6 +40,7 @@ function App() {
     fetch('http://localhost:3000/api/v1/alumns', options)
       .then(res => res.json())
       .then(newAlumn => {
+        console.log(newAlumn)
         let newArray = [...alumns, newAlumn]
         setAlumns(newArray)
       })
