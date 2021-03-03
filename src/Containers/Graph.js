@@ -1,9 +1,12 @@
 import { useState, useEffect } from 'react'
 import ForceGraph3D from '3d-force-graph'
+import SpriteText from 'three-spritetext'
+import AlumnGraphShow from '../Components/AlumnGraphShow'
 
 function Graph() {
 
     const [publications, setPublications] = useState([])
+    const [alumnId, setAlumnId] = useState(null)
 
     useEffect(() => {
         fetch('http://localhost:3000/api/v1/graphs')
@@ -13,73 +16,63 @@ function Graph() {
     useEffect(() => {
         if (publications.length) {
             const gData = {
-                nodes: uniqueIds(publications).map(i => ({ id: i })),
+                nodes: uniqueIds(publications).map(alumn => ({ id: alumn.display_name, alumn_id: alumn.id })),
                 links: createPairs(publications)
                     .map(arr => ({
-                        source: arr[0],
-                        target: arr[1]
+                        source: arr[0].display_name,
+                        target: arr[1].display_name
                     }))
             };
 
             const Graph = ForceGraph3D()
                 (document.getElementById('3d-graph'))
-                .onNodeClick(clickNode)
                 .graphData(gData)
+                .nodeThreeObject(node => {
+                    const sprite = new SpriteText(node.id);
+                    sprite.material.depthWrite = false; // make sprite background transparent
+                    sprite.color = 'white';
+                    sprite.textHeight = 8;
+                    return sprite;
+                })
+                .linkOpacity([0.5])
+                .linkWidth([0.5])
+                .onNodeClick((node) => setAlumnId(node.alumn_id))
+
 
         }
     }, [publications])
-
-    function clickNode(node) {
-        let id = node.id
-        fetch(`http://localhost:3000/api/v1/alumns/${id}`)
-            .then(res => res.json())
-            .then(alumnObj => {
-                let modal = document.getElementById('alumnShow')
-                modal.innerHTML = `
-                    <h1>${alumnObj.full_name}</h1>
-                `
-                modal.zIndex = '1000'
-                modal.background = 'white'
-                modal.color = 'white'
-            })
-
-    }
 
     function uniqueIds(array) {
         array = array.map(p => (p.joins.map(j => j))).flat()
         let obj = {}
 
         for (let i = 0; i < array.length; i++) {
-            if (obj[array[i]]) {
+            if (obj[array[i].display_name]) {
                 continue
             } else {
-                obj[array[i]] = true
+                obj[array[i].display_name] = array[i]
             }
         }
-        let res = Object.keys(obj)
 
-        for (let i = 0; i < res.length; i++) {
-            res[i] = parseInt(res[i])
-        }
-
-        return res
+        return Object.values(obj)
     }
 
     function createPairs(array) {
         let resArray = []
         let obj = {}
         array = array.map(obj => obj.joins)
+
         for (let i = 0; i < array.length; i++) {
             for (let j = 0; j < array[i].length; j++) {
-                obj[array[i][j]] = obj[array[i][j]] || []
+                obj[array[i][j].display_name] = obj[array[i][j].display_name] || []
                 for (let k = 0; k < array[i].length; k++) {
-                    if (array[i][j] === array[i][k]) {
+                    if (array[i][j].display_name === array[i][k].display_name) {
                         continue
                     }
-                    if (obj[array[i][j]].includes(array[i][k])) {
+                    if (obj[array[i][j].display_name].includes(array[i][k].display_name)) {
                         continue
                     } else {
-                        obj[array[i][j]].push(array[i][k])
+                        obj[array[i][j].display_name].push(array[i][k].display_name)
                         resArray.push([array[i][j], array[i][k]])
                     }
                 }
@@ -93,9 +86,21 @@ function Graph() {
     return (
         <div style={{ position: 'relative' }}>
             <div id="3d-graph" style={{ margin: 0, width: '100%' }}></div>
-            <div id="alumnShow" style={{ position: 'absolute', top: 0, right: 0, width: '400px', height: '400px' }}>
-
-            </div>
+            {alumnId ?
+                <div id="alumnShow"
+                    style={{
+                        position: 'absolute',
+                        top: 0,
+                        right: 0,
+                        width: '400px',
+                        height: '400px',
+                        zIndex: 1000,
+                        background: 'whitesmoke',
+                        overflowY: 'scroll'
+                    }}>
+                    <AlumnGraphShow alumnId={alumnId} />
+                </div>
+                : null}
         </div>
     )
 }
