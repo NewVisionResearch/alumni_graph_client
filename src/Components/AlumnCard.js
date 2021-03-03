@@ -2,7 +2,7 @@ import { Card, Accordion } from 'react-bootstrap'
 import PublicationDisplayCheck from '../Containers/PublicationDisplayCheck'
 
 function AlumnCard({ alumn, updateIdArray }) {
-    const { id, display_name, my_alumn_publications } = alumn
+    const { id, full_name, my_alumn_publications } = alumn
 
     const sortByNumberOfCoAuthors = (array) => {
         return array.sort((a, b) => b.coauthors.length - a.coauthors.length)
@@ -13,7 +13,7 @@ function AlumnCard({ alumn, updateIdArray }) {
         <Card>
             <Card.Header>
                 <Accordion.Toggle as={Card.Header} eventKey={id}>
-                    {display_name}
+                    {full_name}
                 </Accordion.Toggle>
             </Card.Header>
             <Accordion.Collapse eventKey={id}>

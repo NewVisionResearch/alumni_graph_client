@@ -12,7 +12,7 @@ function Dashboard({ alumns }) {
   }
 
   const mapAlumns = () => {
-    return alumns.map(alumn => <AlumnCard key={`${alumn.display_name[0]}_${alumn.id}`} alumn={alumn} updateIdArray={updateIdArray} />)
+    return alumns.map(alumn => <AlumnCard key={`${alumn.full_name[0]}_${alumn.id}`} alumn={alumn} updateIdArray={updateIdArray} />)
   }
 
   const updateDatabase = () => {

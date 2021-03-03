@@ -7,7 +7,7 @@ function AddAlumns({ alumns, addAlumn }) {
         <div>
             <InputBar addAlumn={addAlumn} />
             <ul>
-                {alumns.map(alumn => <li><Link to={`/alumns/${alumn.id}`}>{alumn.display_name}</Link></li>)}
+                {alumns.map(alumn => <li><Link to={`/alumns/${alumn.id}`}>{alumn.full_name}</Link></li>)}
             </ul>
         </div>
     )

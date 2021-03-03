@@ -28,7 +28,7 @@ function AlumnShow() {
     }
     return (
         <div>
-            <h1>{alumn.display_name}</h1>
+            <h1>{alumn.full_name}</h1>
             <ol>
                 {alumn.search_names.map(name => <li key={name}>{name}</li>)}
             </ol>
