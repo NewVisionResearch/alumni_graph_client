@@ -4,6 +4,7 @@ import NavBar from './Containers/NavBar'
 import Graph from './Containers/Graph'
 import Dashboard from './Containers/Dashboard'
 import AddAlumns from './Containers/AddAlumns'
+import AlumnShow from './Containers/AlumnShow'
 import { Route, Switch } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 
@@ -51,6 +52,7 @@ function App() {
         <Route exact path="/" component={Graph} />
         <Route path="/dashboard" render={() => <Dashboard alumns={alumns} />} />
         <Route path="/add" render={() => <AddAlumns alumns={alumns} addAlumn={addAlumn} />} />
+        <Route path="/alumns/:id" component={AlumnShow} />
       </Switch>
     </React.Fragment>
   );

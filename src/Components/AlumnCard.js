@@ -4,6 +4,11 @@ import PublicationDisplayCheck from '../Containers/PublicationDisplayCheck'
 function AlumnCard({ alumn, updateIdArray }) {
     const { id, display_name, my_alumn_publications } = alumn
 
+    const sortByNumberOfCoAuthors = (array) => {
+        return array.sort((a, b) => b.coauthors.length - a.coauthors.length)
+    }
+
+
     return (
         <Card>
             <Card.Header>
@@ -12,7 +17,7 @@ function AlumnCard({ alumn, updateIdArray }) {
                 </Accordion.Toggle>
             </Card.Header>
             <Accordion.Collapse eventKey={id}>
-                <Card.Body>{my_alumn_publications.map(alumn_pub =>
+                <Card.Body>{sortByNumberOfCoAuthors(my_alumn_publications).map(alumn_pub =>
                     <PublicationDisplayCheck
                         key={`${alumn.id}_${alumn_pub.ap_id}`}
                         alumn_publication={alumn_pub}

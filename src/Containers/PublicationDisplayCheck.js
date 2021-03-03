@@ -4,7 +4,6 @@ function PublicationDisplayCheck({ alumn_publication, updateIdArray }) {
 
     const { ap_id, display, publication, coauthors } = alumn_publication
     const [displayed, setDisplayed] = useState(display)
-
     return (
         <div className="d-flex align-items-center">
             <input
@@ -15,9 +14,9 @@ function PublicationDisplayCheck({ alumn_publication, updateIdArray }) {
                     updateIdArray(ap_id, !displayed)
                 }} />
             <div className="publication-list">
-                <h4>{publication}</h4>
+                <p><a href={`https://pubmed.ncbi.nlm.nih.gov/${publication.pmid}`} rel='noreferrer' target='_blank'>{publication.title}</a></p>
                 <ul className="coAuthors">
-                    {coauthors.map(coauthor => <li key={ap_id}>{coauthor}</li>)}
+                    {coauthors.map(coauthor => <li key={`${coauthor}_${ap_id}`}>{coauthor}</li>)}
                 </ul>
             </div>
         </div>

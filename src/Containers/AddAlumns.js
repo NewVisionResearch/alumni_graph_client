@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import InputBar from '../Components/InputBar'
 
 function AddAlumns({ alumns, addAlumn }) {
@@ -6,7 +7,7 @@ function AddAlumns({ alumns, addAlumn }) {
         <div>
             <InputBar addAlumn={addAlumn} />
             <ul>
-                {alumns.map(alumn => <li>{alumn.display_name}</li>)}
+                {alumns.map(alumn => <li><Link to={`/alumns/${alumn.id}`}>{alumn.display_name}</Link></li>)}
             </ul>
         </div>
     )
