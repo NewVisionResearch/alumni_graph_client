@@ -9,9 +9,6 @@ function NavBar() {
             <Nav.Item>
                 <Link to="/Dashboard">Dashboard</Link>
             </Nav.Item>
-            <Nav.Item>
-                <Link to="/add">Add Alumni</Link>
-            </Nav.Item>
         </Nav>
     )
 }

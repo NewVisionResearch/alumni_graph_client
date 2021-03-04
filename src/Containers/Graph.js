@@ -15,6 +15,7 @@ function Graph() {
     }, [])
     useEffect(() => {
         if (publications.length) {
+            console.log(publications)
             const gData = {
                 nodes: uniqueIds(publications).map(alumn => ({ id: alumn.display_name, alumn_id: alumn.id })),
                 links: createPairs(publications)
@@ -29,59 +30,66 @@ function Graph() {
                 .graphData(gData)
                 .nodeThreeObject(node => {
                     const sprite = new SpriteText(node.id);
-                    sprite.material.depthWrite = false; // make sprite background transparent
-                    sprite.color = 'white';
+                    sprite.material.depthWrite = false;
+                    sprite.color = 'rgb(77, 172, 147)';
                     sprite.textHeight = 8;
                     return sprite;
                 })
                 .linkOpacity([0.5])
                 .linkWidth([0.5])
+                .linkColor(link => 'rgb(73, 50, 123)')
+                .nodeRelSize([0])
+                .backgroundColor('rgb(255, 255, 255)')
                 .onNodeClick((node) => setAlumnId(node.alumn_id))
 
+            Graph.d3Force('charge').strength(-10);
 
+            function uniqueIds(array) {
+                array = array.map(p => (p.joins.map(j => j))).flat()
+                let obj = {}
+                for (let i = 0; i < array.length; i++) {
+                    if (!array[i]) continue
+                    if (obj[array[i].display_name]) {
+                        continue
+                    } else {
+                        obj[array[i].display_name] = array[i]
+                    }
+                }
+
+                return Object.values(obj)
+            }
+
+            function createPairs(array) {
+                let resArray = []
+                let obj = {}
+                array = array.map(obj => obj.joins)
+
+                for (let i = 0; i < array.length; i++) {
+                    for (let j = 0; j < array[i].length; j++) {
+                        if (!array[i][j]) continue
+                        obj[array[i][j].display_name] = obj[array[i][j].display_name] || []
+                        for (let k = 0; k < array[i].length; k++) {
+                            if (!array[i][k]) continue
+                            if (array[i][j].display_name === array[i][k].display_name) {
+                                continue
+                            }
+                            if (obj[array[i][j].display_name].includes(array[i][k].display_name)) {
+                                continue
+                            } else {
+                                obj[array[i][j].display_name].push(array[i][k].display_name)
+                                resArray.push([array[i][j], array[i][k]])
+                            }
+                        }
+                    }
+                }
+                return resArray
+            }
         }
     }, [publications])
 
-    function uniqueIds(array) {
-        array = array.map(p => (p.joins.map(j => j))).flat()
-        let obj = {}
-
-        for (let i = 0; i < array.length; i++) {
-            if (obj[array[i].display_name]) {
-                continue
-            } else {
-                obj[array[i].display_name] = array[i]
-            }
-        }
-
-        return Object.values(obj)
+    const closeModal = () => {
+        setAlumnId(null)
     }
-
-    function createPairs(array) {
-        let resArray = []
-        let obj = {}
-        array = array.map(obj => obj.joins)
-
-        for (let i = 0; i < array.length; i++) {
-            for (let j = 0; j < array[i].length; j++) {
-                obj[array[i][j].display_name] = obj[array[i][j].display_name] || []
-                for (let k = 0; k < array[i].length; k++) {
-                    if (array[i][j].display_name === array[i][k].display_name) {
-                        continue
-                    }
-                    if (obj[array[i][j].display_name].includes(array[i][k].display_name)) {
-                        continue
-                    } else {
-                        obj[array[i][j].display_name].push(array[i][k].display_name)
-                        resArray.push([array[i][j], array[i][k]])
-                    }
-                }
-            }
-        }
-        return resArray
-    }
-
-
 
     return (
         <div style={{ position: 'relative' }}>
@@ -95,10 +103,10 @@ function Graph() {
                         width: '400px',
                         height: '400px',
                         zIndex: 1000,
-                        background: 'whitesmoke',
+                        background: 'rgb(255, 255, 255)',
                         overflowY: 'scroll'
                     }}>
-                    <AlumnGraphShow alumnId={alumnId} />
+                    <AlumnGraphShow alumnId={alumnId} closeModal={closeModal} />
                 </div>
                 : null}
         </div>

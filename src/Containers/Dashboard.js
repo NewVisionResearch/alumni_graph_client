@@ -1,48 +1,23 @@
 import { useState } from 'react'
-import AlumnCard from '../Components/AlumnCard'
-import Accordion from 'react-bootstrap/Accordion'
-function Dashboard({ alumns }) {
+import AlumnShow from './AlumnShow'
+import AddAlumns from './AddAlumns'
 
-  const [idObj, setIdObj] = useState({})
 
-  const updateIdArray = (id, display) => {
-    let newIdObj = { ...idObj }
-    newIdObj[id] = display
-    setIdObj(newIdObj)
-  }
+function Dashboard() {
 
-  const mapAlumns = () => {
-    return alumns.map(alumn => <AlumnCard key={`${alumn.full_name[0]}_${alumn.id}`} alumn={alumn} updateIdArray={updateIdArray} />)
-  }
+  const [alumnShowId, setAlumnShowId] = useState(null)
 
-  const updateDatabase = () => {
-    for (const id in idObj) {
-      let bodyObj = {
-        display: idObj[id]
-      }
-      const options = {
-        method: 'PATCH',
-        headers: {
-          'content-type': 'application/json',
-          'Accept': 'application/json'
-        },
-        body: JSON.stringify(bodyObj)
-      }
 
-      fetch(`http://localhost:3000/api/v1/alumn_publications/${id}`, options)
-        .then(res => res.json())
-        .then(console.log)
-    }
+
+  const openAlumnShow = (id) => {
+    setAlumnShowId(id)
   }
 
   return (
     <div className="dashboard">
-      <Accordion>
-        {mapAlumns()}
-      </Accordion>
-      <button onClick={updateDatabase}>Update Database</button>
+      <AddAlumns openAlumnShow={openAlumnShow} />
+      {alumnShowId ? <AlumnShow id={alumnShowId} /> : null}
     </div>
-
   )
 }
 

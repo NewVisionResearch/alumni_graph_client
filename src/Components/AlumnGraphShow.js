@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 
-function AlumnGraphShow({ alumnId }) {
+function AlumnGraphShow({ alumnId, closeModal }) {
 
     const [alumn, setAlumn] = useState({ full_name: "", my_alumn_publications: [] })
 
@@ -18,10 +18,10 @@ function AlumnGraphShow({ alumnId }) {
     const sortByNumberOfCoAuthors = (array) => {
         return array.sort((a, b) => b.coauthors.length - a.coauthors.length)
     }
-    console.log(alumn)
 
     return (
         <div>
+            <span onClick={closeModal}>X</span>
             <h3>{alumn.full_name}</h3>
             {sortByNumberOfCoAuthors(alumn.my_alumn_publications).map(alumn_pub => {
 
