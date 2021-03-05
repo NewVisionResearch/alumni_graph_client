@@ -40,7 +40,7 @@ function AddAlumns({ openAlumnShow }) {
 
     return (
         <div>
-            <InputBar addAlumn={addAlumn} />
+            <InputBar submitInput={addAlumn} />
             <ul>
                 {alumns.map(alumn => <li onClick={() => openAlumnShow(alumn.id)}>{alumn.full_name}</li>)}
             </ul>

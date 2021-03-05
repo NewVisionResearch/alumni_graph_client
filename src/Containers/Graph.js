@@ -13,18 +13,22 @@ function Graph() {
             .then(res => res.json())
             .then(publications => setPublications(publications))
     }, [])
-    console.log(publications)
+
     useEffect(() => {
         if (publications.length) {
             console.log(publications)
             const gData = {
-                nodes: uniqueIds(publications).map(alumn => ({ id: alumn.display_name, alumn_id: alumn.id })),
+                nodes: uniqueIds(publications).map(alumn => ({ id: multiLine(alumn.display_name), alumn_id: alumn.id })),
                 links: createPairs(publications)
                     .map(arr => ({
-                        source: arr[0].display_name,
-                        target: arr[1].display_name
+                        source: multiLine(arr[0].display_name),
+                        target: multiLine(arr[1].display_name)
                     }))
             };
+
+            function multiLine(name) {
+                return name.split(" ").join("\n")
+            }
 
             const Graph = ForceGraph3D()
                 (document.getElementById('3d-graph'))
@@ -32,18 +36,36 @@ function Graph() {
                 .nodeThreeObject(node => {
                     const sprite = new SpriteText(node.id);
                     sprite.material.depthWrite = false;
+                    sprite.backgroundColor = 'rgba(255, 255, 255, 0.8)'
                     sprite.color = 'rgb(77, 172, 147)';
-                    sprite.textHeight = 8;
+                    sprite.textHeight = 5;
+                    sprite.fontWeight = 'bold';
+                    sprite.strokeWidth = 0.5;
+                    sprite.strokeColor = 'black';
+                    sprite.borderColor = 'black';
+                    sprite.borderWidth = 1;
+                    sprite.borderRadius = 10;
+                    sprite.padding = 5;
                     return sprite;
                 })
-                .linkOpacity([0.5])
+                .linkOpacity([1])
                 .linkWidth([0.5])
                 .linkColor(link => 'rgb(73, 50, 123)')
                 .nodeRelSize([0])
-                .backgroundColor('rgb(255, 255, 255)')
-                .onNodeClick((node) => setAlumnId(node.alumn_id))
+                .backgroundColor('rgb(100, 100, 100)')
+                .onNodeClick((node) => {
+                    setAlumnId(node.alumn_id)
+                    const distance = 200;
+                    const distRatio = 1 + distance / Math.hypot(node.x, node.y, node.z);
 
-            Graph.d3Force('charge').strength(-20);
+                    Graph.cameraPosition(
+                        { x: node.x * distRatio, y: node.y * distRatio, z: node.z * distRatio }, // new position
+                        node, // lookAt ({ x, y, z })
+                        3000  // ms transition duration
+                    );
+                })
+
+            Graph.d3Force('charge').strength(-200);
 
             function uniqueIds(array) {
                 array = array.map(p => (p.joins.map(j => j))).flat()
