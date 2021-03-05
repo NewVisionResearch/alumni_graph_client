@@ -13,6 +13,7 @@ function Graph() {
             .then(res => res.json())
             .then(publications => setPublications(publications))
     }, [])
+    console.log(publications)
     useEffect(() => {
         if (publications.length) {
             console.log(publications)
@@ -42,7 +43,7 @@ function Graph() {
                 .backgroundColor('rgb(255, 255, 255)')
                 .onNodeClick((node) => setAlumnId(node.alumn_id))
 
-            Graph.d3Force('charge').strength(-10);
+            Graph.d3Force('charge').strength(-20);
 
             function uniqueIds(array) {
                 array = array.map(p => (p.joins.map(j => j))).flat()
