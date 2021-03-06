@@ -8,6 +8,7 @@ function AlumnShow({ id }) {
     const [idObj, setIdObj] = useState({})
 
     useEffect(() => {
+        console.log(id)
         const fetchAlumn = () => {
             fetch(`http://localhost:3000/api/v1/alumns/${id}`)
                 .then(res => res.json())
@@ -16,10 +17,6 @@ function AlumnShow({ id }) {
 
         fetchAlumn()
     }, [id])
-
-    const sortByNumberOfCoAuthors = (array) => {
-        return array.sort((a, b) => b.coauthors.length - a.coauthors.length)
-    }
 
     const updateIdArray = (id, display) => {
         let newIdObj = { ...idObj }
@@ -48,6 +45,10 @@ function AlumnShow({ id }) {
         }
     }
 
+    const sortByNumberOfCoAuthors = (array) => {
+        return array.sort((a, b) => b.coauthors.length - a.coauthors.length)
+    }
+
     return (
         <div>
             <h1>{alumn.full_name}</h1>
@@ -70,3 +71,4 @@ function AlumnShow({ id }) {
 }
 
 export default AlumnShow
+//.sort((a, b) => parseInt(b.publication.publication_date.split("-")[0]) - parseInt(a.publication.publication_date.split("-")[0]))

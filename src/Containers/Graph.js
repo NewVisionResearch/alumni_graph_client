@@ -16,7 +16,6 @@ function Graph() {
 
     useEffect(() => {
         if (publications.length) {
-            console.log(publications)
             const gData = {
                 nodes: uniqueIds(publications).map(alumn => ({ id: multiLine(alumn.display_name), alumn_id: alumn.id })),
                 links: createPairs(publications)
