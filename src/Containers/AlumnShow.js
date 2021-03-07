@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { byDate, byCoAuthors, sortByTwoFns } from '../services/sorts'
 import PublicationDisplayCheck from './PublicationDisplayCheck'
 
 function AlumnShow({ id }) {
@@ -8,7 +9,6 @@ function AlumnShow({ id }) {
     const [idObj, setIdObj] = useState({})
 
     useEffect(() => {
-        console.log(id)
         const fetchAlumn = () => {
             fetch(`http://localhost:3000/api/v1/alumns/${id}`)
                 .then(res => res.json())
@@ -45,10 +45,6 @@ function AlumnShow({ id }) {
         }
     }
 
-    const sortByNumberOfCoAuthors = (array) => {
-        return array.sort((a, b) => b.coauthors.length - a.coauthors.length)
-    }
-
     return (
         <div>
             <h1>{alumn.full_name}</h1>
@@ -57,7 +53,7 @@ function AlumnShow({ id }) {
                 {alumn.search_names.map(name => <li key={name}>{name}</li>)}
             </ol>
             <ul>
-                {sortByNumberOfCoAuthors(alumn.my_alumn_publications).map(alumn_pub =>
+                {sortByTwoFns(byDate, byCoAuthors, alumn.my_alumn_publications).map(alumn_pub =>
                     <PublicationDisplayCheck
                         key={`${alumn_pub.ap_id}`}
                         alumn_publication={alumn_pub}
