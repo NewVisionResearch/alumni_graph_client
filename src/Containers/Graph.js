@@ -35,7 +35,7 @@ function Graph() {
                 .nodeThreeObject(node => {
                     const sprite = new SpriteText(node.id);
                     sprite.material.depthWrite = false;
-                    sprite.backgroundColor = 'rgba(255, 255, 255, 0.8)'
+                    sprite.backgroundColor = 'rgba(255, 255, 255, 0.95)'
                     sprite.color = 'rgb(77, 172, 147)';
                     sprite.textHeight = 5;
                     sprite.fontWeight = 'bold';
@@ -64,7 +64,7 @@ function Graph() {
                     );
                 })
 
-            Graph.d3Force('charge').strength(-200);
+            Graph.d3Force('charge').strength(-500);
 
             function uniqueIds(array) {
                 array = array.map(p => (p.joins.map(j => j))).flat()

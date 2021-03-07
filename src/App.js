@@ -4,6 +4,7 @@ import NavBar from './Containers/NavBar'
 import Graph from './Containers/Graph'
 import Dashboard from './Containers/Dashboard'
 import { Route, Switch } from 'react-router-dom'
+import './App.css'
 
 function App() {
 

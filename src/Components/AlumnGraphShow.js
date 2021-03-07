@@ -11,10 +11,6 @@ function AlumnGraphShow({ alumnId, closeModal }) {
             .then(alumnObj => setAlumn(alumnObj))
     }, [alumnId])
 
-    const sortByNumberOfCoAuthors = (array) => {
-        return array.sort((a, b) => b.coauthors.length - a.coauthors.length)
-    }
-
     return (
         <div>
             <span onClick={closeModal}>X</span>
