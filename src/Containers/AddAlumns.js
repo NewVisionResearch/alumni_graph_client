@@ -9,7 +9,6 @@ function AddAlumns({ openAlumnShow }) {
 
     useEffect(() => {
         fetchAlumns()
-        setLoading(false)
     }, [])
 
     useEffect(() => {
