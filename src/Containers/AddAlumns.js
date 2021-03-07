@@ -19,7 +19,7 @@ function AddAlumns({ openAlumnShow }) {
         e.preventDefault()
 
         let alumnObj = {
-            display_name: alumnDisplayName
+            display_name: alumnDisplayName.toLowerCase()
         }
 
         let options = {
