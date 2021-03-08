@@ -18,6 +18,7 @@ function AlumnShow({ id }) {
         }
 
         fetchAlumn()
+        setEditSearchNames()
     }, [id])
 
     const updateIdArray = (id, display) => {
@@ -42,8 +43,7 @@ function AlumnShow({ id }) {
             }
 
             fetch(`http://localhost:3000/api/v1/alumn_publications/${id}`, options)
-                .then(res => res.json())
-                .then(console.log)
+
         }
     }
 
@@ -71,7 +71,7 @@ function AlumnShow({ id }) {
         <div>
             <h1>{alumn.full_name}</h1>
             Search names:
-            {editSearchNames ? <InputBar submitInput={updateSearchNames} value={alumn.search_names} /> : null}
+            {editSearchNames ? <InputBar submitInput={updateSearchNames} _value={alumn.search_names} /> : null}
             <button onClick={() => setEditSearchNames(true)}>Edit Search Names</button>
             <ol>
                 {alumn.search_names.map(name => <li key={name}>{name}</li>)}

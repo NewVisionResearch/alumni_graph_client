@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import InputBar from '../Components/InputBar'
 import Loading from '../Components/Loading'
+import { byName } from '../services/sorts'
 
 function AddAlumns({ openAlumnShow }) {
 
@@ -51,7 +52,7 @@ function AddAlumns({ openAlumnShow }) {
             <InputBar submitInput={addAlumn} />
             <div style={{ display: 'flex' }}>
                 <ul>
-                    {alumns.map(alumn => <li onClick={() => openAlumnShow(alumn.id)}>{alumn.full_name}</li>)}
+                    {byName(alumns).map(alumn => <li onClick={() => openAlumnShow(alumn.id)}>{alumn.full_name}</li>)}
                 </ul>
                 {loading ? <Loading /> : null}
             </div>
