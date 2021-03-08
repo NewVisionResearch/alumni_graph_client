@@ -104,6 +104,7 @@ function Graph() {
                         }
                     }
                 }
+
                 return resArray
             }
         }

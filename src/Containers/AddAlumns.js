@@ -49,10 +49,12 @@ function AddAlumns({ openAlumnShow }) {
     return (
         <div>
             <InputBar submitInput={addAlumn} />
-            <ul>
-                {alumns.map(alumn => <li onClick={() => openAlumnShow(alumn.id)}>{alumn.full_name}</li>)}
-            </ul>
-            {loading ? <Loading /> : null}
+            <div style={{ display: 'flex' }}>
+                <ul>
+                    {alumns.map(alumn => <li onClick={() => openAlumnShow(alumn.id)}>{alumn.full_name}</li>)}
+                </ul>
+                {loading ? <Loading /> : null}
+            </div>
         </div>
     )
 }

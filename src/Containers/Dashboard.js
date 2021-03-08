@@ -11,7 +11,7 @@ function Dashboard() {
   }
 
   return (
-    <div className="dashboard">
+    <div className="dashboard" style={{ display: 'flex' }}>
       <AddAlumns openAlumnShow={openAlumnShow} />
       {alumnShowId ? <AlumnShow id={alumnShowId} /> : null}
     </div>

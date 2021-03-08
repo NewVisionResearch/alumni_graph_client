@@ -1,8 +1,14 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
-function InputBar({ submitInput }) {
+function InputBar({ submitInput, _value }) {
 
     const [inputVal, setInputVal] = useState("")
+
+    useEffect(() => {
+        if (_value) {
+            setInputVal(_value.join(", "))
+        }
+    }, [_value])
 
     return (
         <form onSubmit={(e) => {
