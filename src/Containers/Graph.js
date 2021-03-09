@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import ForceGraph3D from '3d-force-graph'
 import SpriteText from 'three-spritetext'
 import AlumnGraphShow from '../Components/AlumnGraphShow'
@@ -132,6 +133,7 @@ function Graph() {
                     <AlumnGraphShow alumnId={alumnId} closeModal={closeModal} />
                 </div>
                 : null}
+            <Link to="/login" style={{ position: 'absolute', bottom: 0, right: 0, zIndex: 1000 }}>Admin Login</Link>
         </div>
     )
 }
