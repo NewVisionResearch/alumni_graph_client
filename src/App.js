@@ -12,6 +12,10 @@ function App() {
   let history = useHistory()
   const [admin, setAdmin] = useState({ username: "" })
 
+  window.addEventListener("beforeunload", () => {
+    localStorage.removeItem("jwt")
+  })
+
   useEffect(() => {
     if (localStorage.getItem('jwt')) {
       history.push("/dashboard")
@@ -48,8 +52,9 @@ function App() {
       }).then(() => history.push('/dashboard'))
   }
 
+
   async function logout() {
-    localStorage.clear()
+    localStorage.removeItem("jwt")
     await setAdmin({ username: "" })
     history.push("/")
   }
