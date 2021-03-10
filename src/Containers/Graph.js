@@ -133,7 +133,7 @@ function Graph() {
                     <AlumnGraphShow alumnId={alumnId} closeModal={closeModal} />
                 </div>
                 : null}
-            <Link to="/login" style={{ position: 'absolute', bottom: 0, right: 0, zIndex: 1000 }}>Admin Login</Link>
+            <Link to="/login" style={{ position: 'absolute', top: 0, right: 0, zIndex: 1000 }}>Admin Login</Link>
         </div>
     )
 }
