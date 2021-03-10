@@ -10,10 +10,12 @@ function Graph() {
     const [alumnId, setAlumnId] = useState(null)
 
     useEffect(() => {
-        fetch('http://localhost:3000/api/v1/graphs')
-            .then(res => res.json())
-            .then(publications => setPublications(publications))
-    }, [])
+        if (!publications.length) {
+            fetch('http://localhost:3000/api/v1/graphs')
+                .then(res => res.json())
+                .then(publications => setPublications(publications))
+        }
+    }, [publications.length])
 
     useEffect(() => {
         if (publications.length) {
@@ -114,7 +116,7 @@ function Graph() {
     const closeModal = () => {
         setAlumnId(null)
     }
-
+    const token = localStorage.getItem("jwt")
     return (
         <div style={{ position: 'relative' }}>
             <div id="3d-graph" style={{ margin: 0, width: '100%' }}></div>
@@ -133,7 +135,11 @@ function Graph() {
                     <AlumnGraphShow alumnId={alumnId} closeModal={closeModal} />
                 </div>
                 : null}
-            <Link to="/login" style={{ position: 'absolute', top: 0, right: 0, zIndex: 1000 }}>Admin Login</Link>
+            {
+                token ?
+                    null :
+                    <Link to="/login" style={{ position: 'absolute', top: 0, right: 0, zIndex: 1000 }}>Admin Login</Link>
+            }
         </div>
     )
 }

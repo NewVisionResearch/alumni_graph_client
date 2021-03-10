@@ -1,17 +1,6 @@
 import { Nav } from 'react-bootstrap'
-import { Link, withRouter, useHistory } from 'react-router-dom'
-function NavBar() {
-
-    const history = useHistory()
-
-    function logout() {
-        return Promise.resolve().then(() => localStorage.removeItem("jwt")).then(() => history.push("/"))
-
-    }
-
-    const removeToken = () => {
-        localStorage.removeItem("jwt")
-    }
+import { Link, withRouter } from 'react-router-dom'
+function NavBar({ logout }) {
 
     return (
         <Nav className="d-flex">

@@ -9,8 +9,10 @@ function AddAlumns({ openAlumnShow }) {
     const [loading, setLoading] = useState(false)
 
     useEffect(() => {
-        fetchAlumns()
-    }, [])
+        if (!alumns.length) {
+            fetchAlumns()
+        }
+    }, [alumns.length])
 
     useEffect(() => {
         if (alumns.length) {

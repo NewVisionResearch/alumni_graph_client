@@ -9,9 +9,8 @@ import './App.css'
 
 function App() {
 
-  const [admin, setAdmin] = useState({ username: "" })
   let history = useHistory()
-  const token = localStorage.getItem('jwt')
+  const [admin, setAdmin] = useState({ username: "" })
 
   useEffect(() => {
     if (localStorage.getItem('jwt')) {
@@ -46,16 +45,19 @@ function App() {
         const { username, jwt } = admin
         localStorage.setItem('jwt', jwt)
         setAdmin({ username })
-      })
-      .then(() => history.push('/dashboard'))
+      }).then(() => history.push('/dashboard'))
   }
 
-
+  async function logout() {
+    localStorage.clear()
+    await setAdmin({ username: "" })
+    history.push("/")
+  }
 
   return (
     <React.Fragment>
       <div style={{ height: '100%' }} id="App">
-        {token ? <NavBar /> : null}
+        {admin.username.length ? <NavBar logout={logout} /> : null}
         <Switch>
           <Route exact path="/" component={Graph} />
           <Route path="/login" render={() => <Login login={login} />} />
