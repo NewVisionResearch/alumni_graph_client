@@ -9,8 +9,10 @@ function AddAlumns({ openAlumnShow }) {
     const [loading, setLoading] = useState(false)
 
     useEffect(() => {
-        fetchAlumns()
-    }, [])
+        if (!alumns.length) {
+            fetchAlumns()
+        }
+    }, [alumns.length])
 
     useEffect(() => {
         if (alumns.length) {
@@ -19,7 +21,16 @@ function AddAlumns({ openAlumnShow }) {
     }, [alumns.length])
 
     const fetchAlumns = () => {
-        fetch('http://localhost:3000/api/v1/alumns')
+        const token = localStorage.getItem('jwt')
+
+        const options = {
+            method: 'GET',
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }
+
+        fetch('http://localhost:3000/api/v1/alumns', options)
             .then(res => res.json())
             .then((alumnsArray) => setAlumns(alumnsArray))
     }
@@ -27,6 +38,7 @@ function AddAlumns({ openAlumnShow }) {
     const addAlumn = (e, alumnDisplayName) => {
         e.preventDefault()
         setLoading(true)
+        const token = localStorage.getItem('jwt')
         let alumnObj = {
             display_name: alumnDisplayName.toLowerCase()
         }
@@ -34,7 +46,8 @@ function AddAlumns({ openAlumnShow }) {
         let options = {
             method: 'POST',
             headers: {
-                'content-type': 'application/json'
+                'content-type': 'application/json',
+                Authorization: `Bearer ${token}`
             },
             body: JSON.stringify(alumnObj)
         }
@@ -52,7 +65,7 @@ function AddAlumns({ openAlumnShow }) {
             <InputBar submitInput={addAlumn} />
             <div style={{ display: 'flex' }}>
                 <ul>
-                    {byName(alumns).map(alumn => <li onClick={() => openAlumnShow(alumn.id)}>{alumn.full_name}</li>)}
+                    {byName(alumns).map(alumn => <li key={alumn.id} onClick={() => openAlumnShow(alumn.id)}>{alumn.full_name}</li>)}
                 </ul>
                 {loading ? <Loading /> : null}
             </div>

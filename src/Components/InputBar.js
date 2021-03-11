@@ -16,7 +16,7 @@ function InputBar({ submitInput, _value }) {
             submitInput(e, inputVal)
         }}>
             <input type="text" value={inputVal} onChange={({ target: { value } }) => setInputVal(value)} />
-            <input type="submit" value="Add Alumn" />
+            <input type="submit" value="Submit" />
         </form>
     )
 }

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { byDate, byCoAuthors, sortByTwoFns } from '../services/sorts'
+import dashToDate from '../services/conversions'
 
 function AlumnGraphShow({ alumnId, closeModal }) {
 
@@ -16,11 +17,13 @@ function AlumnGraphShow({ alumnId, closeModal }) {
             <span onClick={closeModal}>X</span>
             <h3>{alumn.full_name}</h3>
             {sortByTwoFns(byDate, byCoAuthors, alumn.my_alumn_publications).map(alumn_pub => {
+                const { ap_id, publication, coauthors } = alumn_pub
+                const { pmid, title, pubdate } = publication
 
                 return (<div div className="publication-list" >
-                    <p><a href={`https://pubmed.ncbi.nlm.nih.gov/${alumn_pub.publication.pmid}`} rel='noreferrer' target='_blank'>{alumn_pub.publication.title}</a></p>
+                    <p>{dashToDate(pubdate)}: <a href={`https://pubmed.ncbi.nlm.nih.gov/${pmid}`} rel='noreferrer' target='_blank'>{title}</a></p>
                     <ul className="coAuthors">
-                        {alumn_pub.coauthors.map(coauthor => <li key={`${coauthor}_${alumn_pub.ap_id}`}>{coauthor}</li>)}
+                        {coauthors.map(coauthor => <li key={`${coauthor}_${ap_id}`}>{coauthor}</li>)}
                     </ul>
                 </div>)
             })}

@@ -27,7 +27,9 @@ function AlumnShow({ id }) {
         setIdObj(newIdObj)
     }
 
+    const token = localStorage.getItem("jwt")
     const updateDatabase = () => {
+
         for (const id in idObj) {
             let bodyObj = {
                 display: idObj[id]
@@ -37,7 +39,8 @@ function AlumnShow({ id }) {
                 method: 'PATCH',
                 headers: {
                     'content-type': 'application/json',
-                    'Accept': 'application/json'
+                    'Accept': 'application/json',
+                    Authorization: `Bearer ${token}`
                 },
                 body: JSON.stringify(bodyObj)
             }
@@ -57,7 +60,8 @@ function AlumnShow({ id }) {
             method: 'PATCH',
             headers: {
                 'content-type': 'application/json',
-                'Accept': 'application/json'
+                'Accept': 'application/json',
+                Authorization: `Bearer ${token}`
             },
             body: JSON.stringify(bodyObj)
         }
