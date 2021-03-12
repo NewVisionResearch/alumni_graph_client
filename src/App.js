@@ -12,10 +12,6 @@ function App() {
   let history = useHistory()
   const [admin, setAdmin] = useState({ username: "" })
 
-  // window.addEventListener("beforeunload", () => {
-  //   localStorage.removeItem("jwt")
-  // })
-
   useEffect(() => {
     if (localStorage.getItem('jwt')) {
       history.push("/dashboard")
@@ -51,6 +47,22 @@ function App() {
         setAdmin({ username })
       }).then(() => history.push('/dashboard'))
   }
+
+  // fetch('http://localhost:3000/api/v1/admins', {
+  //   method: 'POST',
+  //   headers: {
+  //     'Content-Type': 'application/json',
+  //     Accept: 'application/json'
+  //   },
+  //   body: JSON.stringify({
+  //     admin: {
+  //       username: 'admin1',
+  //       password: '123'
+  //     }
+  //   })
+  // })
+  //   .then(r => r.json())
+  //   .then(console.log)
 
 
   const logout = async () => {

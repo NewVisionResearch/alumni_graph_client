@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import InputBar from '../Components/InputBar'
 import { byDate, byCoAuthors, sortByTwoFns } from '../services/sorts'
-import PublicationDisplayCheck from './PublicationDisplayCheck'
+import PublicationDisplayCheck from '../Components/PublicationDisplayCheck'
 
 function AlumnShow({ id }) {
 
@@ -70,7 +70,7 @@ function AlumnShow({ id }) {
             .then(res => res.json())
             .then(alumnObj => setAlumn(alumnObj))
     }
-
+    console.log(alumn)
     return (
         <div>
             <h1>{alumn.full_name}</h1>
@@ -85,6 +85,7 @@ function AlumnShow({ id }) {
                 {sortByTwoFns(byDate, byCoAuthors, alumn.my_alumn_publications).map(alumn_pub =>
                     <PublicationDisplayCheck
                         key={`${alumn_pub.ap_id}`}
+                        alumnName={alumn.full_name}
                         alumn_publication={alumn_pub}
                         updateIdArray={updateIdArray}
                     />)}

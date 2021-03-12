@@ -20,12 +20,14 @@ function AlumnGraphShow({ alumnId, closeModal }) {
                 const { ap_id, publication, coauthors } = alumn_pub
                 const { pmid, title, pubdate } = publication
 
-                return (<div div className="publication-list" >
-                    <p>{dashToDate(pubdate)}: <a href={`https://pubmed.ncbi.nlm.nih.gov/${pmid}`} rel='noreferrer' target='_blank'>{title}</a></p>
-                    <ul className="coAuthors">
-                        {coauthors.map(coauthor => <li key={`${coauthor}_${ap_id}`}>{coauthor}</li>)}
-                    </ul>
-                </div>)
+                return (
+                    <div div className="publication-list" >
+                        <p>{dashToDate(pubdate)}: <a href={`https://pubmed.ncbi.nlm.nih.gov/${pmid}`} rel='noreferrer' target='_blank'>{title}</a></p>
+                        <ul className="coAuthors">
+                            {coauthors.map(coauthor => <li key={`${coauthor}_${ap_id}`}>{coauthor}</li>)}
+                        </ul>
+                    </div>
+                )
             })}
         </div >
     )
