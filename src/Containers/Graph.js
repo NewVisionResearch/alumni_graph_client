@@ -1,16 +1,15 @@
+
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import ForceGraph from 'force-graph';
+import ForceGraph3D from '3d-force-graph'
+import SpriteText from 'three-spritetext'
 import AlumnGraphShow from '../Components/AlumnGraphShow'
 
 function Graph() {
 
     const [publications, setPublications] = useState([])
     const [alumnId, setAlumnId] = useState(null)
-    const [aspectRatio, setAspectRatio] = useState(window.innerHeight * window.innerWidth / 1000000)
-    window.addEventListener('resize', () => {
-        setAspectRatio(window.innerHeight * window.innerWidth / 10000)
-    })
+
     useEffect(() => {
         if (!publications.length) {
             fetch('http://localhost:3000/api/v1/graphs')
@@ -34,40 +33,40 @@ function Graph() {
                 return name.split(" ").join("\n")
             }
 
-            const elem = document.getElementById('graph');
-            const Graph = ForceGraph()(elem)
-                (document.getElementById('graph'))
+            const Graph = ForceGraph3D()
+                (document.getElementById('3d-graph'))
                 .graphData(gData)
-                .nodeCanvasObject((node, ctx, globalScale) => {
-                    const label = node.id;
-                    const fontSize = 16 / aspectRatio;
-                    ctx.font = `${fontSize}px Sans-Serif`;
-                    const textWidth = ctx.measureText(label).width;
-                    const bckgDimensions = [textWidth, fontSize].map(n => n + fontSize * 0.5); // some padding
-
-                    ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
-                    ctx.fillRect(node.x - bckgDimensions[0] / 2, node.y - bckgDimensions[1] / 2, ...bckgDimensions);
-
-                    ctx.textAlign = 'center';
-                    ctx.textBaseline = 'middle';
-                    ctx.fillStyle = 'turquoise';
-                    ctx.fillText(multiLine(label), node.x, node.y);
-
-                    node.__bckgDimensions = bckgDimensions; // to re-use in nodePointerAreaPaint
+                .nodeThreeObject(node => {
+                    const sprite = new SpriteText(node.id);
+                    sprite.material.depthWrite = false;
+                    sprite.backgroundColor = 'rgba(255, 255, 255, 0.95)'
+                    sprite.color = 'rgb(77, 172, 147)';
+                    sprite.textHeight = 5;
+                    sprite.fontWeight = 'bold';
+                    sprite.strokeWidth = 0.5;
+                    sprite.strokeColor = 'black';
+                    sprite.borderColor = 'black';
+                    sprite.borderWidth = 1;
+                    sprite.borderRadius = 10;
+                    sprite.padding = 5;
+                    return sprite;
                 })
+                .linkOpacity([1])
+                .linkWidth([0.5])
                 .linkColor(link => 'rgb(73, 50, 123)')
-                .nodeRelSize(15)
+                .nodeRelSize([0])
                 .backgroundColor('rgb(100, 100, 100)')
-                .onNodeHover(node => elem.style.cursor = node ? 'pointer' : null)
                 .onNodeClick((node) => {
                     setAlumnId(node.alumn_id)
-                    Graph.centerAt(node.x, node.y, 1000);
-                    Graph.zoom(5, 1000)
+                    const distance = 200;
+                    const distRatio = 1 + distance / Math.hypot(node.x, node.y, node.z);
+
+                    Graph.cameraPosition(
+                        { x: node.x * distRatio, y: node.y * distRatio, z: node.z * distRatio }, // new position
+                        node, // lookAt ({ x, y, z })
+                        3000  // ms transition duration
+                    );
                 })
-                .onNodeDragEnd(node => {
-                    node.fx = node.x;
-                    node.fy = node.y;
-                });
 
             Graph.d3Force('charge').strength(-500);
 
@@ -121,7 +120,7 @@ function Graph() {
     const token = localStorage.getItem("jwt")
     return (
         <div style={{ position: 'relative' }}>
-            <div id="graph" style={{ margin: 0, width: '100%' }}></div>
+            <div id="3d-graph" style={{ margin: 0, width: '100%' }}></div>
             {alumnId ?
                 <div id="alumnShow"
                     style={{
