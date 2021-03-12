@@ -1,14 +1,16 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import ForceGraph from 'force-graph';
-import SpriteText from 'three-spritetext'
 import AlumnGraphShow from '../Components/AlumnGraphShow'
 
 function Graph() {
 
     const [publications, setPublications] = useState([])
     const [alumnId, setAlumnId] = useState(null)
-
+    const [aspectRatio, setAspectRatio] = useState(window.innerHeight * window.innerWidth / 1000000)
+    window.addEventListener('resize', () => {
+        setAspectRatio(window.innerHeight * window.innerWidth / 10000)
+    })
     useEffect(() => {
         if (!publications.length) {
             fetch('http://localhost:3000/api/v1/graphs')
@@ -31,14 +33,14 @@ function Graph() {
             function multiLine(name) {
                 return name.split(" ").join("\n")
             }
+
             const elem = document.getElementById('graph');
             const Graph = ForceGraph()(elem)
                 (document.getElementById('graph'))
                 .graphData(gData)
-                .nodeColor('turquoise')
                 .nodeCanvasObject((node, ctx, globalScale) => {
                     const label = node.id;
-                    const fontSize = 24 / globalScale;
+                    const fontSize = 16 / aspectRatio;
                     ctx.font = `${fontSize}px Sans-Serif`;
                     const textWidth = ctx.measureText(label).width;
                     const bckgDimensions = [textWidth, fontSize].map(n => n + fontSize * 0.5); // some padding
@@ -49,7 +51,7 @@ function Graph() {
                     ctx.textAlign = 'center';
                     ctx.textBaseline = 'middle';
                     ctx.fillStyle = 'turquoise';
-                    ctx.fillText(label, node.x, node.y);
+                    ctx.fillText(multiLine(label), node.x, node.y);
 
                     node.__bckgDimensions = bckgDimensions; // to re-use in nodePointerAreaPaint
                 })
@@ -60,8 +62,12 @@ function Graph() {
                 .onNodeClick((node) => {
                     setAlumnId(node.alumn_id)
                     Graph.centerAt(node.x, node.y, 1000);
-                    Graph.zoom(5, 10000)
+                    Graph.zoom(5, 1000)
                 })
+                .onNodeDragEnd(node => {
+                    node.fx = node.x;
+                    node.fy = node.y;
+                });
 
             Graph.d3Force('charge').strength(-500);
 

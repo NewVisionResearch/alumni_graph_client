@@ -16,7 +16,7 @@ function dashToDate(date) {
     ]
 
     let newDate = new Date(date)
-    let newDateString = `${newDate.getFullYear()} ${months[newDate.getMonth()]} ${newDate.getDay()}`
+    let newDateString = `${newDate.getFullYear()} ${months[newDate.getUTCMonth()]} ${newDate.getUTCDate()}`
     return newDateString
 }
 
