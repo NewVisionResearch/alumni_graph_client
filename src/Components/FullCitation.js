@@ -14,8 +14,8 @@ function FullCitation({ alumnName, publication, coauthors }) {
         volume,
         source
     } = publication
-    const displayDate = dashToDate(pubdate).split('-')[0] + " " + dashToDate(pubdate).split('-')[1]
-
+    const displayDate = dashToDate(pubdate).split('-')[0]
+    console.log(displayDate)
     const decideClassName = (author) => {
         const [first, last] = alumnName.split(" ")
         const [authorLast, initials] = author.split(" ")
@@ -51,7 +51,7 @@ function FullCitation({ alumnName, publication, coauthors }) {
 
     return (
         <div className="publication-list">
-            <p>{highlightAlumns(authors)}. {<a href={`https://pubmed.ncbi.nlm.nih.gov/${pmid}`} rel='noreferrer' target='_blank'>{title}</a>} {source}. {displayDate};{volume}:{pages}.{elocationid}. Epub {epubdate}. PMID: {pmid}; PMCID: {pmcid}.</p>
+            <p>{highlightAlumns(authors)}. {<a href={`https://pubmed.ncbi.nlm.nih.gov/${pmid}`} rel='noreferrer' target='_blank'>{title}</a>} {source}. {displayDate || ""};{volume || ""}:{pages || ""}.{elocationid || ""}. Epub {epubdate || ""}. PMID: {pmid || ""}; PMCID: {pmcid || ""}.</p>
         </div>
     )
 }

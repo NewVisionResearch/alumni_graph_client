@@ -69,14 +69,16 @@ function AlumnShow({ id }) {
         fetch(`http://localhost:3000/api/v1/alumns/${id}`, options)
             .then(res => res.json())
             .then(alumnObj => setAlumn(alumnObj))
+            .then(() => setEditSearchNames(false))
     }
-    console.log(alumn.search_names)
     return (
         <div>
             <h1>{alumn.full_name}</h1>
             Search names:
-            {editSearchNames ? <InputBar submitInput={updateSearchNames} _value={alumn.search_names} /> : null}
-            <button onClick={() => setEditSearchNames(true)}>Edit Search Names</button>
+            {editSearchNames ?
+                <InputBar submitInput={updateSearchNames} _value={alumn.search_names} /> :
+                <button onClick={() => setEditSearchNames(true)}>Edit Search Names</button>}
+
             <ol>
                 {alumn.search_names.map(name => <li key={name}>{name}</li>)}
             </ol>
