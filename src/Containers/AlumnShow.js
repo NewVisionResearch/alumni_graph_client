@@ -70,7 +70,7 @@ function AlumnShow({ id }) {
             .then(res => res.json())
             .then(alumnObj => setAlumn(alumnObj))
     }
-    console.log(alumn)
+    console.log(alumn.search_names)
     return (
         <div>
             <h1>{alumn.full_name}</h1>

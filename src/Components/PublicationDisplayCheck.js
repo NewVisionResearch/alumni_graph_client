@@ -7,7 +7,7 @@ function PublicationDisplayCheck({ alumnName, alumn_publication, updateIdArray }
     const [displayed, setDisplayed] = useState(display)
 
     return (
-        <div className="d-flex align-items-center">
+        <div className="d-flex align-items-center" key={`${ap_id}_${alumnName}`}>
             <input
                 type="checkbox"
                 checked={displayed}
@@ -15,7 +15,7 @@ function PublicationDisplayCheck({ alumnName, alumn_publication, updateIdArray }
                     setDisplayed(!displayed)
                     updateIdArray(ap_id, !displayed)
                 }} />
-            <FullCitation ap_id={ap_id} alumnName={alumnName} publication={publication} coauthors={coauthors} />
+            <FullCitation alumnName={alumnName} publication={publication} coauthors={coauthors} />
         </div>
     )
 

@@ -39,8 +39,27 @@ function AddAlumns({ openAlumnShow }) {
         e.preventDefault()
         setLoading(true)
         const token = localStorage.getItem('jwt')
+        // let splitNames = alumnDisplayName.split(" ")
+        // let n = splitNames.length
+        // let first = splitNames[0]
+        // let last
+        // let res = []
+        // if (n === 2) {
+        //     last = splitNames[1]
+        //     res.push(alumnDisplayName)
+        //     res.push(`${last} ${first[0]}`)
+        // } else {
+        //     last = splitNames[n - 1]
+        //     let name = `${last} `
+        //     for (let i = 0; i < n - 2; i++) {
+        //         name += splitNames[i][0]
+        //     }
+        //     res.push(alumnDisplayName)
+        //     res.push(name)
+        // }
         let alumnObj = {
             display_name: alumnDisplayName.toLowerCase()
+            // search_names: res
         }
 
         let options = {

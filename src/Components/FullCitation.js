@@ -1,6 +1,6 @@
 import dashToDate from '../services/conversions'
 
-function FullCitation({ ap_id, alumnName, publication, coauthors }) {
+function FullCitation({ alumnName, publication, coauthors }) {
 
     const {
         authors,
@@ -27,7 +27,7 @@ function FullCitation({ ap_id, alumnName, publication, coauthors }) {
             return lastNames
         }
 
-        if (authorLast === last) {
+        if (authorLast === last && initials[0] === first[0]) {
             return 'alumn'
         } else if (coauthorsLastNames().includes(authorLast)) {
             return 'coauthor'

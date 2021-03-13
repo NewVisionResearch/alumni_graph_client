@@ -8,13 +8,26 @@ import { Route, Switch, useHistory } from 'react-router-dom'
 import './App.css'
 
 function App() {
-
   let history = useHistory()
   const [admin, setAdmin] = useState({ username: "" })
 
   useEffect(() => {
-    if (localStorage.getItem('jwt')) {
-      history.push("/dashboard")
+    const token = localStorage.getItem('jwt')
+    if (token) {
+      console.log('refreshed')
+      fetch('http://localhost:3000/api/v1/profile', {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+        .then(res => res.json())
+        .then((admin) => {
+          const { username } = admin
+          setAdmin({ username })
+        })
+        .then(() => history.push("/dashboard"))
+
     } else {
       history.push("/")
     }
@@ -47,22 +60,6 @@ function App() {
         setAdmin({ username })
       }).then(() => history.push('/dashboard'))
   }
-
-  // fetch('http://localhost:3000/api/v1/admins', {
-  //   method: 'POST',
-  //   headers: {
-  //     'Content-Type': 'application/json',
-  //     Accept: 'application/json'
-  //   },
-  //   body: JSON.stringify({
-  //     admin: {
-  //       username: 'admin1',
-  //       password: '123'
-  //     }
-  //   })
-  // })
-  //   .then(r => r.json())
-  //   .then(console.log)
 
 
   const logout = async () => {
