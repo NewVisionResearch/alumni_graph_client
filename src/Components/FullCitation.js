@@ -39,10 +39,10 @@ function FullCitation({ alumnName, publication, coauthors }) {
 
     const highlightAlumns = (authors) => {
         if (authors.length) {
-            let authorsArray = authors.slice(0, authors.length - 1).map(author => <span className={decideClassName(author)}>{author + ", "}</span>)
+            let authorsArray = authors.slice(0, authors.length - 1).map(author => <span key={author} className={decideClassName(author)}>{author + ", "}</span>)
 
             let author = authors[authors.length - 1]
-            authorsArray = authorsArray.concat(<span className={decideClassName(author)}>{author}</span>)
+            authorsArray = authorsArray.concat(<span key={author} className={decideClassName(author)}>{author}</span>)
 
             return authorsArray
         } else {
