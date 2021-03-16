@@ -14,8 +14,9 @@ function FullCitation({ alumnName, publication, coauthors }) {
         volume,
         source
     } = publication
+
     const displayDate = dashToDate(pubdate).split('-')[0]
-    console.log(displayDate)
+
     const decideClassName = (author) => {
         const [first, last] = alumnName.split(" ")
         const [authorLast, initials] = author.split(" ")
