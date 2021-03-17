@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { ListGroup } from 'react-bootstrap'
 import InputBar from '../Components/InputBar'
 import Loading from '../Components/Loading'
 import { byName } from '../services/sorts'
@@ -62,12 +63,19 @@ function AddAlumns({ openAlumnShow }) {
     }
 
     return (
-        <div>
+        <div className="mr-5">
             <InputBar submitInput={addAlumn} />
             <div style={{ display: 'flex' }}>
-                <ul>
-                    {byName(alumns).map(alumn => <li key={alumn.id} onClick={() => openAlumnShow(alumn.id)}>{alumn.full_name}</li>)}
-                </ul>
+                <ListGroup as="ul">
+                    {byName(alumns).map(alumn =>
+                        <ListGroup.Item
+                            as="li"
+                            key={alumn.id}
+                            onClick={() => openAlumnShow(alumn.id)}
+                            className="">
+                            {alumn.full_name}
+                        </ListGroup.Item>)}
+                </ListGroup>
                 {loading ? <Loading /> : null}
             </div>
         </div>

@@ -112,13 +112,12 @@ function AlumnShow({ id }) {
         <div>
             <h1>{alumn.full_name}</h1>
             Search names:
-            {editSearchNames ?
-                <InputBar submitInput={updateSearchNames} _value={alumn.search_names} /> :
-                <button onClick={() => setEditSearchNames(true)}>Edit Search Names</button>}
-
             <ol>
                 {alumn.search_names.map(name => <li key={name}>{name}</li>)}
             </ol>
+            {editSearchNames ?
+                <InputBar submitInput={updateSearchNames} _value={alumn.search_names} /> :
+                <button onClick={() => setEditSearchNames(true)}>Edit Search Names</button>}
             <p>Publications ({filterValidPublications(alumn.my_alumn_publications).length}):</p>
             <ul>
                 {sortByTwoFns(byDate, byCoAuthors, filterValidPublications(alumn.my_alumn_publications)).map(alumn_pub =>
