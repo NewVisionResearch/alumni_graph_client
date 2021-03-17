@@ -7,7 +7,9 @@ function PublicationDisplayCheck({ alumnName, alumn_publication, updateIdArray, 
     const { ap_id, display, publication, coauthors } = alumn_publication
     const [displayed, setDisplayed] = useState(display)
     return (
-        <div className="d-flex align-items-center mb-5 p-3 border border-secondary" key={`${ap_id}_${alumnName}`}>
+        <div
+            className="d-flex align-items-center justify-content-between mb-5 p-3 border border-secondary"
+            key={`${ap_id}_${alumnName}`}>
             <InputGroup.Checkbox
                 className=""
                 aria-label="Checkbox for following citation"

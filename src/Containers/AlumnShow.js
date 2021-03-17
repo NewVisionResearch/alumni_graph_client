@@ -111,7 +111,7 @@ function AlumnShow({ id }) {
     }
 
     return (
-        <div className="position-sticky">
+        <div>
             <h1>{alumn.full_name}</h1>
             Search names:
             <ol>
@@ -121,7 +121,7 @@ function AlumnShow({ id }) {
                 <InputBar submitInput={updateSearchNames} _value={alumn.search_names} /> :
                 <button onClick={() => setEditSearchNames(true)}>Edit Search Names</button>}
             <p>Publications ({filterValidPublications(alumn.my_alumn_publications).length}):</p>
-            <ul style={{ maxHeight: "500px", overflowY: "hidden", overflowY: "scroll" }}>
+            <ul style={{ maxHeight: "500px", overflowY: "hidden", overflow: "scroll" }}>
                 {sortByTwoFns(byDate, byCoAuthors, filterValidPublications(alumn.my_alumn_publications)).map(alumn_pub =>
                     <PublicationDisplayCheck
                         key={`${alumn_pub.ap_id}`}

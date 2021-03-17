@@ -66,7 +66,7 @@ function AddAlumns({ openAlumnShow }) {
     return (
         <div className="add-alumns mr-5" >
             <InputBar submitInput={addAlumn} />
-            <div style={{ display: 'flex' }}>
+            <div style={{ display: 'flex', maxHeight: "700px", overflow: 'hidden', overflowY: 'scroll' }}>
                 {loading ? <Loading /> : <ListGroup as="ul" style={{ width: "100%" }}>
                     {byName(alumns).map(alumn =>
                         <ListGroup.Item
