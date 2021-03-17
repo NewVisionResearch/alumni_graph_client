@@ -3,6 +3,7 @@ body {
   padding: 0;
   box-sizing: border-box;
 }
+
 @keyframes load {
   0%{
       opacity: 0.08;
