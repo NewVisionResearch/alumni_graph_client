@@ -11,14 +11,18 @@ function AlumnShow({ id }) {
     const [editSearchNames, setEditSearchNames] = useState(false)
 
     useEffect(() => {
-        const fetchAlumn = () => {
-            fetch(`http://localhost:3000/api/v1/alumns/${id}`)
-                .then(res => res.json())
-                .then(alumnObj => setAlumn(alumnObj))
-        }
+        if (id) {
+            const fetchAlumn = () => {
+                fetch(`http://localhost:3000/api/v1/alumns/${id}`)
+                    .then(res => res.json())
+                    .then(alumnObj => setAlumn(alumnObj))
+            }
 
-        fetchAlumn()
-        setEditSearchNames()
+            fetchAlumn()
+            setEditSearchNames()
+        } else {
+            setAlumn({ full_name: "", search_names: [], my_alumn_publications: [] })
+        }
     }, [id])
 
     const invalidatePublication = (e, pubId) => {
@@ -109,7 +113,7 @@ function AlumnShow({ id }) {
     }
 
     return (
-        <div>
+        <div className="position-sticky">
             <h1>{alumn.full_name}</h1>
             Search names:
             <ol>
@@ -119,7 +123,7 @@ function AlumnShow({ id }) {
                 <InputBar submitInput={updateSearchNames} _value={alumn.search_names} /> :
                 <button onClick={() => setEditSearchNames(true)}>Edit Search Names</button>}
             <p>Publications ({filterValidPublications(alumn.my_alumn_publications).length}):</p>
-            <ul>
+            <ul style={{ maxHeight: "500px", overflowY: "hidden", overflowY: "scroll" }}>
                 {sortByTwoFns(byDate, byCoAuthors, filterValidPublications(alumn.my_alumn_publications)).map(alumn_pub =>
                     <PublicationDisplayCheck
                         key={`${alumn_pub.ap_id}`}
@@ -137,4 +141,3 @@ function AlumnShow({ id }) {
 }
 
 export default AlumnShow
-//.sort((a, b) => parseInt(b.publication.publication_date.split("-")[0]) - parseInt(a.publication.publication_date.split("-")[0]))

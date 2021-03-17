@@ -59,14 +59,15 @@ function AddAlumns({ openAlumnShow }) {
             .then(newAlumn => {
                 let newArray = [...alumns, newAlumn]
                 setAlumns(newArray)
+                openAlumnShow(newAlumn.id)
             })
     }
 
     return (
-        <div className="mr-5">
+        <div className="add-alumns mr-5" >
             <InputBar submitInput={addAlumn} />
             <div style={{ display: 'flex' }}>
-                <ListGroup as="ul">
+                {loading ? <Loading /> : <ListGroup as="ul" style={{ width: "100%" }}>
                     {byName(alumns).map(alumn =>
                         <ListGroup.Item
                             as="li"
@@ -75,8 +76,7 @@ function AddAlumns({ openAlumnShow }) {
                             className="">
                             {alumn.full_name}
                         </ListGroup.Item>)}
-                </ListGroup>
-                {loading ? <Loading /> : null}
+                </ListGroup>}
             </div>
         </div>
     )

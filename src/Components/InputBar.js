@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { Button, Form, FormControl, InputGroup } from 'react-bootstrap'
 
 function InputBar({ submitInput, _value }) {
 
@@ -11,13 +12,22 @@ function InputBar({ submitInput, _value }) {
     }, [_value])
 
     return (
-        <form onSubmit={(e) => {
-            setInputVal("")
-            submitInput(e, inputVal)
-        }}>
-            <input type="text" value={inputVal} onChange={({ target: { value } }) => setInputVal(value)} />
-            <input type="submit" value="Submit" />
-        </form>
+        <Form
+            style={{ width: "fit-content" }}
+            className="d-flex"
+            inline>
+            <InputGroup style={{ minWidth: "300px" }}>
+                <FormControl type="text" value={inputVal} onChange={({ target: { value } }) => setInputVal(value)} />
+                <InputGroup.Append>
+                    <Button
+                        variant="info"
+                        onClick={(e) => {
+                            setInputVal("")
+                            submitInput(e, inputVal)
+                        }}>Submit</Button>
+                </InputGroup.Append>
+            </InputGroup>
+        </Form>
     )
 }
 
