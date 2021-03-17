@@ -20,8 +20,6 @@ function AlumnShow({ id }) {
 
             fetchAlumn()
             setEditSearchNames()
-        } else {
-            setAlumn({ full_name: "", search_names: [], my_alumn_publications: [] })
         }
     }, [id])
 
