@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { ListGroup } from 'react-bootstrap'
 import InputBar from '../Components/InputBar'
 import Loading from '../Components/Loading'
-import { byName } from '../services/sorts'
+import { byName, byLastName } from '../services/sorts'
 
 function AddAlumns({ openAlumnShow }) {
 
@@ -68,13 +68,13 @@ function AddAlumns({ openAlumnShow }) {
             <InputBar submitInput={addAlumn} />
             <div style={{ display: 'flex', maxHeight: "700px", overflow: 'hidden', overflowY: 'scroll' }}>
                 {loading ? <Loading /> : <ListGroup as="ul" style={{ width: "100%" }}>
-                    {byName(alumns).map(alumn =>
+                    {byLastName(alumns).map(alumn =>
                         <ListGroup.Item
                             as="li"
                             key={alumn.id}
                             onClick={() => openAlumnShow(alumn.id)}
                             className="">
-                            {alumn.full_name}
+                            {alumn.search_names[1]}
                         </ListGroup.Item>)}
                 </ListGroup>}
             </div>
