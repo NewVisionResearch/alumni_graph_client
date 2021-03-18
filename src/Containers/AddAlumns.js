@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { ListGroup } from 'react-bootstrap'
 import InputBar from '../Components/InputBar'
 import Loading from '../Components/Loading'
-import { byName, byLastName } from '../services/sorts'
+import { byLastName } from '../services/sorts'
 
 function AddAlumns({ openAlumnShow }) {
 

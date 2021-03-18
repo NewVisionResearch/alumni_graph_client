@@ -1,15 +1,16 @@
-
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import ForceGraph3D from '3d-force-graph'
-import SpriteText from 'three-spritetext'
+import ForceGraph from 'force-graph';
 import AlumnGraphShow from '../Components/AlumnGraphShow'
 
 function Graph() {
 
     const [publications, setPublications] = useState([])
     const [alumnId, setAlumnId] = useState(null)
-
+    const [aspectRatio, setAspectRatio] = useState(window.innerHeight * window.innerWidth / 1000000)
+    window.addEventListener('resize', () => {
+        setAspectRatio(window.innerHeight * window.innerWidth / 10000)
+    })
     useEffect(() => {
         if (!publications.length) {
             fetch('http://localhost:3000/api/v1/graphs')
@@ -33,40 +34,40 @@ function Graph() {
                 return name.split(" ").join("\n")
             }
 
-            const Graph = ForceGraph3D()
-                (document.getElementById('3d-graph'))
+            const elem = document.getElementById('graph');
+            const Graph = ForceGraph()(elem)
+                (document.getElementById('graph'))
                 .graphData(gData)
-                .nodeThreeObject(node => {
-                    const sprite = new SpriteText(node.id);
-                    sprite.material.depthWrite = false;
-                    sprite.backgroundColor = 'rgba(255, 255, 255, 0.95)'
-                    sprite.color = 'rgb(77, 172, 147)';
-                    sprite.textHeight = 5;
-                    sprite.fontWeight = 'bold';
-                    sprite.strokeWidth = 0.5;
-                    sprite.strokeColor = 'black';
-                    sprite.borderColor = 'black';
-                    sprite.borderWidth = 1;
-                    sprite.borderRadius = 10;
-                    sprite.padding = 5;
-                    return sprite;
+                .nodeCanvasObject((node, ctx, globalScale) => {
+                    const label = node.id;
+                    const fontSize = 16 / aspectRatio;
+                    ctx.font = `${fontSize}px Sans-Serif`;
+                    const textWidth = ctx.measureText(label).width;
+                    const bckgDimensions = [textWidth, fontSize].map(n => n + fontSize * 0.5); // some padding
+
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+                    ctx.fillRect(node.x - bckgDimensions[0] / 2, node.y - bckgDimensions[1] / 2, ...bckgDimensions);
+
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillStyle = 'turquoise';
+                    ctx.fillText(multiLine(label), node.x, node.y);
+
+                    node.__bckgDimensions = bckgDimensions; // to re-use in nodePointerAreaPaint
                 })
-                .linkOpacity([1])
-                .linkWidth([0.5])
                 .linkColor(link => 'rgb(73, 50, 123)')
-                .nodeRelSize([0])
+                .nodeRelSize(15)
                 .backgroundColor('rgb(100, 100, 100)')
+                .onNodeHover(node => elem.style.cursor = node ? 'pointer' : null)
                 .onNodeClick((node) => {
                     setAlumnId(node.alumn_id)
-                    const distance = 200;
-                    const distRatio = 1 + distance / Math.hypot(node.x, node.y, node.z);
-
-                    Graph.cameraPosition(
-                        { x: node.x * distRatio, y: node.y * distRatio, z: node.z * distRatio }, // new position
-                        node, // lookAt ({ x, y, z })
-                        3000  // ms transition duration
-                    );
+                    Graph.centerAt(node.x, node.y, 1000);
+                    Graph.zoom(5, 1000)
                 })
+                .onNodeDragEnd(node => {
+                    node.fx = node.x;
+                    node.fy = node.y;
+                });
 
             Graph.d3Force('charge').strength(-500);
 
@@ -112,25 +113,25 @@ function Graph() {
                 return resArray
             }
         }
-    }, [publications])
+    }, [publications, aspectRatio])
 
     const closeModal = () => {
         setAlumnId(null)
     }
     const token = localStorage.getItem("jwt")
     return (
-        <div className="position-relative">
-            <div id="3d-graph" style={{ margin: 0, width: '100%' }}></div>
+        <div style={{ position: 'relative' }}>
+            <div id="graph" style={{ margin: 0, width: '100%' }}></div>
             {alumnId ?
                 <div
-                    className="mt-5 mr-5 p-3"
                     id="alumnShow"
+                    className="mt-3 mr-3"
                     style={{
                         position: 'absolute',
                         top: 0,
                         right: 0,
-                        width: '35%',
-                        height: '40%',
+                        width: '400px',
+                        height: '400px',
                         zIndex: 1000,
                         background: 'rgb(255, 255, 255)',
                         overflowY: 'scroll'
