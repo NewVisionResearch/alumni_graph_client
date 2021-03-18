@@ -4,7 +4,7 @@ import InputBar from '../Components/InputBar'
 import { byDate, byCoAuthors, sortByTwoFns } from '../services/sorts'
 import PublicationDisplayCheck from '../Components/PublicationDisplayCheck'
 
-function AlumnShow({ id }) {
+function AlumnShow({ id, removeAlumn }) {
 
 
     const [alumn, setAlumn] = useState({ full_name: "", search_names: [], my_alumn_publications: [] })
@@ -108,23 +108,6 @@ function AlumnShow({ id }) {
             .then(() => setEditSearchNames(false))
     }
 
-    const destroyAlumn = () => {
-        const options = {
-            method: 'DELETE',
-            headers: {
-                'content-type': 'application/json',
-                'Accept': 'application/json',
-                Authorization: `Bearer ${token}`
-            }
-        }
-
-        fetch(`http://localhost:3000/api/v1/alumns/${id}`, options)
-            .then(res => res.json())
-            .then(data => {
-                console.log(data)
-            })
-    }
-
     const filterValidPublications = () => {
         return alumn.my_alumn_publications.filter(ap => ap.publication.display === true)
     }
@@ -139,7 +122,7 @@ function AlumnShow({ id }) {
             {editSearchNames ?
                 <InputBar submitInput={updateSearchNames} _value={alumn.search_names} /> :
                 <Button onClick={() => setEditSearchNames(true)}>Edit Search Names</Button>}
-            <Button variant="danger" onClick={destroyAlumn}>Delete Alumn</Button>
+            <Button variant="danger" onClick={(e) => removeAlumn(e, id)}>Delete Alumn</Button>
             <p>Publications ({filterValidPublications(alumn.my_alumn_publications).length}):</p>
             <ul style={{ maxHeight: "500px", overflowY: "hidden", overflow: "scroll" }}>
                 {sortByTwoFns(byDate, byCoAuthors, filterValidPublications(alumn.my_alumn_publications)).map(alumn_pub =>

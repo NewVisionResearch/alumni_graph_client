@@ -4,7 +4,7 @@ import InputBar from '../Components/InputBar'
 import Loading from '../Components/Loading'
 import { byLastName } from '../services/sorts'
 
-function AddAlumns({ openAlumnShow }) {
+function AddAlumns({ openAlumnShow, removeAlumnId }) {
 
     const [alumns, setAlumns] = useState([])
     const [loading, setLoading] = useState(false)
@@ -20,6 +20,13 @@ function AddAlumns({ openAlumnShow }) {
             setLoading(false)
         }
     }, [alumns.length])
+
+    useEffect(() => {
+        if (removeAlumnId) {
+            let newArray = alumns.filter(alumn => alumn.id !== removeAlumnId)
+            setAlumns(newArray)
+        }
+    }, [removeAlumnId])
 
     const fetchAlumns = () => {
         const token = localStorage.getItem('jwt')

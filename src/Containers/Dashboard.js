@@ -5,15 +5,37 @@ import AddAlumns from './AddAlumns'
 function Dashboard() {
 
   const [alumnShowId, setAlumnShowId] = useState(null)
+  const [removeAlumnId, setRemoveAlumnId] = useState(null)
 
   const openAlumnShow = (id) => {
     setAlumnShowId(id)
   }
 
+  const removeAlumn = (e, id) => {
+    const token = localStorage.getItem("jwt")
+
+    const options = {
+      method: 'DELETE',
+      headers: {
+        'content-type': 'application/json',
+        'Accept': 'application/json',
+        Authorization: `Bearer ${token}`
+      }
+    }
+
+    fetch(`http://localhost:3000/api/v1/alumns/${id}`, options)
+      .then(res => res.json())
+      .then(data => {
+        console.log(data)
+        setRemoveAlumnId(id)
+      })
+      .then(() => setAlumnShowId(null))
+  }
+
   return (
     <div className="dashboard d-flex p-5">
-      <AddAlumns openAlumnShow={openAlumnShow} />
-      {alumnShowId ? <AlumnShow id={alumnShowId} /> : null}
+      <AddAlumns openAlumnShow={openAlumnShow} removeAlumnId={removeAlumnId} />
+      {alumnShowId ? <AlumnShow id={alumnShowId} removeAlumn={removeAlumn} /> : null}
     </div>
   )
 }
