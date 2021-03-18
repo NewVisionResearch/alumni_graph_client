@@ -11,7 +11,18 @@ const sortByTwoFns = (inner, outer, array) => {
 }
 
 const byName = (array) => {
-    return array.sort((a, b) => a.full_name > b.full_name ? 1 : -1)
+    return array.sort((a, b) => {
+        let aSplit = a.full_name.split(" ")
+        let aLength = aSplit.length
+        let bSplit = b.full_name.split(" ")
+        let bLength = bSplit.length
+
+        return aSplit[aLength - 1][0] > bSplit[bLength - 1][0] ? 1 : -1
+    })
 }
 
-module.exports = { byCoAuthors, byDate, sortByTwoFns, byName }
+const byLastName = (array) => {
+    return array.sort((a, b) => a.search_names[1] > b.search_names[1] ? 1 : -1)
+}
+
+module.exports = { byCoAuthors, byDate, sortByTwoFns, byName, byLastName }

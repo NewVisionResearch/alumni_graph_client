@@ -3,6 +3,7 @@ body {
   padding: 0;
   box-sizing: border-box;
 }
+
 @keyframes load {
   0%{
       opacity: 0.08;
@@ -31,6 +32,23 @@ font-family: Helvetica, sans-serif, Arial;
 animation: load 1.2s infinite 0s ease-in-out;
 animation-direction: alternate;
 text-shadow: 0 0 1px black;
+}
+
+.nav-item {
+  height: 100%;
+  padding: 0 25px;
+  display: flex;
+  justify-content: center;
+}
+
+.nav-item a {
+  align-items: center;
+  margin: auto 0;
+}
+
+.add-alumns ul li:hover {
+  cursor: pointer;
+  background: rgb(206, 206, 206);
 }
 
 span.alumn {

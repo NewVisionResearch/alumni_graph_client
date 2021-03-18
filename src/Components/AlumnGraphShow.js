@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { ListGroup } from 'react-bootstrap'
 import { byDate, byCoAuthors, sortByTwoFns } from '../services/sorts'
 import FullCitation from './FullCitation'
 
@@ -14,15 +15,19 @@ function AlumnGraphShow({ alumnId, closeModal }) {
 
     return (
         <div>
-            <span onClick={closeModal}>X</span>
-            <h3>{alumn.full_name}</h3>
-            {sortByTwoFns(byDate, byCoAuthors, alumn.my_alumn_publications).map(alumn_pub => {
-                const { ap_id, publication, coauthors } = alumn_pub
+            <span style={{ position: 'absolute', top: 10, left: 10 }} onClick={closeModal}>X</span>
+            <h3 style={{ width: "100%", textAlign: 'center' }}>{alumn.full_name}</h3>
+            <ListGroup as="ul">
+                {sortByTwoFns(byDate, byCoAuthors, alumn.my_alumn_publications).map(alumn_pub => {
+                    const { ap_id, publication, coauthors } = alumn_pub
 
-                return (
-                    <FullCitation key={`${ap_id}_${alumn.full_name}`} alumnName={alumn.full_name} publication={publication} coauthors={coauthors} />
-                )
-            })}
+                    return (
+                        <ListGroup.Item as="li">
+                            <FullCitation key={`${ap_id}_${alumn.full_name}`} alumnName={alumn.full_name} publication={publication} coauthors={coauthors} />
+                        </ListGroup.Item>
+                    )
+                })}
+            </ListGroup>
         </div >
     )
 }

@@ -119,16 +119,18 @@ function Graph() {
     }
     const token = localStorage.getItem("jwt")
     return (
-        <div style={{ position: 'relative' }}>
+        <div className="position-relative">
             <div id="3d-graph" style={{ margin: 0, width: '100%' }}></div>
             {alumnId ?
-                <div id="alumnShow"
+                <div
+                    className="mt-5 mr-5 p-3"
+                    id="alumnShow"
                     style={{
                         position: 'absolute',
                         top: 0,
                         right: 0,
-                        width: '400px',
-                        height: '400px',
+                        width: '35%',
+                        height: '40%',
                         zIndex: 1000,
                         background: 'rgb(255, 255, 255)',
                         overflowY: 'scroll'

@@ -51,7 +51,7 @@ function FullCitation({ alumnName, publication, coauthors }) {
     }
 
     return (
-        <div className="publication-list">
+        <div className="publication-list ml-4">
             <p>{highlightAlumns(authors)}. {<a href={`https://pubmed.ncbi.nlm.nih.gov/${pmid}`} rel='noreferrer' target='_blank'>{title}</a>} {source}. {displayDate || ""};{volume || ""}:{pages || ""}.{elocationid || ""}. Epub {epubdate || ""}. PMID: {pmid || ""}; PMCID: {pmcid || ""}.</p>
         </div>
     )
