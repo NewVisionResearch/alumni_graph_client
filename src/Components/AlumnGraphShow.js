@@ -15,8 +15,15 @@ function AlumnGraphShow({ alumnId, closeModal }) {
 
     return (
         <div>
-            <span style={{ position: 'absolute', top: 10, left: 10 }} onClick={closeModal}>X</span>
-            <h3 style={{ width: "100%", textAlign: 'center' }}>{alumn.full_name}</h3>
+            <button
+                type="button"
+                class="close"
+                aria-label="Close"
+                style={{ position: 'absolute', top: 10, left: 10 }}
+                onClick={closeModal}>
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <h3 className="mt-4 mb-3" style={{ width: "100%", textAlign: 'center' }}>{alumn.full_name}</h3>
             <ListGroup as="ul">
                 {sortByTwoFns(byDate, byCoAuthors, alumn.my_alumn_publications).map(alumn_pub => {
                     const { ap_id, publication, coauthors } = alumn_pub

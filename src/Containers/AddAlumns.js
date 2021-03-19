@@ -26,7 +26,7 @@ function AddAlumns({ openAlumnShow, removeAlumnId }) {
             let newArray = alumns.filter(alumn => alumn.id !== removeAlumnId)
             setAlumns(newArray)
         }
-    }, [removeAlumnId])
+    }, [alumns, removeAlumnId])
 
     const fetchAlumns = () => {
         const token = localStorage.getItem('jwt')

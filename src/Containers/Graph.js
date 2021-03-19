@@ -124,8 +124,8 @@ function Graph() {
             <div id="graph" style={{ margin: 0, width: '100%' }}></div>
             {alumnId ?
                 <div
-                    id="alumnShow"
-                    className="mt-3 mr-3"
+                    id="alumn-show-graph"
+                    className="mt-3 mr-3 rounded"
                     style={{
                         position: 'absolute',
                         top: 0,
@@ -134,6 +134,7 @@ function Graph() {
                         height: '400px',
                         zIndex: 1000,
                         background: 'rgb(255, 255, 255)',
+                        boxShadow: '-7px 10px 20px rgb(31, 31, 31)',
                         overflowY: 'scroll'
                     }}>
                     <AlumnGraphShow alumnId={alumnId} closeModal={closeModal} />

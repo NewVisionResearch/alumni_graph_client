@@ -70,7 +70,7 @@ function App() {
 
   return (
     <React.Fragment>
-      <div style={{ height: '100%' }} id="App">
+      <div id="App">
         {admin.username.length ? <NavBar logout={logout} /> : null}
         <Switch>
           <Route exact path="/" component={Graph} />
