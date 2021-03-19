@@ -15,16 +15,18 @@ function InputBar({ submitInput, _value }) {
         <Form
             style={{ width: "fit-content" }}
             className="d-flex"
+            onSubmit={(e) => {
+                setInputVal("")
+                submitInput(e, inputVal)
+            }}
             inline>
             <InputGroup style={{ minWidth: "300px" }}>
-                <FormControl type="text" value={inputVal} onChange={({ target: { value } }) => setInputVal(value)} />
+                <Form.Control type="text" value={inputVal} onChange={({ target: { value } }) => setInputVal(value)} />
                 <InputGroup.Append>
                     <Button
                         variant="info"
-                        onClick={(e) => {
-                            setInputVal("")
-                            submitInput(e, inputVal)
-                        }}>Submit</Button>
+                        type="submit"
+                    >Submit</Button>
                 </InputGroup.Append>
             </InputGroup>
         </Form>
