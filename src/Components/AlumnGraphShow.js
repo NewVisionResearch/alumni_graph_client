@@ -17,7 +17,7 @@ function AlumnGraphShow({ alumnId, closeModal }) {
         <div>
             <button
                 type="button"
-                class="close"
+                className="close"
                 aria-label="Close"
                 style={{ position: 'absolute', top: 10, left: 10 }}
                 onClick={closeModal}>
@@ -29,7 +29,7 @@ function AlumnGraphShow({ alumnId, closeModal }) {
                     const { ap_id, publication, coauthors } = alumn_pub
 
                     return (
-                        <ListGroup.Item as="li">
+                        <ListGroup.Item as="li" key={ap_id}>
                             <FullCitation key={`${ap_id}_${alumn.full_name}`} alumnName={alumn.full_name} publication={publication} coauthors={coauthors} />
                         </ListGroup.Item>
                     )

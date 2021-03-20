@@ -10,6 +10,7 @@ import './App.css'
 function App() {
   let history = useHistory()
   const [admin, setAdmin] = useState({ username: "" })
+  const [loginError, setLoginError] = useState("")
 
   useEffect(() => {
     const token = localStorage.getItem('jwt')
@@ -53,15 +54,21 @@ function App() {
     }
 
     fetch('http://localhost:3000/api/v1/login', options)
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) { throw res }
+        return res.json()
+      })
       .then((admin) => {
         const { username, jwt } = admin
         localStorage.setItem('jwt', jwt)
         setAdmin({ username })
-      }).then(() => history.push('/dashboard'))
+      })
+      .then(() => history.push('/dashboard'))
+      .catch((res) => res.text())
+      .then((err) => setLoginError(err))
   }
 
-
+  console.log(loginError)
   const logout = async () => {
     localStorage.removeItem("jwt")
     await setAdmin({ username: "" })
@@ -74,7 +81,7 @@ function App() {
         {admin.username.length ? <NavBar logout={logout} /> : null}
         <Switch>
           <Route exact path="/" component={Graph} />
-          <Route path="/login" render={() => <Login login={login} />} />
+          <Route path="/login" render={() => <Login login={login} error={loginError} />} />
           <Route path="/dashboard" component={Dashboard} />
         </Switch>
       </div>

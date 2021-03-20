@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Button, Form, FormControl, InputGroup } from 'react-bootstrap'
+import { Button, Form, InputGroup } from 'react-bootstrap'
 
 function InputBar({ submitInput, _value }) {
 

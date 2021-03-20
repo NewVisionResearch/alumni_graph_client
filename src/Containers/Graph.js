@@ -22,17 +22,13 @@ function Graph() {
     useEffect(() => {
         if (publications.length) {
             const gData = {
-                nodes: uniqueIds(publications).map(alumn => ({ id: multiLine(alumn.display_name), alumn_id: alumn.id })),
+                nodes: uniqueIds(publications).map(alumn => ({ id: alumn.display_name, alumn_id: alumn.id })),
                 links: createPairs(publications)
                     .map(arr => ({
-                        source: multiLine(arr[0].display_name),
-                        target: multiLine(arr[1].display_name)
+                        source: arr[0].display_name,
+                        target: arr[1].display_name
                     }))
             };
-
-            function multiLine(name) {
-                return name.split(" ").join("\n")
-            }
 
             const elem = document.getElementById('graph');
             const Graph = ForceGraph()(elem)
@@ -51,7 +47,7 @@ function Graph() {
                     ctx.textAlign = 'center';
                     ctx.textBaseline = 'middle';
                     ctx.fillStyle = 'turquoise';
-                    ctx.fillText(multiLine(label), node.x, node.y);
+                    ctx.fillText(label, node.x, node.y);
 
                     node.__bckgDimensions = bckgDimensions; // to re-use in nodePointerAreaPaint
                 })
@@ -67,7 +63,8 @@ function Graph() {
                 .onNodeDragEnd(node => {
                     node.fx = node.x;
                     node.fy = node.y;
-                });
+                })
+                .zoom(0.95);
 
             Graph.d3Force('charge').strength(-500);
 

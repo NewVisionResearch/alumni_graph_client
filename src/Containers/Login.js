@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { Button, Form } from 'react-bootstrap'
 
-function Login({ login }) {
+function Login({ login, error }) {
 
     const [admin, setAdmin] = useState({ username: "", password: "" })
     return (
@@ -22,7 +22,6 @@ function Login({ login }) {
                         value={admin.username}
                         onChange={({ target: { name, value } }) => setAdmin({ ...admin, [name]: value })}
                     />
-                    <Form.Text></Form.Text>
                 </Form.Group>
                 <Form.Group>
                     <Form.Label>Password: </Form.Label>
@@ -32,8 +31,8 @@ function Login({ login }) {
                         value={admin.password}
                         onChange={({ target: { name, value } }) => setAdmin({ ...admin, [name]: value })}
                     />
+                    <Form.Text className="text-danger">{error}</Form.Text>
                 </Form.Group>
-                <Form.Text></Form.Text>
                 <Button type="submit">Login</Button>
             </Form>
         </div>
