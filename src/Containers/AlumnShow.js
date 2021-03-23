@@ -111,6 +111,10 @@ function AlumnShow({ id, removeAlumn }) {
         return alumn.my_alumn_publications.filter(ap => ap.publication.display === true)
     }
 
+    const closeModal = () => {
+        setEditSearchNames(false)
+    }
+
     return (
         <div>
             <h1>{alumn.full_name}</h1>
@@ -119,9 +123,15 @@ function AlumnShow({ id, removeAlumn }) {
                 {alumn.search_names.map(name => <li key={name}>{name}</li>)}
             </ol>
             {editSearchNames ?
-                <EditAlumnForm submitInput={updateSearchNames} propsValue={[alumn.full_name, alumn.search_names]} /> :
+                <EditAlumnForm submitInput={updateSearchNames} propsValue={[alumn.full_name, alumn.search_names]} closeModal={closeModal} /> :
                 <Button onClick={() => setEditSearchNames(true)}>Edit Alumn</Button>}
-            <Button variant="danger" onClick={(e) => removeAlumn(e, id)}>Delete Alumn</Button>
+            <Button
+                className={(editSearchNames && 'mb-3') || (!editSearchNames && 'ml-3')}
+                variant="danger"
+                onClick={(e) => removeAlumn(e, id)}
+            >
+                Delete Alumn
+                </Button>
             <p>Publications ({filterValidPublications(alumn.my_alumn_publications).length}):</p>
             <ul style={{ maxHeight: "500px", overflowY: "hidden", overflow: "scroll" }}>
                 {sortByTwoFns(byDate, byCoAuthors, filterValidPublications(alumn.my_alumn_publications)).map(alumn_pub =>
