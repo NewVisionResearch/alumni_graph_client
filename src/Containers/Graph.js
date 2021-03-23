@@ -55,7 +55,7 @@ function Graph() {
                 })
                 .linkColor(link => 'rgb(73, 50, 123)')
                 .nodeRelSize(15)
-                .backgroundColor('rgb(100, 100, 100)')
+                .backgroundColor('rgb(217, 217, 217)')
                 .onNodeHover(node => elem.style.cursor = node ? 'pointer' : null)
                 .onNodeClick((node) => {
                     setAlumnId(node.alumn_id)
