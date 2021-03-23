@@ -66,6 +66,7 @@ function Graph() {
                 })
                 .zoom(0.95);
 
+            Graph.d3Force('center', null);
             Graph.d3Force('charge').strength(-500);
 
             function uniqueIds(array) {
