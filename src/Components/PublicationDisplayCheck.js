@@ -28,7 +28,9 @@ function PublicationDisplayCheck({ alumnName, alumn_publication, updateIdArray, 
                 onClick={(e) => invalidatePublication(e, publication.id)}
                 variant="danger"
                 size="sm"
-            >Remove</Button>
+            >
+                Remove
+            </Button>
         </div>
     )
 
