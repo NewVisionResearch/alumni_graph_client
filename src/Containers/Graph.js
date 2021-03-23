@@ -66,10 +66,11 @@ function Graph() {
                     node.fx = node.x;
                     node.fy = node.y;
                 })
-                .zoom(0.95);
+                .zoom(0.75)
+                .centerAt(200, 100);
 
             Graph.d3Force('center', null);
-            Graph.d3Force('charge').strength(-500);
+            Graph.d3Force('charge').strength(-1000);
 
             function uniqueIds(array) {
                 array = array.map(p => (p.joins.map(j => j))).flat()
