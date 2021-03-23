@@ -48,7 +48,7 @@ function Graph() {
 
                     ctx.textAlign = 'center';
                     ctx.textBaseline = 'middle';
-                    ctx.fillStyle = 'turquoise';
+                    ctx.fillStyle = 'rgb(77, 172, 147)';
                     ctx.fillText(label, node.x, node.y);
 
                     node.__bckgDimensions = bckgDimensions; // to re-use in nodePointerAreaPaint
@@ -67,7 +67,7 @@ function Graph() {
                     node.fy = node.y;
                 })
                 .zoom(0.75)
-                .centerAt(200, 100);
+            // .centerAt(200, 100);
 
             Graph.d3Force('center', null);
             Graph.d3Force('charge').strength(-1000);

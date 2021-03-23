@@ -5,7 +5,7 @@ import FullCitation from './FullCitation'
 
 function AlumnGraphShow({ alumnId, closeModal }) {
 
-    const [alumn, setAlumn] = useState({ full_name: "", my_alumn_publications: [] })
+    const [alumn, setAlumn] = useState({ full_name: "", search_names: [], my_alumn_publications: [] })
 
     useEffect(() => {
         fetch(`http://localhost:3000/api/v1/alumns/${alumnId}`)
@@ -30,7 +30,7 @@ function AlumnGraphShow({ alumnId, closeModal }) {
 
                     return (
                         <ListGroup.Item as="li" key={ap_id}>
-                            <FullCitation key={`${ap_id}_${alumn.full_name}`} alumnName={alumn.full_name} publication={publication} coauthors={coauthors} />
+                            <FullCitation key={`${ap_id}_${alumn.full_name}`} alumnName={alumn.search_names[0]} publication={publication} coauthors={coauthors} />
                         </ListGroup.Item>
                     )
                 })}

@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react'
 import { ListGroup } from 'react-bootstrap'
-import InputBar from '../Components/InputBar'
 import Loading from '../Components/Loading'
 import { byLastName } from '../services/sorts'
+import FormComponent from './NewAlumnForm'
 
 function AddAlumns({ openAlumnShow, removeAlumnId }) {
 
@@ -43,8 +43,7 @@ function AddAlumns({ openAlumnShow, removeAlumnId }) {
             .then((alumnsArray) => setAlumns(alumnsArray))
     }
 
-    const addAlumn = (e, alumnDisplayName) => {
-        e.preventDefault()
+    const addAlumn = (alumnDisplayName) => {
         setLoading(true)
         const token = localStorage.getItem('jwt')
 
@@ -72,7 +71,7 @@ function AddAlumns({ openAlumnShow, removeAlumnId }) {
 
     return (
         <div className="add-alumns mr-5" >
-            <InputBar submitInput={addAlumn} />
+            <FormComponent submitInput={addAlumn} />
             <div style={{ display: 'flex', maxHeight: "700px", overflow: 'hidden', overflowY: 'scroll' }}>
                 {loading ? <Loading /> : <ListGroup as="ul" style={{ width: "100%" }}>
                     {byLastName(alumns).map(alumn =>
