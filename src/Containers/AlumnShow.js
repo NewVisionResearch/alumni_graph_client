@@ -134,8 +134,8 @@ function AlumnShow({ id, removeAlumn }) {
                         invalidatePublication={invalidatePublication}
                     />)}
             </ul>
-            <Button onClick={updateDatabase}>Update Publications</Button>
-            <Button onClick={refetchPublications}>Fetch New Publications</Button>
+            <Button className="mr-3" onClick={updateDatabase}>Update Publications</Button>
+            <Button className="ml-3" onClick={refetchPublications}>Fetch New Publications</Button>
         </div>
     )
 

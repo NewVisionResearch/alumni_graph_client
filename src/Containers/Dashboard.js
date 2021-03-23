@@ -25,10 +25,7 @@ function Dashboard() {
 
     fetch(`http://localhost:3000/api/v1/alumns/${id}`, options)
       .then(res => res.json())
-      .then(data => {
-        console.log(data)
-        setRemoveAlumnId(id)
-      })
+      .then(data => setRemoveAlumnId(id))
       .then(() => setAlumnShowId(null))
   }
 

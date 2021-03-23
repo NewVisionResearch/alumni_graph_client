@@ -15,7 +15,6 @@ function App() {
   useEffect(() => {
     const token = localStorage.getItem('jwt')
     if (token) {
-      console.log('refreshed')
       fetch('http://localhost:3000/api/v1/profile', {
         method: 'GET',
         headers: {
@@ -68,7 +67,6 @@ function App() {
       .then((err) => setLoginError(err))
   }
 
-  console.log(loginError)
   const logout = async () => {
     localStorage.removeItem("jwt")
     await setAdmin({ username: "" })

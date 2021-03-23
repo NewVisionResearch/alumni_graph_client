@@ -8,9 +8,11 @@ function Graph() {
     const [publications, setPublications] = useState([])
     const [alumnId, setAlumnId] = useState(null)
     const [aspectRatio, setAspectRatio] = useState(window.innerHeight * window.innerWidth / 1000000)
+
     window.addEventListener('resize', () => {
         setAspectRatio(window.innerHeight * window.innerWidth / 10000)
     })
+
     useEffect(() => {
         if (!publications.length) {
             fetch('http://localhost:3000/api/v1/graphs')
@@ -117,6 +119,7 @@ function Graph() {
         setAlumnId(null)
     }
     const token = localStorage.getItem("jwt")
+
     return (
         <div style={{ position: 'relative' }}>
             <div id="graph" style={{ margin: 0, width: '100%' }}></div>
