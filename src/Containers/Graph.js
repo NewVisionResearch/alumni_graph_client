@@ -44,12 +44,30 @@ function Graph() {
                     const bckgDimensions = [textWidth, fontSize].map(n => n + fontSize * 0.5); // some padding
 
                     ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
-                    ctx.fillRect(node.x - bckgDimensions[0] / 2, node.y - bckgDimensions[1] / 2, ...bckgDimensions);
+                    ctx.beginPath();
+                    ctx.arc(node.x, node.y, bckgDimensions[0] / 2 - bckgDimensions[1] / 10, 0, 2 * Math.PI, false);
+                    ctx.fill();
 
                     ctx.textAlign = 'center';
-                    ctx.textBaseline = 'middle';
+
                     ctx.fillStyle = 'rgb(77, 172, 147)';
-                    ctx.fillText(label, node.x, node.y);
+                    let splitLabel = label.split(" ")
+                    let n = splitLabel.length
+                    let height = (ctx.measureText(label).fontBoundingBoxAscent + ctx.measureText(label).fontBoundingBoxDescent)
+                    let start = height * 1.25
+                    if (n > 2) {
+                        ctx.textBaseline = 'top';
+                        splitLabel.forEach(l => {
+                            ctx.fillText(l, node.x, node.y - start)
+                            start -= height * 1.25
+                        })
+                    } else {
+                        ctx.textBaseline = 'bottom';
+                        splitLabel.forEach(l => {
+                            ctx.fillText(l, node.x, node.y + start)
+                            start -= start
+                        })
+                    }
 
                     node.__bckgDimensions = bckgDimensions; // to re-use in nodePointerAreaPaint
                 })
