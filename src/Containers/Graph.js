@@ -43,10 +43,15 @@ function Graph() {
                     const textWidth = ctx.measureText(label).width;
                     const bckgDimensions = [textWidth, fontSize].map(n => n + fontSize * 0.5); // some padding
 
-                    ctx.fillStyle = 'rgba(255, 255, 255, 0.825)';
+
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
                     ctx.beginPath();
-                    ctx.arc(node.x, node.y, bckgDimensions[0] / 2 - bckgDimensions[1] / 3, 0, 2 * Math.PI, false);
+                    ctx.arc(node.x, node.y, (textWidth / fontSize) * 4.25, 0, 2 * Math.PI, false);
                     ctx.fill();
+
+                    ctx.lineWidth = 2;
+                    ctx.strokeStyle = 'rgb(77, 172, 147)';
+                    ctx.stroke();
 
                     ctx.textAlign = 'center';
 
@@ -55,7 +60,6 @@ function Graph() {
                     let n = splitLabel.length
                     let height = (ctx.measureText(label).fontBoundingBoxAscent + ctx.measureText(label).fontBoundingBoxDescent)
                     let start = height * 1.5
-                    console.log(splitLabel)
                     // determine line height based on number of lines
                     if (n > 2) {
                         ctx.textBaseline = 'top';
@@ -74,7 +78,7 @@ function Graph() {
                     node.__bckgDimensions = bckgDimensions; // to re-use in nodePointerAreaPaint
                 })
                 .linkColor(link => 'rgb(73, 50, 123)')
-                .nodeRelSize(15)
+                .nodeRelSize(25)
                 .backgroundColor('rgb(177, 184, 188)')
                 .onNodeHover(node => elem.style.cursor = node ? 'pointer' : null)
                 .onNodeClick((node) => {
