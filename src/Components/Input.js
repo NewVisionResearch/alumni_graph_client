@@ -11,7 +11,7 @@ function Input({ callback, type = 'text', disabled = false, readOnly = false, pl
             setInputValue(propsValue)
         }
     }, [propsValue])
-    console.log(inputValue)
+
     return (
         <InputGroup style={{ width: "300px" }}>
             <Form.Control
@@ -20,10 +20,7 @@ function Input({ callback, type = 'text', disabled = false, readOnly = false, pl
                 disable={disabled}
                 readOnly={readOnly}
                 placeholder={placeholder}
-                onChange={({ target: { value } }) => {
-                    console.log(value)
-                    callback(value)
-                }}
+                onChange={({ target: { value } }) => callback(value)}
             />
         </InputGroup>
     );

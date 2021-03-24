@@ -29,9 +29,13 @@ function Dashboard() {
       .then(() => setAlumnShowId(null))
   }
 
+  const confirmRemovedAlumn = () => {
+    setRemoveAlumnId(null)
+  }
+
   return (
     <div className="dashboard d-flex p-5">
-      <AddAlumns openAlumnShow={openAlumnShow} removeAlumnId={removeAlumnId} />
+      <AddAlumns openAlumnShow={openAlumnShow} removeAlumnId={removeAlumnId} confirmRemovedAlumn={confirmRemovedAlumn} />
       {alumnShowId ? <AlumnShow id={alumnShowId} removeAlumn={removeAlumn} /> : null}
     </div>
   )

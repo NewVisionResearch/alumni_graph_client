@@ -10,6 +10,7 @@ function NewAlumnForm({ submitInput }) {
         setAlumnName("")
     }
 
+
     return (
         <Form
             className="d-flex"

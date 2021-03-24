@@ -4,7 +4,7 @@ import Loading from '../Components/Loading'
 import { byLastName } from '../services/sorts'
 import FormComponent from './NewAlumnForm'
 
-function AddAlumns({ openAlumnShow, removeAlumnId }) {
+function AddAlumns({ openAlumnShow, removeAlumnId, confirmRemovedAlumn }) {
 
     const [alumns, setAlumns] = useState([])
     const [loading, setLoading] = useState(false)
@@ -23,10 +23,9 @@ function AddAlumns({ openAlumnShow, removeAlumnId }) {
 
     useEffect(() => {
         if (removeAlumnId) {
-            let newArray = alumns.filter(alumn => alumn.id !== removeAlumnId)
-            setAlumns(newArray)
+            fetchAlumns().then(confirmRemovedAlumn)
         }
-    }, [alumns, removeAlumnId])
+    }, [alumns, removeAlumnId, confirmRemovedAlumn])
 
     const fetchAlumns = () => {
         const token = localStorage.getItem('jwt')
@@ -38,7 +37,7 @@ function AddAlumns({ openAlumnShow, removeAlumnId }) {
             }
         }
 
-        fetch('http://localhost:3000/api/v1/alumns', options)
+        return fetch('http://localhost:3000/api/v1/alumns', options)
             .then(res => res.json())
             .then((alumnsArray) => setAlumns(alumnsArray))
     }
