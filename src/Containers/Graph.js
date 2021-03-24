@@ -43,7 +43,7 @@ function Graph() {
                     const textWidth = ctx.measureText(label).width;
                     const bckgDimensions = [textWidth, fontSize].map(n => n + fontSize * 0.5); // some padding
 
-                    ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.825)';
                     ctx.beginPath();
                     ctx.arc(node.x, node.y, bckgDimensions[0] / 2 - bckgDimensions[1] / 3, 0, 2 * Math.PI, false);
                     ctx.fill();
@@ -54,8 +54,8 @@ function Graph() {
                     let splitLabel = label.split(" ")
                     let n = splitLabel.length
                     let height = (ctx.measureText(label).fontBoundingBoxAscent + ctx.measureText(label).fontBoundingBoxDescent)
-                    let start = height * 1.25
-
+                    let start = height * 1.5
+                    console.log(splitLabel)
                     // determine line height based on number of lines
                     if (n > 2) {
                         ctx.textBaseline = 'top';
@@ -66,8 +66,8 @@ function Graph() {
                     } else {
                         ctx.textBaseline = 'bottom';
                         splitLabel.forEach(l => {
-                            ctx.fillText(l, node.x, node.y + start)
-                            start -= start
+                            ctx.fillText(l, node.x, node.y - start + 16)
+                            start -= start / 1.25
                         })
                     }
 
@@ -75,7 +75,7 @@ function Graph() {
                 })
                 .linkColor(link => 'rgb(73, 50, 123)')
                 .nodeRelSize(15)
-                .backgroundColor('rgb(217, 217, 217)')
+                .backgroundColor('rgb(177, 184, 188)')
                 .onNodeHover(node => elem.style.cursor = node ? 'pointer' : null)
                 .onNodeClick((node) => {
                     setAlumnId(node.alumn_id)
