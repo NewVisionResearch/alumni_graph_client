@@ -45,7 +45,7 @@ function Graph() {
 
                     ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
                     ctx.beginPath();
-                    ctx.arc(node.x, node.y, bckgDimensions[0] / 2 - bckgDimensions[1] / 10, 0, 2 * Math.PI, false);
+                    ctx.arc(node.x, node.y, bckgDimensions[0] / 2 - bckgDimensions[1] / 3, 0, 2 * Math.PI, false);
                     ctx.fill();
 
                     ctx.textAlign = 'center';
@@ -55,6 +55,8 @@ function Graph() {
                     let n = splitLabel.length
                     let height = (ctx.measureText(label).fontBoundingBoxAscent + ctx.measureText(label).fontBoundingBoxDescent)
                     let start = height * 1.25
+
+                    // determine line height based on number of lines
                     if (n > 2) {
                         ctx.textBaseline = 'top';
                         splitLabel.forEach(l => {
