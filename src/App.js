@@ -6,9 +6,11 @@ import Dashboard from './Containers/Dashboard'
 import Login from './Containers/Login'
 import { Route, Switch, useHistory } from 'react-router-dom'
 import './App.css'
+import ErrorPage from './Containers/ErrorPage'
 
 function App() {
   let history = useHistory()
+  const { location: { pathname } } = history
   const [admin, setAdmin] = useState({ username: "" })
   const [loginError, setLoginError] = useState("")
   const [aspectRatio, setAspectRatio] = useState(window.innerHeight * window.innerWidth / 1000000)
@@ -31,12 +33,12 @@ function App() {
           const { username } = admin
           setAdmin({ username })
         })
-        .then(() => history.push("/dashboard"))
+        .then(() => history.push(pathname))
 
     } else {
       history.push("/")
     }
-  }, [history])
+  }, [history, pathname])
 
   const login = (e, adminInfo) => {
     e.preventDefault()
@@ -86,6 +88,7 @@ function App() {
           <Route exact path="/" render={() => <Graph aspectRatio={aspectRatio} />} />
           <Route path="/login" render={() => <Login login={login} error={loginError} />} />
           <Route path="/dashboard" component={Dashboard} />
+          <Route path="/error" component={ErrorPage} />
         </Switch>
       </div>
     </React.Fragment>

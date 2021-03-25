@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
+import { useHistory } from 'react-router-dom'
 import { ListGroup } from 'react-bootstrap'
 import Loading from '../Components/Loading'
 import { byLastName } from '../services/sorts'
@@ -9,11 +10,34 @@ function AddAlumns({ openAlumnShow, removeAlumnId, confirmRemovedAlumn }) {
     const [alumns, setAlumns] = useState([])
     const [loading, setLoading] = useState(false)
 
+    const history = useHistory()
+
+    const memoizedAlumnFetch = useCallback(
+        () => {
+            const token = localStorage.getItem('jwt')
+
+            const options = {
+                method: 'GET',
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            }
+
+            return fetch('http://localhost:3000/api/v1/alumns', options)
+                .then(res => {
+                    if (!res.ok) { throw res }
+                    return res.json()
+                })
+                .then((alumnsArray) => setAlumns(alumnsArray))
+                .catch((res) => history.push("/error"))
+        },
+        [history],
+    );
     useEffect(() => {
         if (!alumns.length) {
-            fetchAlumns()
+            memoizedAlumnFetch()
         }
-    }, [alumns.length])
+    }, [alumns.length, memoizedAlumnFetch])
 
     useEffect(() => {
         if (alumns.length) {
@@ -23,24 +47,10 @@ function AddAlumns({ openAlumnShow, removeAlumnId, confirmRemovedAlumn }) {
 
     useEffect(() => {
         if (removeAlumnId) {
-            fetchAlumns().then(confirmRemovedAlumn)
+            memoizedAlumnFetch()
+                .then(confirmRemovedAlumn)
         }
-    }, [alumns, removeAlumnId, confirmRemovedAlumn])
-
-    const fetchAlumns = () => {
-        const token = localStorage.getItem('jwt')
-
-        const options = {
-            method: 'GET',
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        }
-
-        return fetch('http://localhost:3000/api/v1/alumns', options)
-            .then(res => res.json())
-            .then((alumnsArray) => setAlumns(alumnsArray))
-    }
+    }, [alumns, memoizedAlumnFetch, removeAlumnId, confirmRemovedAlumn])
 
     const addAlumn = (alumnDisplayName) => {
         setLoading(true)
@@ -60,12 +70,16 @@ function AddAlumns({ openAlumnShow, removeAlumnId, confirmRemovedAlumn }) {
         }
 
         fetch('http://localhost:3000/api/v1/alumns', options)
-            .then(res => res.json())
+            .then(res => {
+                if (!res.ok) { throw res }
+                return res.json()
+            })
             .then(newAlumn => {
                 let newArray = [...alumns, newAlumn]
                 setAlumns(newArray)
                 openAlumnShow(newAlumn.id)
             })
+            .catch(err => history.push("/error"))
     }
 
     return (

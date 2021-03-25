@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Form, InputGroup } from 'react-bootstrap'
-function Input({ callback, type = 'text', disabled = false, readOnly = false, placeholder = '', propsValue = '' }) {
+function Input({ callback, type = 'text', readOnly = false, placeholder = '', propsValue = '' }) {
 
     const [inputValue, setInputValue] = useState("")
 
@@ -17,7 +17,6 @@ function Input({ callback, type = 'text', disabled = false, readOnly = false, pl
             <Form.Control
                 type={type}
                 value={inputValue}
-                disable={disabled}
                 readOnly={readOnly}
                 placeholder={placeholder}
                 onChange={({ target: { value } }) => callback(value)}

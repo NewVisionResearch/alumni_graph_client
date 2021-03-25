@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useHistory } from 'react-router-dom'
 import { ListGroup } from 'react-bootstrap'
 import { byDate, byCoAuthors, sortByTwoFns } from '../services/sorts'
 import FullCitation from './FullCitation'
@@ -6,12 +7,16 @@ import FullCitation from './FullCitation'
 function AlumnGraphShow({ alumnId, closeModal }) {
 
     const [alumn, setAlumn] = useState({ full_name: "", search_names: [], my_alumn_publications: [] })
-
+    const history = useHistory()
     useEffect(() => {
         fetch(`http://localhost:3000/api/v1/alumns/${alumnId}`)
-            .then(res => res.json())
+            .then(res => {
+                if (!res.ok) { throw res }
+                return res.json()
+            })
             .then(alumnObj => setAlumn(alumnObj))
-    }, [alumnId])
+            .catch((res) => history.push("/error"))
+    }, [history, alumnId])
 
     return (
         <div>

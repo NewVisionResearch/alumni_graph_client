@@ -9,15 +9,16 @@ function Graph({ aspectRatio }) {
     const [alumnId, setAlumnId] = useState(null)
 
     useEffect(() => {
-        if (!publications.length) {
+        let isMounted = true
+        if (!publications.length && isMounted) {
             fetch('http://localhost:3000/api/v1/graphs')
                 .then(res => res.json())
                 .then(publications => setPublications(publications))
         }
+        return () => { isMounted = false }
     }, [publications.length])
 
     useEffect(() => {
-
         if (publications.length) {
             const gData = {
                 nodes: uniqueIds(publications).map(alumn => ({ id: alumn.display_name, alumn_id: alumn.id })),
