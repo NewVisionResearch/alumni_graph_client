@@ -11,6 +11,11 @@ function App() {
   let history = useHistory()
   const [admin, setAdmin] = useState({ username: "" })
   const [loginError, setLoginError] = useState("")
+  const [aspectRatio, setAspectRatio] = useState(window.innerHeight * window.innerWidth / 1000000)
+
+  window.addEventListener('resize', () => {
+    setAspectRatio(window.innerHeight * window.innerWidth / 10000)
+  })
 
   useEffect(() => {
     const token = localStorage.getItem('jwt')
@@ -78,7 +83,7 @@ function App() {
       <div style={{ height: '100vh' }} id="App">
         {admin.username.length ? <NavBar logout={logout} /> : null}
         <Switch>
-          <Route exact path="/" component={Graph} />
+          <Route exact path="/" render={() => <Graph aspectRatio={aspectRatio} />} />
           <Route path="/login" render={() => <Login login={login} error={loginError} />} />
           <Route path="/dashboard" component={Dashboard} />
         </Switch>

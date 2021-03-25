@@ -3,15 +3,10 @@ import { Link } from 'react-router-dom'
 import ForceGraph from 'force-graph';
 import AlumnGraphShow from '../Components/AlumnGraphShow'
 
-function Graph() {
+function Graph({ aspectRatio }) {
 
     const [publications, setPublications] = useState([])
     const [alumnId, setAlumnId] = useState(null)
-    const [aspectRatio, setAspectRatio] = useState(window.innerHeight * window.innerWidth / 1000000)
-
-    window.addEventListener('resize', () => {
-        setAspectRatio(window.innerHeight * window.innerWidth / 10000)
-    })
 
     useEffect(() => {
         if (!publications.length) {
@@ -22,6 +17,7 @@ function Graph() {
     }, [publications.length])
 
     useEffect(() => {
+
         if (publications.length) {
             const gData = {
                 nodes: uniqueIds(publications).map(alumn => ({ id: alumn.display_name, alumn_id: alumn.id })),
@@ -38,7 +34,8 @@ function Graph() {
                 .graphData(gData)
                 .nodeCanvasObject((node, ctx, globalScale) => {
                     const label = node.id;
-                    const fontSize = 16 / aspectRatio;
+                    const fontSize = 10;
+
                     ctx.font = `${fontSize}px Sans-Serif`;
                     const textWidth = ctx.measureText(label).width;
                     const bckgDimensions = [textWidth, fontSize].map(n => n + fontSize * 0.5); // some padding
