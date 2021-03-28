@@ -30,11 +30,12 @@ function AlumnGraphShow({ alumnId, closeModal }) {
             </button>
             <h3 className="mt-4 mb-3" style={{ width: "100%", textAlign: 'center' }}>{alumn.full_name}</h3>
             <ListGroup as="ul">
-                {sortByTwoFns(byDate, byCoAuthors, alumn.my_alumn_publications).map(alumn_pub => {
+                {sortByTwoFns(byDate, byCoAuthors, alumn.my_alumn_publications).map((alumn_pub, idx) => {
                     const { ap_id, publication, coauthors } = alumn_pub
 
                     return (
-                        <ListGroup.Item as="li" key={ap_id}>
+                        <ListGroup.Item className="d-flex" as="li" key={ap_id}>
+                            <div>{idx + 1}.</div>
                             <FullCitation key={`${ap_id}_${alumn.full_name}`} alumnName={alumn.search_names[0]} publication={publication} coauthors={coauthors} />
                         </ListGroup.Item>
                     )

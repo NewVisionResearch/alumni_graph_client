@@ -93,6 +93,7 @@ function Graph({ aspectRatio }) {
 
             Graph.d3Force('center', null);
             Graph.d3Force('charge').strength(-1000);
+            Graph.d3Force('link')
 
             function uniqueIds(array) {
                 array = array.map(p => (p.joins.map(j => j))).flat()
@@ -175,7 +176,8 @@ function Graph({ aspectRatio }) {
                             right: 0,
                             zIndex: 900
                         }}>
-                        Admin Login</Link>
+                        Admin Login
+                        </Link>
             }
         </div>
     )
