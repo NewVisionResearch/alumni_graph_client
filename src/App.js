@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import NavBar from './Containers/NavBar'
 import Graph from './Containers/Graph'
 import Dashboard from './Containers/Dashboard'
@@ -19,6 +19,18 @@ function App() {
     setAspectRatio(window.innerHeight * window.innerWidth / 10000)
   })
 
+  const memoizedPath = useCallback(
+    () => {
+      if (admin.username && pathname === "/login") {
+        history.push("/dashboard")
+      } else if (!admin.username) {
+        history.push("/")
+      } else {
+        history.push(pathname)
+      }
+    }, [admin.username]
+  )
+
   useEffect(() => {
     const token = localStorage.getItem('jwt')
     if (token) {
@@ -33,12 +45,14 @@ function App() {
           const { username } = admin
           setAdmin({ username })
         })
-        .then(() => history.push(pathname))
+        .then(memoizedPath)
 
     } else {
       history.push("/")
     }
-  }, [history, pathname])
+  }, [history, memoizedPath])
+
+
 
   const login = (e, adminInfo) => {
     e.preventDefault()
