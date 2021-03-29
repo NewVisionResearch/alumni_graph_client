@@ -18,7 +18,9 @@ function FullCitation({ alumnName, publication, coauthors }) {
     const displayDate = dashToDate(pubdate).split('-')[0]
 
     const decideClassName = (author) => {
-        const [first, last] = alumnName.split(" ")
+        const splitName = alumnName.split(" ")
+        const first = splitName[0]
+        const last = splitName[splitName.length - 1]
         const [authorLast, initials] = author.split(" ")
         const coauthorsLastNames = () => {
             let lastNames = coauthors.map(ca => {
@@ -38,11 +40,12 @@ function FullCitation({ alumnName, publication, coauthors }) {
     }
 
     const highlightAlumns = (authors) => {
+        let count = 0
         if (authors.length) {
-            let authorsArray = authors.slice(0, authors.length - 1).map(author => <span key={author} className={decideClassName(author)}>{author + ", "}</span>)
+            let authorsArray = authors.slice(0, authors.length - 1).map(author => <span key={`${publication.id + count++}_${author}`} className={decideClassName(author)}>{author + ", "}</span>)
 
             let author = authors[authors.length - 1]
-            authorsArray = authorsArray.concat(<span key={author} className={decideClassName(author)}>{author}</span>)
+            authorsArray = authorsArray.concat(<span key={`${publication.id + count++}_${author}`} className={decideClassName(author)}>{author}</span>)
 
             return authorsArray
         } else {

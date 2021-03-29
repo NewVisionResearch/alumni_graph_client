@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react'
-import InputBar from '../Components/InputBar'
+import { Button } from 'react-bootstrap'
 import { byDate, byCoAuthors, sortByTwoFns } from '../services/sorts'
 import PublicationDisplayCheck from '../Components/PublicationDisplayCheck'
+import EditAlumnForm from './EditAlumnForm'
 
-function AlumnShow({ id }) {
+function AlumnShow({ id, removeAlumn }) {
 
 
     const [alumn, setAlumn] = useState({ full_name: "", search_names: [], my_alumn_publications: [] })
@@ -85,10 +86,9 @@ function AlumnShow({ id }) {
             .then(alumnObj => setAlumn(alumnObj))
     }
 
-    const updateSearchNames = (e, namesArray) => {
-        e.preventDefault()
+    const updateSearchNames = (alumnInfo) => {
         let bodyObj = {
-            search_names: namesArray
+            alumn: alumnInfo
         }
 
         const options = {
@@ -106,8 +106,13 @@ function AlumnShow({ id }) {
             .then(alumnObj => setAlumn(alumnObj))
             .then(() => setEditSearchNames(false))
     }
+
     const filterValidPublications = () => {
         return alumn.my_alumn_publications.filter(ap => ap.publication.display === true)
+    }
+
+    const closeModal = () => {
+        setEditSearchNames(false)
     }
 
     return (
@@ -118,21 +123,28 @@ function AlumnShow({ id }) {
                 {alumn.search_names.map(name => <li key={name}>{name}</li>)}
             </ol>
             {editSearchNames ?
-                <InputBar submitInput={updateSearchNames} _value={alumn.search_names} /> :
-                <button onClick={() => setEditSearchNames(true)}>Edit Search Names</button>}
+                <EditAlumnForm submitInput={updateSearchNames} propsValue={[alumn.full_name, alumn.search_names]} closeModal={closeModal} /> :
+                <Button onClick={() => setEditSearchNames(true)}>Edit Alumn</Button>}
+            <Button
+                className={(editSearchNames && 'mb-3') || (!editSearchNames && 'ml-3')}
+                variant="danger"
+                onClick={(e) => removeAlumn(e, id)}
+            >
+                Delete Alumn
+                </Button>
             <p>Publications ({filterValidPublications(alumn.my_alumn_publications).length}):</p>
             <ul style={{ maxHeight: "500px", overflowY: "hidden", overflow: "scroll" }}>
                 {sortByTwoFns(byDate, byCoAuthors, filterValidPublications(alumn.my_alumn_publications)).map(alumn_pub =>
                     <PublicationDisplayCheck
                         key={`${alumn_pub.ap_id}`}
-                        alumnName={alumn.full_name}
+                        alumnName={alumn.search_names[0]}
                         alumn_publication={alumn_pub}
                         updateIdArray={updateIdArray}
                         invalidatePublication={invalidatePublication}
                     />)}
             </ul>
-            <button onClick={updateDatabase}>Update Publications</button>
-            <button onClick={refetchPublications}>Fetch New Publications</button>
+            <Button className="mr-3" onClick={updateDatabase}>Update Publications</Button>
+            <Button className="ml-3" onClick={refetchPublications}>Fetch New Publications</Button>
         </div>
     )
 

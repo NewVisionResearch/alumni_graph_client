@@ -24,10 +24,13 @@ function PublicationDisplayCheck({ alumnName, alumn_publication, updateIdArray, 
                 publication={publication}
                 coauthors={coauthors} />
             <Button
+                className="ml-1"
                 onClick={(e) => invalidatePublication(e, publication.id)}
                 variant="danger"
                 size="sm"
-            >Remove</Button>
+            >
+                Remove
+            </Button>
         </div>
     )
 

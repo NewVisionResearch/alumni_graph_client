@@ -1,19 +1,43 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
+import { useHistory } from 'react-router-dom'
 import { ListGroup } from 'react-bootstrap'
-import InputBar from '../Components/InputBar'
 import Loading from '../Components/Loading'
-import { byName, byLastName } from '../services/sorts'
+import { byLastName } from '../services/sorts'
+import FormComponent from './NewAlumnForm'
 
-function AddAlumns({ openAlumnShow }) {
+function AddAlumns({ openAlumnShow, removeAlumnId, confirmRemovedAlumn }) {
 
     const [alumns, setAlumns] = useState([])
     const [loading, setLoading] = useState(false)
 
+    const history = useHistory()
+
+    const memoizedAlumnFetch = useCallback(
+        () => {
+            const token = localStorage.getItem('jwt')
+
+            const options = {
+                method: 'GET',
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            }
+
+            return fetch('http://localhost:3000/api/v1/alumns', options)
+                .then(res => {
+                    if (!res.ok) { throw res }
+                    return res.json()
+                })
+                .then((alumnsArray) => setAlumns(alumnsArray))
+                .catch((res) => history.push("/error"))
+        },
+        [history],
+    );
     useEffect(() => {
         if (!alumns.length) {
-            fetchAlumns()
+            memoizedAlumnFetch()
         }
-    }, [alumns.length])
+    }, [alumns.length, memoizedAlumnFetch])
 
     useEffect(() => {
         if (alumns.length) {
@@ -21,23 +45,14 @@ function AddAlumns({ openAlumnShow }) {
         }
     }, [alumns.length])
 
-    const fetchAlumns = () => {
-        const token = localStorage.getItem('jwt')
-
-        const options = {
-            method: 'GET',
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
+    useEffect(() => {
+        if (removeAlumnId) {
+            memoizedAlumnFetch()
+                .then(confirmRemovedAlumn)
         }
+    }, [alumns, memoizedAlumnFetch, removeAlumnId, confirmRemovedAlumn])
 
-        fetch('http://localhost:3000/api/v1/alumns', options)
-            .then(res => res.json())
-            .then((alumnsArray) => setAlumns(alumnsArray))
-    }
-
-    const addAlumn = (e, alumnDisplayName) => {
-        e.preventDefault()
+    const addAlumn = (alumnDisplayName) => {
         setLoading(true)
         const token = localStorage.getItem('jwt')
 
@@ -55,17 +70,21 @@ function AddAlumns({ openAlumnShow }) {
         }
 
         fetch('http://localhost:3000/api/v1/alumns', options)
-            .then(res => res.json())
+            .then(res => {
+                if (!res.ok) { throw res }
+                return res.json()
+            })
             .then(newAlumn => {
                 let newArray = [...alumns, newAlumn]
                 setAlumns(newArray)
                 openAlumnShow(newAlumn.id)
             })
+            .catch(err => history.push("/error"))
     }
 
     return (
         <div className="add-alumns mr-5" >
-            <InputBar submitInput={addAlumn} />
+            <FormComponent submitInput={addAlumn} />
             <div style={{ display: 'flex', maxHeight: "700px", overflow: 'hidden', overflowY: 'scroll' }}>
                 {loading ? <Loading /> : <ListGroup as="ul" style={{ width: "100%" }}>
                     {byLastName(alumns).map(alumn =>
