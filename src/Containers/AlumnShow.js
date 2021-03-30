@@ -87,7 +87,6 @@ function AlumnShow({ id, removeAlumn }) {
     }
 
     const updateSearchNames = (alumnInfo) => {
-        console.log(alumnInfo)
         let bodyObj = {
             alumn: alumnInfo
         }

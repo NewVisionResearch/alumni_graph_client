@@ -24,7 +24,6 @@ function App() {
 
   const memoizedPath = useCallback(
     () => {
-      console.log('memoizing path')
       if (admin.username && pathname === "/login") {
         history.push("/dashboard")
       } else if (!admin.username) {
