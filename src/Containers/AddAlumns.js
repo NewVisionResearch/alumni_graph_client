@@ -6,6 +6,7 @@ import { byLastName } from '../services/sorts'
 import FormComponent from './NewAlumnForm'
 
 function AddAlumns({ openAlumnShow, removeAlumnId, confirmRemovedAlumn }) {
+    const baseUrl = process.env.REACT_APP_BASE_URL
 
     const [alumns, setAlumns] = useState([])
     const [loading, setLoading] = useState(false)
@@ -23,7 +24,7 @@ function AddAlumns({ openAlumnShow, removeAlumnId, confirmRemovedAlumn }) {
                 }
             }
 
-            return fetch('http://localhost:3000/api/v1/alumns', options)
+            return fetch(`${baseUrl}/alumns`, options)
                 .then(res => {
                     if (!res.ok) { throw res }
                     return res.json()
@@ -31,7 +32,7 @@ function AddAlumns({ openAlumnShow, removeAlumnId, confirmRemovedAlumn }) {
                 .then((alumnsArray) => setAlumns(alumnsArray))
                 .catch((res) => history.push("/error"))
         },
-        [history],
+        [history, baseUrl]
     );
     useEffect(() => {
         if (!alumns.length) {
@@ -69,7 +70,7 @@ function AddAlumns({ openAlumnShow, removeAlumnId, confirmRemovedAlumn }) {
             body: JSON.stringify(alumnObj)
         }
 
-        fetch('http://localhost:3000/api/v1/alumns', options)
+        fetch(`${baseUrl}/alumns`, options)
             .then(res => {
                 if (!res.ok) { throw res }
                 return res.json()

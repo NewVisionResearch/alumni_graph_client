@@ -9,8 +9,11 @@ import './App.css'
 import ErrorPage from './Containers/ErrorPage'
 
 function App() {
+  const baseUrl = process.env.REACT_APP_BASE_URL
+
   let history = useHistory()
   const { location: { pathname } } = history
+
   const [admin, setAdmin] = useState({ username: "" })
   const [loginError, setLoginError] = useState("")
   const [aspectRatio, setAspectRatio] = useState(window.innerHeight * window.innerWidth / 1000000)
@@ -21,6 +24,7 @@ function App() {
 
   const memoizedPath = useCallback(
     () => {
+      console.log('memoizing path')
       if (admin.username && pathname === "/login") {
         history.push("/dashboard")
       } else if (!admin.username) {
@@ -28,13 +32,13 @@ function App() {
       } else {
         history.push(pathname)
       }
-    }, [admin.username]
+    }, [history, pathname, admin.username]
   )
 
   useEffect(() => {
     const token = localStorage.getItem('jwt')
     if (token) {
-      fetch('http://localhost:3000/api/v1/profile', {
+      fetch(`${baseUrl}/profile`, {
         method: 'GET',
         headers: {
           Authorization: `Bearer ${token}`
@@ -50,9 +54,7 @@ function App() {
     } else {
       history.push("/")
     }
-  }, [history, memoizedPath])
-
-
+  }, [history, memoizedPath, baseUrl])
 
   const login = (e, adminInfo) => {
     e.preventDefault()
@@ -73,7 +75,7 @@ function App() {
       body: JSON.stringify(adminObj)
     }
 
-    fetch('http://localhost:3000/api/v1/login', options)
+    fetch(`${baseUrl}/login`, options)
       .then(res => {
         if (!res.ok) { throw res }
         return res.json()

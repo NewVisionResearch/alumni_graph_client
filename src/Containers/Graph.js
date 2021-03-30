@@ -4,6 +4,7 @@ import ForceGraph from 'force-graph';
 import AlumnGraphShow from '../Components/AlumnGraphShow'
 
 function Graph({ aspectRatio }) {
+    const baseUrl = process.env.REACT_APP_BASE_URL
 
     const [publications, setPublications] = useState([])
     const [alumnId, setAlumnId] = useState(null)
@@ -11,12 +12,12 @@ function Graph({ aspectRatio }) {
     useEffect(() => {
         let isMounted = true
         if (!publications.length && isMounted) {
-            fetch('http://localhost:3000/api/v1/graphs')
+            fetch(`${baseUrl}/graphs`)
                 .then(res => res.json())
                 .then(publications => setPublications(publications))
         }
         return () => { isMounted = false }
-    }, [publications.length])
+    }, [publications.length, baseUrl])
 
     useEffect(() => {
         if (publications.length) {

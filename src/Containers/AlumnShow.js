@@ -5,7 +5,7 @@ import PublicationDisplayCheck from '../Components/PublicationDisplayCheck'
 import EditAlumnForm from './EditAlumnForm'
 
 function AlumnShow({ id, removeAlumn }) {
-
+    const baseUrl = process.env.REACT_APP_BASE_URL
 
     const [alumn, setAlumn] = useState({ full_name: "", search_names: [], my_alumn_publications: [] })
     const [idObj, setIdObj] = useState({})
@@ -14,7 +14,7 @@ function AlumnShow({ id, removeAlumn }) {
     useEffect(() => {
         if (id) {
             const fetchAlumn = () => {
-                fetch(`http://localhost:3000/api/v1/alumns/${id}`)
+                fetch(`${baseUrl}/alumns/${id}`)
                     .then(res => res.json())
                     .then(alumnObj => setAlumn(alumnObj))
             }
@@ -22,7 +22,7 @@ function AlumnShow({ id, removeAlumn }) {
             fetchAlumn()
             setEditSearchNames()
         }
-    }, [id])
+    }, [id, baseUrl])
 
     const invalidatePublication = (e, pubId) => {
         const options = {
@@ -35,7 +35,7 @@ function AlumnShow({ id, removeAlumn }) {
             body: JSON.stringify({ display: false })
         }
 
-        fetch(`http://localhost:3000/api/v1/publications/${pubId}`, options)
+        fetch(`${baseUrl}/publications/${pubId}`, options)
             .then(res => res.json())
             .then(publicationId => {
                 let newArray = alumn.my_alumn_publications.filter(ap => ap.publication.id !== publicationId)
@@ -67,7 +67,7 @@ function AlumnShow({ id, removeAlumn }) {
                 body: JSON.stringify(bodyObj)
             }
 
-            fetch(`http://localhost:3000/api/v1/alumn_publications/${id}`, options)
+            fetch(`${baseUrl}/alumn_publications/${id}`, options)
 
         }
     }
@@ -81,12 +81,13 @@ function AlumnShow({ id, removeAlumn }) {
                 Authorization: `Bearer ${token}`
             }
         }
-        fetch(`http://localhost:3000/api/v1/alumns/${id}/refetch`, options)
+        fetch(`${baseUrl}/alumns/${id}/refetch`, options)
             .then(res => res.json())
             .then(alumnObj => setAlumn(alumnObj))
     }
 
     const updateSearchNames = (alumnInfo) => {
+        console.log(alumnInfo)
         let bodyObj = {
             alumn: alumnInfo
         }
@@ -101,7 +102,7 @@ function AlumnShow({ id, removeAlumn }) {
             body: JSON.stringify(bodyObj)
         }
 
-        fetch(`http://localhost:3000/api/v1/alumns/${id}`, options)
+        fetch(`${baseUrl}/alumns/${id}`, options)
             .then(res => res.json())
             .then(alumnObj => setAlumn(alumnObj))
             .then(() => setEditSearchNames(false))
@@ -132,9 +133,9 @@ function AlumnShow({ id, removeAlumn }) {
             >
                 Delete Alumn
                 </Button>
-            <p>Publications ({filterValidPublications(alumn.my_alumn_publications).length}):</p>
+            <p>Publications ({filterValidPublications().length}):</p>
             <ul style={{ maxHeight: "500px", overflowY: "hidden", overflow: "scroll" }}>
-                {sortByTwoFns(byDate, byCoAuthors, filterValidPublications(alumn.my_alumn_publications)).map(alumn_pub =>
+                {sortByTwoFns(byDate, byCoAuthors, filterValidPublications()).map(alumn_pub =>
                     <PublicationDisplayCheck
                         key={`${alumn_pub.ap_id}`}
                         alumnName={alumn.search_names[0]}

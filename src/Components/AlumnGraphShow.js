@@ -5,18 +5,24 @@ import { byDate, byCoAuthors, sortByTwoFns } from '../services/sorts'
 import FullCitation from './FullCitation'
 
 function AlumnGraphShow({ alumnId, closeModal }) {
+    const baseUrl = process.env.REACT_APP_BASE_URL
 
     const [alumn, setAlumn] = useState({ full_name: "", search_names: [], my_alumn_publications: [] })
     const history = useHistory()
+
     useEffect(() => {
-        fetch(`http://localhost:3000/api/v1/alumns/${alumnId}`)
+        fetch(`${baseUrl}/alumns/${alumnId}`)
             .then(res => {
                 if (!res.ok) { throw res }
                 return res.json()
             })
             .then(alumnObj => setAlumn(alumnObj))
             .catch((res) => history.push("/error"))
-    }, [history, alumnId])
+    }, [history, alumnId, baseUrl])
+
+    const filterValidPublications = () => {
+        return alumn.my_alumn_publications.filter(ap => ap.publication.display === true)
+    }
 
     return (
         <div>
@@ -30,7 +36,7 @@ function AlumnGraphShow({ alumnId, closeModal }) {
             </button>
             <h3 className="mt-4 mb-3" style={{ width: "100%", textAlign: 'center' }}>{alumn.full_name}</h3>
             <ListGroup as="ul">
-                {sortByTwoFns(byDate, byCoAuthors, alumn.my_alumn_publications).map((alumn_pub, idx) => {
+                {sortByTwoFns(byDate, byCoAuthors, filterValidPublications()).map((alumn_pub, idx) => {
                     const { ap_id, publication, coauthors } = alumn_pub
 
                     return (

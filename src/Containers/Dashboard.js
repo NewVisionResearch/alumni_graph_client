@@ -3,6 +3,7 @@ import AlumnShow from './AlumnShow'
 import AddAlumns from './AddAlumns'
 
 function Dashboard() {
+  const baseUrl = process.env.REACT_APP_BASE_URL
 
   const [alumnShowId, setAlumnShowId] = useState(null)
   const [removeAlumnId, setRemoveAlumnId] = useState(null)
@@ -23,7 +24,7 @@ function Dashboard() {
       }
     }
 
-    fetch(`http://localhost:3000/api/v1/alumns/${id}`, options)
+    fetch(`${baseUrl}/alumns/${id}`, options)
       .then(res => res.json())
       .then(data => setRemoveAlumnId(id))
       .then(() => setAlumnShowId(null))
