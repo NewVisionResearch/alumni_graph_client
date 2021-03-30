@@ -72,7 +72,7 @@ function AddAlumns({ openAlumnShow, removeAlumnId, confirmRemovedAlumn }) {
 
         fetch(`${baseUrl}/alumns`, options)
             .then(res => {
-                console.log(res)
+                if (res.status === 500) { return }
                 if (!res.ok) { throw res }
                 return res.json()
             })
