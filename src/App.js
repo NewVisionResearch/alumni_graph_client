@@ -28,12 +28,10 @@ function App() {
         history.push("/dashboard")
       } else if (!admin.username) {
         history.push("/")
-      } else if (loginError) {
-        history.push("/login")
       } else {
         history.push(pathname)
       }
-    }, [history, pathname, admin.username, loginError]
+    }, [history, pathname, admin.username]
   )
 
   useEffect(() => {
@@ -51,11 +49,12 @@ function App() {
           setAdmin({ username })
         })
         .then(memoizedPath)
-
+    } else if (loginError) {
+      history.push("/login")
     } else {
       history.push("/")
     }
-  }, [history, memoizedPath, baseUrl])
+  }, [history, memoizedPath, baseUrl, loginError])
 
   const login = (e, adminInfo) => {
     e.preventDefault()
