@@ -81,11 +81,7 @@ function AddAlumns({ openAlumnShow, removeAlumnId, confirmRemovedAlumn }) {
                 openAlumnShow(newAlumn.id)
             })
             .catch(err => {
-                if (err.statusText === "Internal Server Error") {
-                    console.log(err)
-                } else {
-                    history.push("/error")
-                }
+                console.log(err)
             })
     }
 
