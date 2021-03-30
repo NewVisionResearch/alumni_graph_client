@@ -28,10 +28,12 @@ function App() {
         history.push("/dashboard")
       } else if (!admin.username) {
         history.push("/")
+      } else if (loginError) {
+        history.push("/login")
       } else {
         history.push(pathname)
       }
-    }, [history, pathname, admin.username]
+    }, [history, pathname, admin.username, loginError]
   )
 
   useEffect(() => {
