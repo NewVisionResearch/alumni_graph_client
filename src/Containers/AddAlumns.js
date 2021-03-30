@@ -83,6 +83,7 @@ function AddAlumns({ openAlumnShow, removeAlumnId, confirmRemovedAlumn }) {
             .catch(err => {
                 if (err.statusText === "Internal Server Error") {
                     const mute = err
+                    mute
                 } else {
                     history.push("/error")
                 }
