@@ -72,7 +72,6 @@ function AddAlumns({ openAlumnShow, removeAlumnId, confirmRemovedAlumn }) {
 
         fetch(`${baseUrl}/alumns`, options)
             .then(res => {
-                if (res.status === 500) { console.log(res) }
                 if (!res.ok) { throw res }
                 return res.json()
             })
@@ -81,7 +80,10 @@ function AddAlumns({ openAlumnShow, removeAlumnId, confirmRemovedAlumn }) {
                 setAlumns(newArray)
                 openAlumnShow(newAlumn.id)
             })
-            .catch(err => history.push("/error"))
+            .catch(err => {
+                console.log(err)
+                history.push("/error")
+            })
     }
 
     return (
