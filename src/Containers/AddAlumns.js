@@ -51,7 +51,7 @@ function AddAlumns({ openAlumnShow, removeAlumnId, confirmRemovedAlumn }) {
             memoizedAlumnFetch()
                 .then(confirmRemovedAlumn)
         }
-    }, [alumns, memoizedAlumnFetch, removeAlumnId, confirmRemovedAlumn])
+    }, [memoizedAlumnFetch, removeAlumnId, confirmRemovedAlumn])
 
     const addAlumn = (alumnDisplayName) => {
         setLoading(true)
@@ -81,7 +81,7 @@ function AddAlumns({ openAlumnShow, removeAlumnId, confirmRemovedAlumn }) {
                 openAlumnShow(newAlumn.id)
             })
             .catch(err => {
-                console.log(err)
+                history.push("/error")
             })
     }
 

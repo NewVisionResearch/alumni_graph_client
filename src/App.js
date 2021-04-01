@@ -12,7 +12,6 @@ function App() {
   const baseUrl = process.env.REACT_APP_BASE_URL
 
   let history = useHistory()
-  const { location: { pathname } } = history
 
   const [admin, setAdmin] = useState({ username: "" })
   const [loginError, setLoginError] = useState("")
@@ -24,6 +23,7 @@ function App() {
 
   const memoizedPath = useCallback(
     () => {
+      const { location: { pathname } } = history
       if (admin.username && pathname === "/login") {
         history.push("/dashboard")
       } else if (!admin.username) {
@@ -31,7 +31,7 @@ function App() {
       } else {
         history.push(pathname)
       }
-    }, [history, pathname, admin.username]
+    }, [history, admin.username]
   )
 
   useEffect(() => {

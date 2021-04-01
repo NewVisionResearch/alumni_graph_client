@@ -120,7 +120,7 @@ function AlumnShow({ id, removeAlumn }) {
             <h1>{alumn.full_name}</h1>
             Search names:
             <ol>
-                {alumn.search_names.map(name => <li key={name}>{name}</li>)}
+                {alumn.search_names.map((name, idx) => <li key={`${name}_${id}`}>{name}</li>)}
             </ol>
             {editSearchNames ?
                 <EditAlumnForm submitInput={updateSearchNames} propsValue={[alumn.full_name, alumn.search_names]} closeModal={closeModal} /> :
@@ -132,7 +132,7 @@ function AlumnShow({ id, removeAlumn }) {
             >
                 Delete Alumn
                 </Button>
-            <p>Publications ({filterValidPublications().length}):</p>
+            <p>Publications ({filterValidPublications().length || "Loading..."}):</p>
             <ul style={{ maxHeight: "500px", overflowY: "hidden", overflow: "scroll" }}>
                 {sortByTwoFns(byDate, byCoAuthors, filterValidPublications()).map(alumn_pub =>
                     <PublicationDisplayCheck
