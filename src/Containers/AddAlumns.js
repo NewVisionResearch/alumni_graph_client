@@ -86,7 +86,7 @@ function AddAlumns({ openAlumnShow, removeAlumnId, confirmRemovedAlumn }) {
     }
 
     return (
-        <div className="add-alumns mr-5" >
+        <div className="add-alumns mr-5 mb-4" >
             <FormComponent submitInput={addAlumn} />
             <div style={{ display: 'flex', maxHeight: "700px", overflow: 'hidden', overflowY: 'scroll' }}>
                 {loading ? <Loading /> : <ListGroup as="ul" style={{ width: "100%" }}>

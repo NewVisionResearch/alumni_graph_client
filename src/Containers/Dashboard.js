@@ -35,9 +35,9 @@ function Dashboard() {
   }
 
   return (
-    <div className="dashboard d-flex p-5">
+    <div className="dashboard d-flex flex-wrap align-items-center justify-content-center p-5">
       <AddAlumns openAlumnShow={openAlumnShow} removeAlumnId={removeAlumnId} confirmRemovedAlumn={confirmRemovedAlumn} />
-      {alumnShowId ? <AlumnShow id={alumnShowId} removeAlumn={removeAlumn} /> : null}
+      {alumnShowId ? <AlumnShow id={alumnShowId} removeAlumn={removeAlumn} /> : <div></div>}
     </div>
   )
 }

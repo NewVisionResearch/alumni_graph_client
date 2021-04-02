@@ -24,10 +24,9 @@ function App() {
   const memoizedPath = useCallback(
     () => {
       const { location: { pathname } } = history
+
       if (admin.username && pathname === "/login") {
         history.push("/dashboard")
-      } else if (!admin.username) {
-        history.push("/")
       } else {
         history.push(pathname)
       }
@@ -36,6 +35,8 @@ function App() {
 
   useEffect(() => {
     const token = localStorage.getItem('jwt')
+    const { location: { pathname } } = history
+
     if (token) {
       fetch(`${baseUrl}/profile`, {
         method: 'GET',
@@ -51,10 +52,12 @@ function App() {
         .then(memoizedPath)
     } else if (loginError) {
       history.push("/login")
-    } else {
+    } else if (!admin.username && pathname === "/login") {
+      history.push("/login")
+    } else if (!admin.username) {
       history.push("/")
     }
-  }, [history, memoizedPath, baseUrl, loginError])
+  }, [history, admin.username, memoizedPath, baseUrl, loginError])
 
   const login = (e, adminInfo) => {
     e.preventDefault()

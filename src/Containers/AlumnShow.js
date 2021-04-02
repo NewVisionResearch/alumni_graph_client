@@ -116,7 +116,7 @@ function AlumnShow({ id, removeAlumn }) {
     }
 
     return (
-        <div>
+        <div className="ml-auto mr-auto" style={{ maxWidth: '60%' }}>
             <h1>{alumn.full_name}</h1>
             Search names:
             <ol>
