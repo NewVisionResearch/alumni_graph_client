@@ -1,9 +1,12 @@
 import { useState } from "react"
-import { Button, Form } from 'react-bootstrap'
+import { Button, Form, InputGroup } from 'react-bootstrap'
+import { AiFillEyeInvisible, AiFillEye } from 'react-icons/ai'
 
 function Login({ login, error }) {
 
     const [admin, setAdmin] = useState({ username: "", password: "" })
+    const [viewPassword, setViewPassword] = useState(false)
+
     return (
         <div
             className="login d-flex justify-content-center align-items-center"
@@ -25,12 +28,21 @@ function Login({ login, error }) {
                 </Form.Group>
                 <Form.Group>
                     <Form.Label>Password: </Form.Label>
-                    <Form.Control
-                        type="text"
-                        name="password"
-                        value={admin.password}
-                        onChange={({ target: { name, value } }) => setAdmin({ ...admin, [name]: value })}
-                    />
+                    <InputGroup>
+                        <Form.Control
+                            type={viewPassword ? "text" : "password"}
+                            name="password"
+                            value={admin.password}
+                            onChange={({ target: { name, value } }) => setAdmin({ ...admin, [name]: value })}
+                        />
+                        <InputGroup.Append>
+                            <Button
+                                variant="secondary"
+                                onClick={() => setViewPassword(!viewPassword)}
+                            >{viewPassword ? <AiFillEyeInvisible /> : <AiFillEye />}
+                            </Button>
+                        </InputGroup.Append>
+                    </InputGroup>
                     <Form.Text className="text-danger">{error}</Form.Text>
                 </Form.Group>
                 <Button type="submit">Login</Button>
