@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
 import ForceGraph from 'force-graph';
 import AlumnGraphShow from '../Components/AlumnGraphShow'
 
@@ -8,6 +7,7 @@ function Graph({ aspectRatio }) {
 
     const [publications, setPublications] = useState([])
     const [alumnId, setAlumnId] = useState(null)
+    const [gData, setGData] = useState({ nodes: [], links: [] })
 
     useEffect(() => {
         let isMounted = true
@@ -20,8 +20,51 @@ function Graph({ aspectRatio }) {
     }, [publications.length, baseUrl])
 
     useEffect(() => {
-        if (publications.length) {
-            const gData = {
+
+        if (!gData.length) {
+
+            function uniqueIds(array) {
+                array = array.map(p => (p.joins.map(j => j))).flat()
+                let obj = {}
+                for (let i = 0; i < array.length; i++) {
+                    if (!array[i]) continue
+                    if (obj[array[i].display_name]) {
+                        continue
+                    } else {
+                        obj[array[i].display_name] = array[i]
+                    }
+                }
+
+                return Object.values(obj)
+            }
+
+            function createPairs(array) {
+                let resArray = []
+                let obj = {}
+                array = array.map(obj => obj.joins)
+
+                for (let i = 0; i < array.length; i++) {
+                    for (let j = 0; j < array[i].length; j++) {
+                        if (!array[i][j]) continue
+                        obj[array[i][j].display_name] = obj[array[i][j].display_name] || []
+                        for (let k = 0; k < array[i].length; k++) {
+                            if (!array[i][k]) continue
+                            if (array[i][j].display_name === array[i][k].display_name) {
+                                continue
+                            }
+                            if (obj[array[i][j].display_name].includes(array[i][k].display_name)) {
+                                continue
+                            } else {
+                                obj[array[i][j].display_name].push(array[i][k].display_name)
+                                resArray.push([array[i][j], array[i][k]])
+                            }
+                        }
+                    }
+                }
+
+                return resArray
+            }
+            const data = {
                 nodes: uniqueIds(publications).map(alumn => ({ id: alumn.display_name, alumn_id: alumn.id })),
                 links: createPairs(publications)
                     .map(arr => ({
@@ -30,9 +73,20 @@ function Graph({ aspectRatio }) {
                     }))
             };
 
+            setGData(data)
+        }
+
+    }, [publications, gData.length])
+
+    useEffect(() => {
+        let len = gData.nodes.length
+        if (len) {
+
             const elem = document.getElementById('graph');
+            let graphWidth = elem.clientWidth
+            let graphHeight = elem.clientHeight
+
             const Graph = ForceGraph()(elem)
-                (document.getElementById('graph'))
                 .graphData(gData)
                 .nodeCanvasObject((node, ctx, globalScale) => {
                     const label = node.id;
@@ -79,107 +133,61 @@ function Graph({ aspectRatio }) {
                 .linkColor(link => 'rgb(73, 50, 123)')
                 .nodeRelSize(25)
                 .backgroundColor('rgb(177, 184, 188)')
+                .width(graphWidth)
+                .height(graphHeight)
                 .onNodeHover(node => elem.style.cursor = node ? 'pointer' : null)
                 .onNodeClick((node) => {
                     setAlumnId(node.alumn_id)
                     Graph.centerAt(node.x, node.y, 1000);
-                    Graph.zoom(5, 1000)
+                    Graph.zoom(7, 1000)
                 })
-                .onNodeDragEnd(node => {
-                    node.fx = node.x;
-                    node.fy = node.y;
-                })
-                .zoom(0.75)
-            // .centerAt(200, 100);
+                // .onNodeDragEnd(node => {
+                //     node.fx = node.x;
+                //     node.fy = node.y;
+                // })
+                .zoom(0.5, 500)
+                .centerAt(0, 0, 3500);
 
-            Graph.d3Force('center', null);
             Graph.d3Force('charge').strength(-1000);
             Graph.d3Force('link')
 
-            function uniqueIds(array) {
-                array = array.map(p => (p.joins.map(j => j))).flat()
-                let obj = {}
-                for (let i = 0; i < array.length; i++) {
-                    if (!array[i]) continue
-                    if (obj[array[i].display_name]) {
-                        continue
-                    } else {
-                        obj[array[i].display_name] = array[i]
-                    }
-                }
-
-                return Object.values(obj)
-            }
-
-            function createPairs(array) {
-                let resArray = []
-                let obj = {}
-                array = array.map(obj => obj.joins)
-
-                for (let i = 0; i < array.length; i++) {
-                    for (let j = 0; j < array[i].length; j++) {
-                        if (!array[i][j]) continue
-                        obj[array[i][j].display_name] = obj[array[i][j].display_name] || []
-                        for (let k = 0; k < array[i].length; k++) {
-                            if (!array[i][k]) continue
-                            if (array[i][j].display_name === array[i][k].display_name) {
-                                continue
-                            }
-                            if (obj[array[i][j].display_name].includes(array[i][k].display_name)) {
-                                continue
-                            } else {
-                                obj[array[i][j].display_name].push(array[i][k].display_name)
-                                resArray.push([array[i][j], array[i][k]])
-                            }
-                        }
-                    }
-                }
-
-                return resArray
-            }
         }
-    }, [publications, aspectRatio])
+    }, [aspectRatio, gData])
 
     const closeModal = () => {
         setAlumnId(null)
     }
-    const token = localStorage.getItem("jwt")
 
     return (
-        <div style={{ position: 'relative' }}>
-            <div id="graph" style={{ margin: 0, width: '100%' }}></div>
-            {alumnId ?
+        <div
+            style={{ margin: 'auto', height: '100%' }}
+            className="d-flex justify-content-center align-items-center">
+            <div
+                className="d-flex justify-content-center"
+                style={{ height: '90%', width: '95%', position: 'relative' }}>
                 <div
-                    id="alumn-show-graph"
-                    className="mt-3 mr-3 rounded"
-                    style={{
-                        position: 'absolute',
-                        top: 0,
-                        right: 0,
-                        width: '400px',
-                        height: '400px',
-                        zIndex: 1000,
-                        background: 'rgb(255, 255, 255)',
-                        boxShadow: '-7px 10px 20px rgb(31, 31, 31)',
-                        overflowY: 'scroll'
-                    }}>
-                    <AlumnGraphShow alumnId={alumnId} closeModal={closeModal} />
+                    id="graph"
+                    style={{ border: '3px solid', width: '100%', height: '100%' }}>
                 </div>
-                : null}
-            {
-                token ?
-                    null :
-                    <Link
-                        to="/login"
+                {alumnId ?
+                    <div
+                        id="alumn-show-graph"
+                        className="mt-3 mr-3 rounded"
                         style={{
                             position: 'absolute',
                             top: 0,
                             right: 0,
-                            zIndex: 900
+                            width: '400px',
+                            height: '400px',
+                            zIndex: 1000,
+                            background: 'rgb(255, 255, 255)',
+                            boxShadow: '-7px 10px 20px rgb(31, 31, 31)',
+                            overflowY: 'scroll'
                         }}>
-                        Admin Login
-                        </Link>
-            }
+                        <AlumnGraphShow alumnId={alumnId} closeModal={closeModal} />
+                    </div>
+                    : null}
+            </div>
         </div>
     )
 }

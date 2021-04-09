@@ -101,7 +101,9 @@ function App() {
 
   return (
     <React.Fragment>
-      <div style={{ height: '100vh' }} id="App">
+      <div
+        id="App"
+        style={{ height: '100vh', width: '100vw' }}>
         {admin.username.length ? <NavBar logout={logout} /> : null}
         <Switch>
           <Route exact path="/" render={() => <Graph aspectRatio={aspectRatio} />} />

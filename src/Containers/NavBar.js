@@ -5,10 +5,10 @@ function NavBar({ logout }) {
     return (
         <div
             className="d-flex justify-content-center align-items-center border-bottom border-secondary"
-            style={{ width: "100%", height: "50px" }}>
+            style={{ position: 'relative', width: "100%", height: "50px" }}>
             <Nav
                 className="d-flex justify-content-between"
-                style={{ width: "85%", height: "100%" }}>
+                style={{ position: 'absolute', top: 0, width: "85%", height: "100%" }}>
                 <div
                     className="d-flex justify-content-between"
                     style={{ width: "fit-content", height: "100%" }}>
