@@ -19,14 +19,15 @@
     "three-spritetext": "^1.6.0",
     "web-vitals": "^1.0.1"
   },
+  "resolutions": {
+    "bezier-js": "4.0.3"
+  },
   "scripts": {
+    "preinstall": "npx npm-force-resolutions",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
-  },
-  "resolutions": {
-    "bezier-js": "4.0.3"
   },
   "eslintConfig": {
     "extends": [
