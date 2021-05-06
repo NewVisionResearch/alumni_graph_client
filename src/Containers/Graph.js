@@ -138,18 +138,19 @@ function Graph({ aspectRatio }) {
                 .onNodeHover(node => elem.style.cursor = node ? 'pointer' : null)
                 .onNodeClick((node) => {
                     setAlumnId(node.alumn_id)
-                    Graph.centerAt(node.x, node.y, 1000);
+                    Graph.centerAt(node.x + 25, node.y, 1000);
                     Graph.zoom(7, 1000)
                 })
                 // .onNodeDragEnd(node => {
                 //     node.fx = node.x;
                 //     node.fy = node.y;
                 // })
-                .zoom(0.5, 500)
-                .centerAt(0, 0, 2000);
+                .zoom(0.25, 500)
+            // .centerAt(750, 0, 1000)
 
             Graph.d3Force('charge').strength(-1000);
-            Graph.d3Force('link')
+            Graph.d3Force('center') //.strength()
+            // Graph.d3Force('link')
 
         }
     }, [aspectRatio, gData])
@@ -160,34 +161,30 @@ function Graph({ aspectRatio }) {
 
     return (
         <div
-            style={{ margin: 'auto', height: '100%' }}
-            className="d-flex justify-content-center align-items-center">
+            className="d-flex justify-content-center"
+            style={{ height: '100%', width: '100%', position: 'relative' }}>
             <div
-                className="d-flex justify-content-center"
-                style={{ height: '90%', width: '95%', position: 'relative' }}>
-                <div
-                    id="graph"
-                    style={{ border: '3px solid', width: '100%', height: '100%' }}>
-                </div>
-                {alumnId ?
-                    <div
-                        id="alumn-show-graph"
-                        className="mt-3 mr-3 rounded"
-                        style={{
-                            position: 'absolute',
-                            top: 0,
-                            right: 0,
-                            width: '400px',
-                            height: '400px',
-                            zIndex: 1000,
-                            background: 'rgb(255, 255, 255)',
-                            boxShadow: '-7px 10px 20px rgb(31, 31, 31)',
-                            overflowY: 'scroll'
-                        }}>
-                        <AlumnGraphShow alumnId={alumnId} closeModal={closeModal} />
-                    </div>
-                    : null}
+                id="graph"
+                style={{ border: '3px solid', width: '100%', height: '100%' }}>
             </div>
+            {alumnId ?
+                <div
+                    id="alumn-show-graph"
+                    className="mt-3 mr-3 rounded d-flex-column justify-content-center align-items-center"
+                    style={{
+                        position: 'absolute',
+                        top: 0,
+                        right: 0,
+                        width: '400px',
+                        height: '400px',
+                        zIndex: 1000,
+                        background: 'rgb(255, 255, 255)',
+                        boxShadow: '-7px 10px 20px rgb(31, 31, 31)',
+                        overflowY: 'scroll'
+                    }}>
+                    <AlumnGraphShow alumnId={alumnId} closeModal={closeModal} />
+                </div>
+                : null}
         </div>
     )
 }

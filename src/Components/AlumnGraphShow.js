@@ -3,6 +3,7 @@ import { useHistory } from 'react-router-dom'
 import { Accordion } from 'react-bootstrap'
 import { byDate, byCoAuthors, sortByTwoFns } from '../services/sorts'
 import AccordionCitation from '../Containers/AccordionCitation'
+import Loading from './Loading'
 
 function AlumnGraphShow({ alumnId, closeModal }) {
     const baseUrl = process.env.REACT_APP_BASE_URL
@@ -21,7 +22,7 @@ function AlumnGraphShow({ alumnId, closeModal }) {
     }, [history, alumnId, baseUrl])
 
     return (
-        <div style={{ position: 'absolute' }}>
+        <div>
             <button
                 type="button"
                 className="close text-danger"
@@ -30,18 +31,27 @@ function AlumnGraphShow({ alumnId, closeModal }) {
                 onClick={closeModal}>
                 <span aria-hidden="true">&times;</span>
             </button>
-            <h3 className="mt-4 mb-3" style={{ width: "100%", textAlign: 'center' }}>{alumn.full_name}</h3>
-            <Accordion defaultActiveKey="0">
-                {
-                    sortByTwoFns(byDate, byCoAuthors, alumn.my_alumn_publications).map((alumn_pub, idx) => {
-                        const { publication, coauthors } = alumn_pub
+            {
+                alumn.my_alumn_publications.length ?
+                    <>
+                        <h3 className="mt-4 mb-3" style={{ width: "100%", textAlign: 'center' }}>{alumn.full_name}</h3>
+                        <Accordion defaultActiveKey="0">
+                            {
+                                sortByTwoFns(byDate, byCoAuthors, alumn.my_alumn_publications).map((alumn_pub, idx) => {
+                                    const { publication, coauthors } = alumn_pub
 
-                        return (
-                            <AccordionCitation key={`${alumn_pub}_${idx}`} listNum={idx} alumnName={alumn.search_names[0]} publication={publication} coauthors={coauthors} />
-                        )
-                    })
-                }
-            </Accordion>
+                                    return (
+                                        <AccordionCitation key={`${alumn_pub}_${idx}`} listNum={idx} alumnName={alumn.search_names[0]} publication={publication} coauthors={coauthors} />
+                                    )
+                                })
+                            }
+                        </Accordion>
+                    </>
+                    :
+                    <div>
+                        <Loading />
+                    </div>
+            }
         </div >
     )
 }
