@@ -132,7 +132,7 @@ function Graph({ aspectRatio }) {
                 })
                 .linkColor(link => 'rgb(73, 50, 123)')
                 .nodeRelSize(25)
-                .backgroundColor('rgb(177, 184, 188)')
+                .backgroundColor('rgb(177, 184, 188)') //'rgb(177, 184, 188)'
                 .width(graphWidth)
                 .height(graphHeight)
                 .onNodeHover(node => elem.style.cursor = node ? 'pointer' : null)
@@ -145,9 +145,9 @@ function Graph({ aspectRatio }) {
                 //     node.fx = node.x;
                 //     node.fy = node.y;
                 // })
-                .zoom(0.5, 500)
+                .zoom(0.75, 500)
                 .dagMode('radialout')
-                .onDagError((data) => console.log(data))
+                .onDagError((data) => console.log('Dag Error:', data))
             // .centerAt(750, 0, 1000)
 
             Graph.d3Force('charge').strength(-10000);
