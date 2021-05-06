@@ -9,7 +9,7 @@
     "@testing-library/user-event": "^12.1.10",
     "bezier-js": "^4.1.1",
     "bootstrap": "^4.6.0",
-    "force-graph": "^1.37.0",
+    "force-graph": "^1.40.3",
     "react": "^17.0.1",
     "react-bootstrap": "^1.5.0",
     "react-dom": "^17.0.1",
