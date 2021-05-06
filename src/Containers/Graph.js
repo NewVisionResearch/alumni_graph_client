@@ -150,7 +150,7 @@ function Graph({ aspectRatio }) {
                 .onDagError((data) => console.log('Dag Error:', data))
             // .centerAt(750, 0, 1000)
 
-            Graph.d3Force('charge').strength(-10000);
+            Graph.d3Force('charge').strength(-7500);
             Graph.d3Force('center') //.strength(0)
             // Graph.d3Force('link')
             Graph.d3Force('gravity')
