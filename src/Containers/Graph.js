@@ -145,7 +145,7 @@ function Graph({ aspectRatio }) {
                 //     node.fx = node.x;
                 //     node.fy = node.y;
                 // })
-                .zoom(0.25, 500)
+                .zoom(0.5, 500)
             // .centerAt(750, 0, 1000)
 
             Graph.d3Force('charge').strength(-1000);
