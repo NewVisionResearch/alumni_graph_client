@@ -146,11 +146,14 @@ function Graph({ aspectRatio }) {
                 //     node.fy = node.y;
                 // })
                 .zoom(0.5, 500)
+                .dagMode('radialout')
+                .onDagError((data) => console.log(data))
             // .centerAt(750, 0, 1000)
 
-            Graph.d3Force('charge').strength(-1000);
-            Graph.d3Force('center') //.strength()
+            Graph.d3Force('charge').strength(-10000);
+            Graph.d3Force('center') //.strength(0)
             // Graph.d3Force('link')
+            Graph.d3Force('gravity')
 
         }
     }, [aspectRatio, gData])
