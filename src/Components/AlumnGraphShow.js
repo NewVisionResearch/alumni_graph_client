@@ -34,7 +34,7 @@ function AlumnGraphShow({ alumnId, closeModal }) {
             {
                 alumn.my_alumn_publications.length ?
                     <>
-                        <h3 className="mt-4 mb-3" style={{ width: "100%", textAlign: 'center', fontSize: '100%' }}>{alumn.full_name}</h3>
+                        <h3 className="author-show-name mt-4 mb-3" style={{ width: "100%", textAlign: 'center' }}>{alumn.full_name}</h3>
                         <Accordion>
                             {
                                 sortByTwoFns(byDate, byCoAuthors, alumn.my_alumn_publications).map((alumn_pub, idx) => {

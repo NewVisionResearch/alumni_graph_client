@@ -2,6 +2,7 @@ body {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  font-size: 100%;
 }
 
 @keyframes load {
@@ -57,4 +58,38 @@ span.alumn {
 
 span.coauthor {
   color: rgb(152, 114, 223)
+}
+
+div#alumn-graph-show {
+  top: 0px;
+  right: 0px;
+  width: 50%;
+  height: 50%
+}
+
+@media only screen and (max-height: 425px) {
+  div#alumn-graph-show {
+    height: 75%;
+  }
+}
+
+@media only screen and (max-width: 825px) {
+  h3.author-show-name {
+    font-size: 100%;
+  }
+  button.accordion-title, div.card-body {
+    font-size: 75%;
+  }
+  
+  button.close {
+    font-size: 125%;
+  }
+}
+@media only screen and (max-width: 425px) {
+  div#alumn-graph-show {
+    left: 0px;
+    width: 85%;
+    height: 40%;
+    transform: translate(10%, 140%);
+  }
 }

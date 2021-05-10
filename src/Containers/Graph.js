@@ -138,7 +138,7 @@ function Graph({ aspectRatio }) {
                 .onNodeHover(node => elem.style.cursor = node ? 'pointer' : null)
                 .onNodeClick((node) => {
                     setAlumnId(node.alumn_id)
-                    Graph.centerAt(node.x + 25, node.y, 1000);
+                    Graph.centerAt((window.innerWidth <= 425 ? node.x : node.x + 25), (window.innerWidth <= 425 ? node.y + 25 : node.y), 1000);
                     Graph.zoom(7, 1000)
                 })
                 // .onNodeDragEnd(node => {
@@ -172,14 +172,10 @@ function Graph({ aspectRatio }) {
             </div>
             {alumnId ?
                 <div
-                    id="alumn-show-graph"
+                    id="alumn-graph-show"
                     className="mt-3 mr-3 rounded d-flex-column justify-content-center align-items-center"
                     style={{
                         position: 'absolute',
-                        top: 0,
-                        right: 0,
-                        width: '50%',
-                        height: '50%',
                         zIndex: 1000,
                         background: 'rgb(255, 255, 255)',
                         boxShadow: '-7px 10px 20px rgb(31, 31, 31)',
