@@ -27,15 +27,15 @@ function AlumnGraphShow({ alumnId, closeModal }) {
                 type="button"
                 className="close text-danger"
                 aria-label="Close"
-                style={{ position: 'sticky', top: 20, right: 360, zIndex: 1000 }}
+                style={{ position: 'absolute', top: 0, right: 7, zIndex: 1000 }}
                 onClick={closeModal}>
                 <span aria-hidden="true">&times;</span>
             </button>
             {
                 alumn.my_alumn_publications.length ?
                     <>
-                        <h3 className="mt-4 mb-3" style={{ width: "100%", textAlign: 'center' }}>{alumn.full_name}</h3>
-                        <Accordion defaultActiveKey="0">
+                        <h3 className="mt-4 mb-3" style={{ width: "100%", textAlign: 'center', fontSize: '100%' }}>{alumn.full_name}</h3>
+                        <Accordion>
                             {
                                 sortByTwoFns(byDate, byCoAuthors, alumn.my_alumn_publications).map((alumn_pub, idx) => {
                                     const { publication, coauthors } = alumn_pub

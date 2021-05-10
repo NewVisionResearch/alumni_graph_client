@@ -56,14 +56,14 @@ function AccordionCitation({ listNum, alumnName, publication, coauthors }) {
 
     return (
         <Card>
-            <Card.Header className="d-flex align-items-center">
+            <Card.Header className="d-flex align-items-center" >
                 <Accordion.Toggle className="d-flex" as={Button} variant="link" eventKey={listNum + 1}>
                     <div>{listNum + 1}.</div>
-                    <div className="ml-3 text-left">{title}</div>
+                    <div className="ml-3 text-left" style={{ fontSize: '75%' }}>{title}</div>
                 </Accordion.Toggle>
             </Card.Header>
             <Accordion.Collapse eventKey={listNum + 1}>
-                <Card.Body>{<p>{highlightAlumns(authors)}. {<a href={`https://pubmed.ncbi.nlm.nih.gov/${pmid}`} rel='noreferrer' target='_blank'>{title}</a>} {source}. {displayDate || ""};{volume || ""}:{pages || ""}.{elocationid || ""}. Epub {epubdate || ""}. PMID: {pmid || ""}; PMCID: {pmcid || ""}.</p>}</Card.Body>
+                <Card.Body>{<p style={{ fontSize: '75%' }}>{highlightAlumns(authors)}. {<a href={`https://pubmed.ncbi.nlm.nih.gov/${pmid}`} rel='noreferrer' target='_blank'>{title}</a>} {source}. {displayDate || ""};{volume || ""}:{pages || ""}.{elocationid || ""}. Epub {epubdate || ""}. PMID: {pmid || ""}; PMCID: {pmcid || ""}.</p>}</Card.Body>
             </Accordion.Collapse>
         </Card>
     )

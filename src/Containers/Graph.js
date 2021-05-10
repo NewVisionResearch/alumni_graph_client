@@ -178,8 +178,8 @@ function Graph({ aspectRatio }) {
                         position: 'absolute',
                         top: 0,
                         right: 0,
-                        width: '400px',
-                        height: '400px',
+                        width: '50%',
+                        height: '50%',
                         zIndex: 1000,
                         background: 'rgb(255, 255, 255)',
                         boxShadow: '-7px 10px 20px rgb(31, 31, 31)',
@@ -187,8 +187,9 @@ function Graph({ aspectRatio }) {
                     }}>
                     <AlumnGraphShow alumnId={alumnId} closeModal={closeModal} />
                 </div>
-                : null}
-        </div>
+                : null
+            }
+        </div >
     )
 }
 
