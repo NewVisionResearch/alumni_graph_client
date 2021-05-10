@@ -139,7 +139,7 @@ function Graph({ aspectRatio }) {
                 .onNodeClick((node) => {
                     setAlumnId(node.alumn_id)
                     Graph.centerAt((window.innerWidth <= 425 ? node.x : node.x + 25), (window.innerWidth <= 425 ? node.y + 25 : node.y), 1000);
-                    Graph.zoom(7, 1000)
+                    Graph.zoom(decideZoomOnClick(), 1000)
                 })
                 // .onNodeDragEnd(node => {
                 //     node.fx = node.x;
@@ -154,6 +154,16 @@ function Graph({ aspectRatio }) {
             Graph.d3Force('center').x(0).y(-50) //.strength(0.05)
             // Graph.d3Force('link')
             Graph.d3Force('gravity')
+
+            function decideZoomOnClick() {
+                let width = window.innerWidth
+                if (width < 425) {
+                    return 3
+                } else if (width < 825) {
+                    return 5
+                }
+                return 7
+            }
 
         }
     }, [aspectRatio, gData])
