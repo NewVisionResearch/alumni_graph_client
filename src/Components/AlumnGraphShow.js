@@ -22,12 +22,12 @@ function AlumnGraphShow({ alumnId, closeModal }) {
     }, [history, alumnId, baseUrl])
 
     return (
-        <div>
+        <>
             <button
                 type="button"
                 className="close text-danger"
                 aria-label="Close"
-                style={{ position: 'absolute', top: 0, right: 7, zIndex: 1000 }}
+                style={{ position: 'sticky', top: 7, right: 7, width: '5%', zIndex: 1000, border: 'none', borderRadius: '25px', background: 'rgba(211,211,211 ,0.55 )' }}
                 onClick={closeModal}>
                 <span aria-hidden="true">&times;</span>
             </button>
@@ -52,7 +52,7 @@ function AlumnGraphShow({ alumnId, closeModal }) {
                         <Loading />
                     </div>
             }
-        </div >
+        </ >
     )
 }
 
