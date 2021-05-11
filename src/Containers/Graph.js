@@ -93,7 +93,7 @@ function Graph({ aspectRatio }) {
                     const fontSize = 10;
 
                     ctx.font = `${fontSize}px Sans-Serif`;
-                    const textWidth = ctx.measureText(label).width;
+                    // const textWidth = ctx.measureText(label).width;
 
                     // TODO: replace 80 with textWidth if necessary
                     const bckgDimensions = [80, fontSize].map(n => n + fontSize * 0.5); // some padding
