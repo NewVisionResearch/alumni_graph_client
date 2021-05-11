@@ -147,7 +147,7 @@ function Graph({ aspectRatio }) {
                 // })
                 .zoom(0.75, 500)
                 .dagMode('radialout')
-                .onDagError((data) => console.log('Dag Error:', data))
+                .onDagError(() => { })
             // .centerAt(750, 0, 1000)
 
             Graph.d3Force('charge').strength(-7500);

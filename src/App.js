@@ -9,6 +9,12 @@ import './App.css'
 import ErrorPage from './Containers/ErrorPage'
 
 function App() {
+  console.log(
+    "%cCreated by:                Ian Rosen irosen419@gmail.com",
+    "display: inline-block ; border: 3px solid red ; border-radius: 7px ; " +
+    "padding: 10px ;"
+  );
+
   const baseUrl = process.env.REACT_APP_BASE_URL
 
   let history = useHistory()
