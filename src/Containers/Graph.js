@@ -8,6 +8,7 @@ function Graph({ aspectRatio }) {
     const [publications, setPublications] = useState([])
     const [alumnId, setAlumnId] = useState(null)
     const [gData, setGData] = useState({ nodes: [], links: [] })
+    const [graphCoords, setGraphCoords] = useState({ zoom: 0.55, x: 0, y: -40 })
 
     useEffect(() => {
         let isMounted = true
@@ -101,6 +102,7 @@ function Graph({ aspectRatio }) {
 
                     ctx.fillStyle = 'rgba(255, 255, 255, 1)';
                     ctx.beginPath();
+                    // TODO: replace 80 with textWidth if necessary
                     ctx.arc(node.x, node.y, (80 / fontSize) * 4.25, 0, 2 * Math.PI, false);
                     ctx.fill();
 
@@ -134,12 +136,13 @@ function Graph({ aspectRatio }) {
                 })
                 .linkColor(link => 'rgb(73, 50, 123)')
                 .nodeRelSize(25)
-                .backgroundColor('rgb(255, 255, 255)') //'rgb(177, 184, 188)'
+                .backgroundColor('rgb(255, 255, 255)')
                 .width(graphWidth)
                 .height(graphHeight)
                 .onNodeHover(node => elem.style.cursor = node ? 'pointer' : null)
                 .onNodeClick((node) => {
                     setAlumnId(node.alumn_id)
+
                     Graph.centerAt((window.innerWidth <= 425 ? node.x : node.x + 75), (window.innerWidth <= 425 ? node.y + 25 : node.y), 1000);
                     Graph.zoom(decideZoomOnClick(), 1000)
                 })
@@ -147,13 +150,13 @@ function Graph({ aspectRatio }) {
                     node.fx = node.x;
                     node.fy = node.y;
                 })
-                .zoom(0.55, 500)
+                .zoom(graphCoords.zoom, 500)
                 .dagMode('radialout')
                 .onDagError(() => { })
             // .centerAt(750, 0, 1000)
 
             Graph.d3Force('charge').strength(-7500);
-            Graph.d3Force('center').x(0).y(-40) //.strength(0.05)
+            Graph.d3Force('center').x(graphCoords.x).y(graphCoords.y) //.strength(0.05)
             // Graph.d3Force('link')
             Graph.d3Force('gravity')
 
@@ -164,14 +167,15 @@ function Graph({ aspectRatio }) {
                 } else if (width < 825) {
                     return 2
                 }
-                return 2.5
+                return 2.25
             }
 
         }
-    }, [aspectRatio, gData])
+    }, [aspectRatio, gData, graphCoords])
 
     const closeModal = () => {
         setAlumnId(null)
+        setGraphCoords({ zoom: 0.55, x: 0, y: -40 })
     }
 
     return (
