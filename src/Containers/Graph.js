@@ -9,7 +9,6 @@ function Graph({ aspectRatio }) {
     const [publications, setPublications] = useState([])
     const [alumnId, setAlumnId] = useState(null)
     const [gData, setGData] = useState({ nodes: [], links: [] })
-    const [graphCoords, setGraphCoords] = useState({ zoom: 0.55, x: 0, y: -40 })
 
     useEffect(() => {
         const elem = document.getElementById('graph');
@@ -159,14 +158,14 @@ function Graph({ aspectRatio }) {
                     node.fx = node.x;
                     node.fy = node.y;
                 })
-                .zoom(graphCoords.zoom, 500)
+                .zoom(0.55, 500)
                 .dagMode('radialout')
                 .onDagError(() => { })
             // .centerAt(750, 0, 1000)
 
             if (stateGraph.create) {
                 stateGraph.create.d3Force('charge').strength(-7500);
-                stateGraph.create.d3Force('center').x(graphCoords.x).y(graphCoords.y) //.strength(0.05)
+                stateGraph.create.d3Force('center').x(0).y(-40) //.strength(0.05)
                 // stateGraph.d3Force('link')
                 stateGraph.create.d3Force('gravity')
 
@@ -183,7 +182,7 @@ function Graph({ aspectRatio }) {
             }
 
         }
-    }, [aspectRatio, gData, stateGraph.create, graphCoords])
+    }, [aspectRatio, gData, stateGraph.create])
 
     const closeModal = () => {
         setAlumnId(null)
