@@ -94,12 +94,14 @@ function Graph({ aspectRatio }) {
 
                     ctx.font = `${fontSize}px Sans-Serif`;
                     const textWidth = ctx.measureText(label).width;
-                    const bckgDimensions = [textWidth, fontSize].map(n => n + fontSize * 0.5); // some padding
+
+                    // TODO: replace 80 with textWidth if necessary
+                    const bckgDimensions = [80, fontSize].map(n => n + fontSize * 0.5); // some padding
 
 
                     ctx.fillStyle = 'rgba(255, 255, 255, 1)';
                     ctx.beginPath();
-                    ctx.arc(node.x, node.y, (textWidth / fontSize) * 4.25, 0, 2 * Math.PI, false);
+                    ctx.arc(node.x, node.y, (80 / fontSize) * 4.25, 0, 2 * Math.PI, false);
                     ctx.fill();
 
                     ctx.lineWidth = 2;
@@ -138,31 +140,31 @@ function Graph({ aspectRatio }) {
                 .onNodeHover(node => elem.style.cursor = node ? 'pointer' : null)
                 .onNodeClick((node) => {
                     setAlumnId(node.alumn_id)
-                    Graph.centerAt((window.innerWidth <= 425 ? node.x : node.x + 30), (window.innerWidth <= 425 ? node.y + 25 : node.y), 1000);
+                    Graph.centerAt((window.innerWidth <= 425 ? node.x : node.x + 75), (window.innerWidth <= 425 ? node.y + 25 : node.y), 1000);
                     Graph.zoom(decideZoomOnClick(), 1000)
                 })
                 .onNodeDragEnd(node => {
                     node.fx = node.x;
                     node.fy = node.y;
                 })
-                .zoom(0.75, 500)
+                .zoom(0.55, 500)
                 .dagMode('radialout')
                 .onDagError(() => { })
             // .centerAt(750, 0, 1000)
 
             Graph.d3Force('charge').strength(-7500);
-            Graph.d3Force('center').x(0).y(-50) //.strength(0.05)
+            Graph.d3Force('center').x(0).y(-40) //.strength(0.05)
             // Graph.d3Force('link')
             Graph.d3Force('gravity')
 
             function decideZoomOnClick() {
                 let width = window.innerWidth
                 if (width < 425) {
-                    return 3
+                    return 1.5
                 } else if (width < 825) {
-                    return 5
+                    return 2
                 }
-                return 7
+                return 2.5
             }
 
         }
