@@ -5,10 +5,20 @@ import AlumnGraphShow from '../Components/AlumnGraphShow'
 function Graph({ aspectRatio }) {
     const baseUrl = process.env.REACT_APP_BASE_URL
 
+    const [stateGraph, setStateGraph] = useState({ create: () => { } })
     const [publications, setPublications] = useState([])
     const [alumnId, setAlumnId] = useState(null)
     const [gData, setGData] = useState({ nodes: [], links: [] })
     const [graphCoords, setGraphCoords] = useState({ zoom: 0.55, x: 0, y: -40 })
+
+    useEffect(() => {
+        const elem = document.getElementById('graph');
+
+        if (elem) {
+            const Graph = ForceGraph()(elem)
+            setStateGraph({ create: Graph })
+        }
+    }, [])
 
     useEffect(() => {
         let isMounted = true
@@ -82,12 +92,11 @@ function Graph({ aspectRatio }) {
     useEffect(() => {
         let len = gData.nodes.length
         if (len) {
-
             const elem = document.getElementById('graph');
             let graphWidth = elem.clientWidth
             let graphHeight = elem.clientHeight
 
-            const Graph = ForceGraph()(elem)
+            stateGraph.create && stateGraph.create
                 .graphData(gData)
                 .nodeCanvasObject((node, ctx, globalScale) => {
                     const label = node.id;
@@ -143,8 +152,8 @@ function Graph({ aspectRatio }) {
                 .onNodeClick((node) => {
                     setAlumnId(node.alumn_id)
 
-                    Graph.centerAt((window.innerWidth <= 425 ? node.x : node.x + 75), (window.innerWidth <= 425 ? node.y + 25 : node.y), 1000);
-                    Graph.zoom(decideZoomOnClick(), 1000)
+                    stateGraph.create.centerAt((window.innerWidth <= 425 ? node.x : node.x + 75), (window.innerWidth <= 425 ? node.y + 25 : node.y), 1000);
+                    stateGraph.create.zoom(decideZoomOnClick(), 1000)
                 })
                 .onNodeDragEnd(node => {
                     node.fx = node.x;
@@ -155,10 +164,13 @@ function Graph({ aspectRatio }) {
                 .onDagError(() => { })
             // .centerAt(750, 0, 1000)
 
-            Graph.d3Force('charge').strength(-7500);
-            Graph.d3Force('center').x(graphCoords.x).y(graphCoords.y) //.strength(0.05)
-            // Graph.d3Force('link')
-            Graph.d3Force('gravity')
+            if (stateGraph.create) {
+                stateGraph.create.d3Force('charge').strength(-7500);
+                stateGraph.create.d3Force('center').x(graphCoords.x).y(graphCoords.y) //.strength(0.05)
+                // stateGraph.d3Force('link')
+                stateGraph.create.d3Force('gravity')
+
+            }
 
             function decideZoomOnClick() {
                 let width = window.innerWidth
@@ -171,11 +183,12 @@ function Graph({ aspectRatio }) {
             }
 
         }
-    }, [aspectRatio, gData, graphCoords])
+    }, [aspectRatio, gData, stateGraph.create, graphCoords])
 
     const closeModal = () => {
         setAlumnId(null)
-        setGraphCoords({ zoom: 0.55, x: 0, y: -40 })
+        stateGraph.create.centerAt(0, -40, 1000);
+        stateGraph.create.zoom(0.55, 1000)
     }
 
     return (
