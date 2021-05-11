@@ -97,7 +97,7 @@ function Graph({ aspectRatio }) {
                     const bckgDimensions = [textWidth, fontSize].map(n => n + fontSize * 0.5); // some padding
 
 
-                    ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
+                    ctx.fillStyle = 'rgba(255, 255, 255, 1)';
                     ctx.beginPath();
                     ctx.arc(node.x, node.y, (textWidth / fontSize) * 4.25, 0, 2 * Math.PI, false);
                     ctx.fill();
@@ -132,13 +132,13 @@ function Graph({ aspectRatio }) {
                 })
                 .linkColor(link => 'rgb(73, 50, 123)')
                 .nodeRelSize(25)
-                .backgroundColor('rgb(177, 184, 188)') //'rgb(177, 184, 188)'
+                .backgroundColor('rgb(255, 255, 255)') //'rgb(177, 184, 188)'
                 .width(graphWidth)
                 .height(graphHeight)
                 .onNodeHover(node => elem.style.cursor = node ? 'pointer' : null)
                 .onNodeClick((node) => {
                     setAlumnId(node.alumn_id)
-                    Graph.centerAt((window.innerWidth <= 425 ? node.x : node.x + 25), (window.innerWidth <= 425 ? node.y + 25 : node.y), 1000);
+                    Graph.centerAt((window.innerWidth <= 425 ? node.x : node.x + 30), (window.innerWidth <= 425 ? node.y + 25 : node.y), 1000);
                     Graph.zoom(decideZoomOnClick(), 1000)
                 })
                 // .onNodeDragEnd(node => {
