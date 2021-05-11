@@ -141,10 +141,10 @@ function Graph({ aspectRatio }) {
                     Graph.centerAt((window.innerWidth <= 425 ? node.x : node.x + 30), (window.innerWidth <= 425 ? node.y + 25 : node.y), 1000);
                     Graph.zoom(decideZoomOnClick(), 1000)
                 })
-                // .onNodeDragEnd(node => {
-                //     node.fx = node.x;
-                //     node.fy = node.y;
-                // })
+                .onNodeDragEnd(node => {
+                    node.fx = node.x;
+                    node.fy = node.y;
+                })
                 .zoom(0.75, 500)
                 .dagMode('radialout')
                 .onDagError(() => { })
