@@ -98,7 +98,7 @@ function Graph({ aspectRatio }) {
             stateGraph.create && stateGraph.create
                 .graphData(gData)
                 .nodeCanvasObject((node, ctx, globalScale) => {
-                    const label = node.id;
+                    const label = node.id.trim();
                     const fontSize = 10;
 
                     ctx.font = `${fontSize}px Sans-Serif`;
