@@ -67,6 +67,14 @@ div#alumn-graph-show {
   height: 50%
 }
 
+h3.author-show-name {
+  font-size: 2rem;
+}
+
+button.accordion-title, div.card-body {
+  font-size: 100%;
+}
+
 @media only screen and (max-height: 425px) {
   div#alumn-graph-show {
     height: 75%;
