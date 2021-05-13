@@ -1,4 +1,4 @@
-body {
+body, * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -81,6 +81,16 @@ button.accordion-title, div.card-body {
   }
 }
 
+.search-result {
+  padding: 5% 5%;
+  border: 1px solid gray;
+  list-style: none;
+}
+
+.search-result:hover {
+  cursor: pointer;
+}
+
 @media only screen and (max-width: 825px) {
   h3.author-show-name {
     font-size: 100%;
@@ -91,6 +101,10 @@ button.accordion-title, div.card-body {
   
   button.close {
     font-size: 125%;
+  }
+
+  .search-bar {
+    width: 40%;
   }
 }
 

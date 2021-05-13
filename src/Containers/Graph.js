@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
 import ForceGraph from 'force-graph';
 import AlumnGraphShow from '../Components/AlumnGraphShow'
+import SearchBar from './SearchBar';
+import { decideZoomOnClick } from '../services/zoom'
 
 function Graph({ aspectRatio }) {
     const baseUrl = process.env.REACT_APP_BASE_URL
@@ -169,17 +171,6 @@ function Graph({ aspectRatio }) {
                 stateGraph.create.d3Force('gravity')
 
             }
-
-            function decideZoomOnClick() {
-                let width = window.innerWidth
-                if (width < 425) {
-                    return 1.5
-                } else if (width < 825) {
-                    return 2
-                }
-                return 2.25
-            }
-
         }
     }, [aspectRatio, gData, stateGraph.create])
 
@@ -212,6 +203,7 @@ function Graph({ aspectRatio }) {
                 </div>
                 : null
             }
+            <SearchBar graph={stateGraph.create} nodes={gData.nodes} setAlumnId={setAlumnId} />
         </div >
     )
 }

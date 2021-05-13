@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Form, InputGroup } from 'react-bootstrap'
-function Input({ callback, type = 'text', readOnly = false, placeholder = '', propsValue = '' }) {
+
+export default function Input({ callback, type = 'text', readOnly = false, placeholder = '', propsValue = '' }) {
 
     const [inputValue, setInputValue] = useState("")
 
@@ -13,7 +14,7 @@ function Input({ callback, type = 'text', readOnly = false, placeholder = '', pr
     }, [propsValue])
 
     return (
-        <InputGroup style={{ width: "300px" }}>
+        <InputGroup>
             <Form.Control
                 type={type}
                 value={inputValue}
@@ -24,5 +25,3 @@ function Input({ callback, type = 'text', readOnly = false, placeholder = '', pr
         </InputGroup>
     );
 }
-
-export default Input
