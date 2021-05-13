@@ -34,7 +34,7 @@ export default function SearchBar({ graph, nodes, setAlumnId }) {
         background: 'rgb(255, 255, 255)',
         border: '1px solid black',
         borderRadius: '.25rem',
-        boxShadow: '-1px 1px 20px rgb(31, 31, 31)'
+        boxShadow: '-1px 1px 10px rgb(31, 31, 31)'
       }}>
       <Input callback={setSearchTerm} propsValue={searchTerm} />
       <ul
