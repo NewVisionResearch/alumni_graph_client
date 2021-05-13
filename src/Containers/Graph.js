@@ -148,7 +148,16 @@ function Graph({ aspectRatio }) {
                 .width(graphWidth)
                 .height(graphHeight)
                 .onNodeHover(node => elem.style.cursor = node ? 'pointer' : null)
-                .onNodeClick((node) => {
+                .onNodeClick(node => {
+                    let windowWidth = window.innerWidth
+                    if (windowWidth < 540) {
+                        if (stateGraph.create.zoom && stateGraph.create.zoom() > 2) {
+                            stateGraph.create.centerAt((window.innerWidth <= 425 ? node.x : node.x + 75), (window.innerWidth <= 425 ? node.y + 25 : node.y), 1000);
+                            stateGraph.create.zoom(decideZoomOnClick(), 1000)
+                            setAlumnId(node.alumn_id)
+                        }
+                        return;
+                    }
                     stateGraph.create.centerAt((window.innerWidth <= 425 ? node.x : node.x + 75), (window.innerWidth <= 425 ? node.y + 25 : node.y), 1000);
                     stateGraph.create.zoom(decideZoomOnClick(), 1000)
                     setAlumnId(node.alumn_id)
@@ -167,7 +176,6 @@ function Graph({ aspectRatio }) {
                 stateGraph.create.d3Force('center').x(0).y(-40) //.strength(0.05)
                 // stateGraph.d3Force('link')
                 stateGraph.create.d3Force('gravity')
-
             }
 
             function decideZoomOnClick() {
