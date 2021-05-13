@@ -149,10 +149,9 @@ function Graph({ aspectRatio }) {
                 .height(graphHeight)
                 .onNodeHover(node => elem.style.cursor = node ? 'pointer' : null)
                 .onNodeClick((node) => {
-                    setAlumnId(node.alumn_id)
-
                     stateGraph.create.centerAt((window.innerWidth <= 425 ? node.x : node.x + 75), (window.innerWidth <= 425 ? node.y + 25 : node.y), 1000);
                     stateGraph.create.zoom(decideZoomOnClick(), 1000)
+                    setAlumnId(node.alumn_id)
                 })
                 .onNodeDragEnd(node => {
                     node.fx = node.x;

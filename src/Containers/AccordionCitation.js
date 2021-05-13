@@ -58,8 +58,8 @@ function AccordionCitation({ listNum, alumnName, publication, coauthors }) {
         <Card>
             <Card.Header className="d-flex align-items-center p-0" >
                 <Accordion.Toggle className="d-flex accordion-title" as={Button} variant="link" eventKey={listNum + 1} >
-                    <div>{listNum + 1}.</div>
-                    <div className="ml-3 text-left" >{title}</div>
+                    <div>{listNum + 1}.</div>  {/*style={{ color: 'rgb(73, 50, 123)' }}*/}
+                    <div className="ml-3 text-left">{title}</div> {/*style={{ color: 'rgb(73, 50, 165)' }}*/}
                 </Accordion.Toggle>
             </Card.Header>
             <Accordion.Collapse eventKey={listNum + 1}>
