@@ -152,7 +152,6 @@ function Graph({ aspectRatio }) {
                     let windowWidth = window.innerWidth
                     if (windowWidth < 540) {
                         if (stateGraph.create.zoom && stateGraph.create.zoom() > 1.25) {
-                            console.log(stateGraph.create.zoom())
                             stateGraph.create.centerAt((window.innerWidth <= 425 ? node.x : node.x + 75), (window.innerWidth <= 425 ? node.y + 25 : node.y), 1000);
                             stateGraph.create.zoom(decideZoomOnClick(), 1000)
                             setAlumnId(node.alumn_id)
