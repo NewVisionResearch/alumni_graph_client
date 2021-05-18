@@ -28,7 +28,7 @@ function EditAlumnForm({ submitInput, propsValue, closeModal }) {
                     e.preventDefault()
                     submitInput(alumnInfo)
                 }}>
-                <div>
+                <div style={{ width: '300px' }}>
                     <button
                         type="button"
                         className="close"
@@ -41,14 +41,14 @@ function EditAlumnForm({ submitInput, propsValue, closeModal }) {
                         <Form.Label>Full Name: </Form.Label>
                         <Input name="display_name" callback={displayNameChangeHandler} propsValue={alumnInfo.display_name} />
                     </Form.Group>
-                    <Form.Group>
+                    <Form.Group >
                         <Form.Label>Search Names: </Form.Label>
                         <Input name="search_names" callback={searchNamesChangeHandler} propsValue={alumnInfo.search_names} />
                     </Form.Group>
                 </div>
                 <Button className="mb-3" variant="info" type="submit" style={{ height: '50px' }}>Edit Alumn</Button>
             </Form>
-        </div>
+        </div >
     )
 }
 
