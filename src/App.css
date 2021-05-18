@@ -75,6 +75,11 @@ button.accordion-title, div.card-body {
   font-size: 100%;
 }
 
+.search-bar {
+  width: 10%;
+  transition: width 300ms ease-in-out;
+}
+
 @media only screen and (max-height: 425px) {
   div#alumn-graph-show {
     height: 75%;
@@ -104,7 +109,7 @@ button.accordion-title, div.card-body {
   }
 
   .search-bar {
-    width: 40%;
+    width: 25%;
   }
 }
 
