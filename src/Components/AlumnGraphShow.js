@@ -1,25 +1,27 @@
 import { useState, useEffect } from 'react'
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { Accordion } from 'react-bootstrap'
 import { byDate, byCoAuthors, sortByTwoFns } from '../services/sorts'
 import AccordionCitation from '../Containers/AccordionCitation'
 import Loading from './Loading'
 
-function AlumnGraphShow({ alumnId, closeModal }) {
+function AlumnGraphShow({ alumnLabId, closeModal }) {
     const baseUrl = process.env.REACT_APP_BASE_URL
 
-    const [alumn, setAlumn] = useState({ full_name: "", search_names: [], my_alumn_publications: [] })
-    const history = useHistory()
+    const [alumn, setAlumn] = useState({ full_name: "", search_names: [], my_lab_alumn_publications: [] })
+    const navigate = useNavigate()
 
     useEffect(() => {
-        fetch(`${baseUrl}/alumns/${alumnId}`)
+        fetch(`${baseUrl}/alumns/${alumnLabId}`)
             .then(res => {
                 if (!res.ok) { throw res }
                 return res.json()
             })
             .then(alumnObj => setAlumn(alumnObj))
-            .catch((res) => history.push("/error"))
-    }, [history, alumnId, baseUrl])
+            .catch((res) => {
+                console.error(res)
+                navigate("/error")})
+    }, [navigate, alumnLabId, baseUrl])
 
     return (
         <>
@@ -32,12 +34,12 @@ function AlumnGraphShow({ alumnId, closeModal }) {
                 <span aria-hidden="true">&times;</span>
             </button>
             {
-                alumn.my_alumn_publications.length ?
+                alumn.my_lab_alumn_publications.length ?
                     <>
                         <h3 className="author-show-name mt-4 mb-3" style={{ width: "100%", textAlign: 'center', color: 'rgb(77, 172, 147)' }}>{alumn.full_name}</h3> {/*, color: 'rgb(77, 172, 147)' */}
                         <Accordion>
                             {
-                                sortByTwoFns(byDate, byCoAuthors, alumn.my_alumn_publications).map((alumn_pub, idx) => {
+                                sortByTwoFns(byDate, byCoAuthors, alumn.my_lab_alumn_publications).map((alumn_pub, idx) => {
                                     const { publication, coauthors } = alumn_pub
 
                                     return (

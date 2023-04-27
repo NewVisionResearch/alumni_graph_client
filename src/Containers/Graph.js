@@ -1,35 +1,55 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import ForceGraph from 'force-graph';
 import AlumnGraphShow from '../Components/AlumnGraphShow'
 import SearchBar from './SearchBar';
 import { decideZoomOnClick } from '../services/zoom'
+import { Button } from 'react-bootstrap';
+import { useNavigate, useParams } from 'react-router-dom'
+import { AdminContext } from '../Context/Context';
+
 
 function Graph({ aspectRatio }) {
     const baseUrl = process.env.REACT_APP_BASE_URL
 
+    let navigate = useNavigate()
+
+    const admin = useContext(AdminContext)
+    const { labId } = useParams()
+
     const [stateGraph, setStateGraph] = useState({ create: () => { } })
     const [publications, setPublications] = useState([])
-    const [alumnId, setAlumnId] = useState(null)
+    const [alumnLabId, setAlumnLabId] = useState(null)
     const [gData, setGData] = useState({ nodes: [], links: [] })
 
     useEffect(() => {
         const elem = document.getElementById('graph');
 
         if (elem) {
-            const Graph = ForceGraph()(elem)
-            setStateGraph({ create: Graph })
+            const Graph = ForceGraph()(elem);
+            setStateGraph({ create: Graph });
         }
     }, [])
 
     useEffect(() => {
+        // if(admin.labId !== "" && admin.labId !== labId){
+        //     navigate(`/graph/${admin.labId}`, {replace: true});
+        // }
+
         let isMounted = true
-        if (!publications.length && isMounted) {
-            fetch(`${baseUrl}/graphs`)
+        if (!publications.length) {
+            fetch(`${baseUrl}/graphs/${labId}`)
                 .then(res => res.json())
-                .then(publications => setPublications(publications))
+                .then(publications => {
+                    if(isMounted){
+                        setPublications(publications)
+                    }
+                })
         }
-        return () => { isMounted = false }
-    }, [publications.length, baseUrl])
+
+        return () => { 
+            isMounted = false;
+        }
+    }, [publications.length, baseUrl, labId])
 
     useEffect(() => {
 
@@ -77,7 +97,7 @@ function Graph({ aspectRatio }) {
                 return resArray
             }
             const data = {
-                nodes: uniqueIds(publications).map(alumn => ({ id: alumn.display_name, alumn_id: alumn.id })),
+                nodes: uniqueIds(publications).map(alumn => ({ id: alumn.display_name, alumn_lab_id: alumn.alumn_lab_id })),
                 links: createPairs(publications)
                     .map(arr => ({
                         source: arr[0].display_name,
@@ -156,13 +176,13 @@ function Graph({ aspectRatio }) {
                         if (stateGraph.create.zoom && stateGraph.create.zoom() > 1.25) {
                             stateGraph.create.centerAt((window.innerWidth <= 425 ? node.x : node.x + 75), (window.innerWidth <= 425 ? node.y + 25 : node.y), 1000);
                             stateGraph.create.zoom(decideZoomOnClick(), 1000)
-                            setAlumnId(node.alumn_id)
+                            setAlumnLabId(node.alumn_lab_id)
                         }
                         return;
                     }
                     stateGraph.create.centerAt((window.innerWidth <= 425 ? node.x : node.x + 75), (window.innerWidth <= 425 ? node.y + 25 : node.y), 1000);
                     stateGraph.create.zoom(decideZoomOnClick(), 1000)
-                    setAlumnId(node.alumn_id)
+                    setAlumnLabId(node.alumn_lab_id)
                 })
                 .onNodeDragEnd(node => {
                     node.fx = node.x;
@@ -183,9 +203,13 @@ function Graph({ aspectRatio }) {
     }, [aspectRatio, gData, stateGraph.create])
 
     const closeModal = () => {
-        setAlumnId(null)
+        setAlumnLabId(null)
         stateGraph.create.centerAt(0, -40, 1000);
         stateGraph.create.zoom(0.55, 1000)
+    }
+
+    const handleLoginClick = () => {
+        navigate('/login')
     }
 
     return (
@@ -196,7 +220,7 @@ function Graph({ aspectRatio }) {
                 id="graph"
                 style={{ border: '3px solid', width: '100%', height: '100%' }}>
             </div>
-            {alumnId ?
+            {alumnLabId ?
                 <div
                     id="alumn-graph-show"
                     className="mt-3 mr-3 rounded d-flex-column justify-content-center align-items-center"
@@ -207,11 +231,26 @@ function Graph({ aspectRatio }) {
                         boxShadow: '-7px 10px 20px rgb(31, 31, 31)',
                         overflowY: 'scroll'
                     }}>
-                    <AlumnGraphShow alumnId={alumnId} closeModal={closeModal} />
+                    <AlumnGraphShow alumnLabId={alumnLabId} closeModal={closeModal} />
                 </div>
                 : null
             }
-            <SearchBar graph={stateGraph.create} nodes={gData.nodes} setAlumnId={setAlumnId} />
+            <SearchBar graph={stateGraph.create} nodes={gData.nodes} setAlumnLabId={setAlumnLabId} />
+            <Button
+            style={{
+                position: 'absolute',
+                right: 30,
+                top: 30,
+                height: 'fit-content',
+                zIndex: 500,
+                border: '1px solid black',
+                borderRadius: '.25rem',
+                boxShadow: '-1px 1px 10px rgb(31, 31, 31)',
+                display: admin.username === "" ? "inline-block" : "none"
+              }}
+              value="Login"
+              onClick={handleLoginClick}
+              >Login</Button>
         </div >
     )
 }

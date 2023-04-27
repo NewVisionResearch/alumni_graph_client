@@ -1,44 +1,49 @@
-import { useState, useEffect, useCallback } from 'react'
-import { useHistory } from 'react-router-dom'
+import { useState, useEffect, useCallback, useContext } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { ListGroup } from 'react-bootstrap'
 import Loading from '../Components/Loading'
 import { byLastName } from '../services/sorts'
 import FormComponent from './NewAlumnForm'
+import  { AdminContext } from '../Context/Context'
 
 function AddAlumns({ openAlumnShow, removeAlumnId, confirmRemovedAlumn }) {
     const baseUrl = process.env.REACT_APP_BASE_URL
 
+    const admin = useContext(AdminContext)
+
     const [alumns, setAlumns] = useState([])
     const [loading, setLoading] = useState(false)
 
-    const history = useHistory()
+    const navigate = useNavigate()
 
-    const memoizedAlumnFetch = useCallback(
-        () => {
-            const token = localStorage.getItem('jwt')
+    const memoizedAlumnFetch = useCallback(async () => {
+        const token = localStorage.getItem('jwt')
 
-            const options = {
-                method: 'GET',
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
+        const options = {
+            method: 'GET',
+            headers: {
+                Authorization: `Bearer ${token}`
             }
+        }
 
-            return fetch(`${baseUrl}/alumns`, options)
-                .then(res => {
-                    if (!res.ok) { throw res }
-                    return res.json()
-                })
-                .then((alumnsArray) => setAlumns(alumnsArray))
-                .catch((res) => history.push("/error"))
+        try {
+            const res = await fetch(`${baseUrl}/alumns/${admin.labId}/index`, options)
+            if (!res.ok) { throw res} 
+            const alumnsArray = await res.json()
+            return setAlumns(alumnsArray)
+        } catch (res) {
+            console.error(res)
+            navigate("/error")
+        }
         },
-        [history, baseUrl]
+        [navigate, baseUrl, admin.labId]
     );
+
     useEffect(() => {
-        if (!alumns.length) {
+        if (!alumns.length && admin.labId !== "") {
             memoizedAlumnFetch()
         }
-    }, [alumns.length, memoizedAlumnFetch])
+    }, [alumns.length, memoizedAlumnFetch, admin])
 
     useEffect(() => {
         if (alumns.length) {
@@ -57,8 +62,11 @@ function AddAlumns({ openAlumnShow, removeAlumnId, confirmRemovedAlumn }) {
         setLoading(true)
         const token = localStorage.getItem('jwt')
 
-        let alumnObj = {
-            display_name: alumnDisplayName.toLowerCase()
+        let alumnObj = { 
+            alumn: {
+                display_name: alumnDisplayName.toLowerCase(),
+                lab_id: admin.labId
+            }
         }
 
         let options = {
@@ -78,10 +86,11 @@ function AddAlumns({ openAlumnShow, removeAlumnId, confirmRemovedAlumn }) {
             .then(newAlumn => {
                 let newArray = [...alumns, newAlumn]
                 setAlumns(newArray)
-                openAlumnShow(newAlumn.id)
+                openAlumnShow(newAlumn.alumn_lab_id)
             })
             .catch(err => {
-                history.push("/error")
+                console.error(err)
+                navigate("/error")
             })
     }
 
@@ -93,8 +102,8 @@ function AddAlumns({ openAlumnShow, removeAlumnId, confirmRemovedAlumn }) {
                     {byLastName(alumns).map(alumn =>
                         <ListGroup.Item
                             as="li"
-                            key={alumn.id}
-                            onClick={() => openAlumnShow(alumn.id)}
+                            key={alumn.alumn_lab_id}
+                            onClick={() => openAlumnShow(alumn.alumn_lab_id)}
                             className="">
                             {alumn.search_names[1]}
                         </ListGroup.Item>)}

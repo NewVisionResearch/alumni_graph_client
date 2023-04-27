@@ -1,6 +1,11 @@
+import { useContext } from 'react'
 import { Nav } from 'react-bootstrap'
-import { Link, withRouter } from 'react-router-dom'
+import { Link } from 'react-router-dom'
+import { AdminContext } from '../Context/Context'
+
 function NavBar({ logout }) {
+
+    const admin = useContext(AdminContext)
 
     return (
         <div
@@ -13,10 +18,10 @@ function NavBar({ logout }) {
                     className="d-flex justify-content-between"
                     style={{ width: "fit-content", height: "100%" }}>
                     <Nav.Item className="nav-item mr-4">
-                        <Link to="/">Graph</Link>
+                        <Link reloadDocument to={`/graph/${admin.labId}`}>Graph</Link>
                     </Nav.Item>
                     <Nav.Item className="nav-item ml-4">
-                        <Link to="/Dashboard">Dashboard</Link>
+                        <Link to="/dashboard">Dashboard</Link>
                     </Nav.Item>
                 </div>
                 <Nav.Item className="nav-item" onClick={() => logout()}>
@@ -27,4 +32,4 @@ function NavBar({ logout }) {
     )
 }
 
-export default withRouter(NavBar)
+export default NavBar

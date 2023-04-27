@@ -22,7 +22,7 @@ function NewAlumnForm({ submitInput }) {
             <div style={{ width: "300px" }}>
                 <Input callback={setAlumnName} propsValue={alumnName} />
             </div>
-            <Button variant="info" type="submit">Submit</Button>
+            <Button variant="primary" type="submit">Submit</Button>
         </Form >
     )
 }
