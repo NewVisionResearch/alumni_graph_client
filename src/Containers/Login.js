@@ -7,7 +7,7 @@ function Login({ login, error, showPasswordResetSuccessfulToast, setShowPassword
 
   let navigate = useNavigate();
 
-  const [admin, setAdmin] = useState({ username: "", password: "" });
+  const [admin, setAdmin] = useState({ email: "", password: "" });
   const [viewPassword, setViewPassword] = useState(false);
 
   const handleRegisterClick = () => {
@@ -24,18 +24,18 @@ function Login({ login, error, showPasswordResetSuccessfulToast, setShowPassword
       style={{ width: '100%', height: '100%' }}>
       <Form
         onSubmit={(e) => {
-          setAdmin({ username: "", password: "" });
+          setAdmin({ email: "", password: "" });
           login(e, admin);
         }}
         style={{ width: '25%', height: '35%' }}>
         <Form.Group>
-          <Form.Label>Username: </Form.Label>
+          <Form.Label>Email: </Form.Label>
           <Form.Control
-            type="text"
-            name="username"
-            placeholder="Enter username"
+            type="email"
+            name="email"
+            placeholder="Enter email"
             required
-            value={admin.username}
+            value={admin.email}
             onChange={({ target: { name, value } }) => setAdmin({ ...admin, [name]: value })}
           />
         </Form.Group>
@@ -62,20 +62,20 @@ function Login({ login, error, showPasswordResetSuccessfulToast, setShowPassword
         </Form.Group>
         <div style={{
           display: "flex",
-          "align-items": "center",
-          "flex-wrap": "wrap",
-          "flex-direction": "row",
-          "justify-content": "space-between",
+          "alignItems": "center",
+          "flexWrap": "wrap",
+          "flexDirection": "row",
+          "justifyContent": "space-between",
           gap: 20
         }}>
           <Button type="submit">Login</Button>
           <div style={{
             display: "flex",
-            'flex-direction': "row",
-            'align-content': "center",
-            'align-items': "center",
-            'flex-wrap': "wrap",
-            'justify-content': "flex-start"
+            'flexDirection': "row",
+            'alignContent': "center",
+            'alignItems': "center",
+            'flexWrap': "wrap",
+            'justifyContent': "flex-start"
           }}
           >Not registered?&nbsp;<Button style={{ padding: 0 }} onClick={handleRegisterClick} variant="link"> Sign up!</Button></div>
         </div>
