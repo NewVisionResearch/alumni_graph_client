@@ -4,15 +4,12 @@ import AlumnGraphShow from '../Components/AlumnGraphShow';
 import SearchBar from './SearchBar';
 import Menu from './Menu';
 import { decideZoomOnClick } from '../services/zoom';
-import { Button } from 'react-bootstrap';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { AdminContext } from '../Context/Context';
 
 
 function Graph({ aspectRatio }) {
     const baseUrl = process.env.REACT_APP_BASE_URL;
-
-    let navigate = useNavigate();
 
     const admin = useContext(AdminContext);
     const { labId } = useParams();
@@ -207,10 +204,6 @@ function Graph({ aspectRatio }) {
         setAlumnLabId(null);
         stateGraph.create.centerAt(0, -40, 1000);
         stateGraph.create.zoom(0.55, 1000);
-    };
-
-    const handleLoginClick = () => {
-        navigate('/login');
     };
 
     return (
