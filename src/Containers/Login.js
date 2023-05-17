@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Button, Form, Toast, InputGroup } from 'react-bootstrap';
 import { AiFillEyeInvisible, AiFillEye } from 'react-icons/ai';
 import { useNavigate } from 'react-router-dom';
+import Menu from "./Menu";
 
 function Login({ login, error, showPasswordResetSuccessfulToast, setShowPasswordResetSuccessfulToast }) {
 
@@ -10,18 +11,21 @@ function Login({ login, error, showPasswordResetSuccessfulToast, setShowPassword
   const [admin, setAdmin] = useState({ email: "", password: "" });
   const [viewPassword, setViewPassword] = useState(false);
 
-  const handleRegisterClick = () => {
-    navigate("/register");
-  };
-
-  const handleHomeClick = () => {
-    navigate("/");
+  const handleResetPasswordClick = () => {
+    navigate("/password-reset-request");
   };
 
   return (
     <div
-      className="login d-flex justify-content-center align-items-center"
-      style={{ width: '100%', height: '100%' }}>
+      className="login d-flex flex-column justify-content-center align-items-center pt-5"
+      style={{ width: '100%' }}>
+      <div
+        className="d-flex flex-column justify-content-center align-items-center pb-2">
+        <h1
+          style={{ fontSize: '1.25em' }}>
+          Login
+        </h1>
+      </div>
       <Form
         onSubmit={(e) => {
           setAdmin({ email: "", password: "" });
@@ -77,23 +81,12 @@ function Login({ login, error, showPasswordResetSuccessfulToast, setShowPassword
             'flexWrap': "wrap",
             'justifyContent': "flex-start"
           }}
-          >Not registered?&nbsp;<Button style={{ padding: 0 }} onClick={handleRegisterClick} variant="link"> Sign up!</Button></div>
+          >
+            <Button style={{ padding: 0 }} onClick={handleResetPasswordClick} variant="link">Forgot password? Reset!</Button>
+          </div>
         </div>
       </Form>
-      <Button
-        style={{
-          position: 'absolute',
-          right: 30,
-          top: 30,
-          height: 'fit-content',
-          zIndex: 1000,
-          border: '1px solid black',
-          borderRadius: '.25rem',
-          boxShadow: '-1px 1px 10px rgb(31, 31, 31)'
-        }}
-        value="Home"
-        onClick={handleHomeClick}
-      >Home</Button>
+      <Menu show={admin.email === ""}></Menu>
       <Toast
         style={{
           position: 'absolute',

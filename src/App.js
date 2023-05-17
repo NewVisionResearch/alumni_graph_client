@@ -8,6 +8,7 @@ import Register from './Containers/Register';
 import Approve from './Containers/Approve';
 import Deny from './Containers/Deny';
 import PasswordReset from './Containers/PasswordReset';
+import PasswordResetRequest from './Containers/PasswordResetRequest';
 import { Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import './App.css';
 import ErrorPage from './Containers/ErrorPage';
@@ -191,6 +192,7 @@ function App() {
             <Route path="/error" Component={ErrorPage} />
             <Route path="/approve/:token" Component={Approve} />
             <Route path="/deny/:token" Component={Deny} />
+            <Route path="/password-reset-request" element={<PasswordResetRequest />} />
             <Route path="/password-reset/:token" element={<PasswordReset setShowPasswordResetSuccessfulToast={setShowPasswordResetSuccessfulToast} />} />
             <Route path="/*" element={<Navigate to="/error" />} />
           </Routes>

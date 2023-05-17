@@ -2,6 +2,7 @@ import { useState, useEffect, useContext } from 'react';
 import ForceGraph from 'force-graph';
 import AlumnGraphShow from '../Components/AlumnGraphShow';
 import SearchBar from './SearchBar';
+import Menu from './Menu';
 import { decideZoomOnClick } from '../services/zoom';
 import { Button } from 'react-bootstrap';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -236,21 +237,7 @@ function Graph({ aspectRatio }) {
                 : null
             }
             <SearchBar graph={stateGraph.create} nodes={gData.nodes} setAlumnLabId={setAlumnLabId} />
-            <Button
-                style={{
-                    position: 'absolute',
-                    right: 30,
-                    top: 30,
-                    height: 'fit-content',
-                    zIndex: 500,
-                    border: '1px solid black',
-                    borderRadius: '.25rem',
-                    boxShadow: '-1px 1px 10px rgb(31, 31, 31)',
-                    display: admin.email === "" ? "inline-block" : "none"
-                }}
-                value="Login"
-                onClick={handleLoginClick}
-            >Login</Button>
+            <Menu show={admin.email === ""}></Menu>
         </div >
     );
 }
