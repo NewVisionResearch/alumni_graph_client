@@ -38,7 +38,7 @@ function App() {
 
   useEffect(() => {
     if (admin.email !== "" && (pathname === "/login" || pathname === "/register")) {
-      navigate.current("/dashboard");
+      navigate.current("/dashboard", { replace: true });
     }
   }, [pathname, admin.email]
   );
@@ -77,17 +77,19 @@ function App() {
 
     if (token === null) {
       if (loginError !== "") {
-        navigate.current("/login");
+        navigate.current("/login", { replace: true });
       } else if (admin.email === "" && pathname === "/login") {
-        navigate.current("/login");
+        navigate.current("/login", { replace: true });
       } else if (admin.email === "" && pathname === "/register") {
-        navigate.current("/register");
+        navigate.current("/register", { replace: true });
+      } else if (admin.email === "" && pathname.includes("/dashboard")) {
+        navigate.current("/login", { replace: true });
       } else if (pathname.includes("/approve") || pathname.includes("/deny")) {
-        navigate.current(pathname);
+        navigate.current(pathname, { replace: true });
       } else if (pathname.includes("/password-reset")) {
-        navigate.current(pathname);
-      } else if (admin.email === "") {
-        navigate.current(pathname);
+        navigate.current(pathname, { replace: true });
+      } else if (admin.email !== "") {
+        navigate.current(pathname, { replace: true });
       }
     }
   }, [pathname, admin.email, loginError]);
@@ -183,8 +185,8 @@ function App() {
           style={{ height: '100vh', width: '100vw' }}>
           {admin.email !== "" ? <NavBar logout={logout} /> : null}
           <Routes>
-            <Route path="/" element={<Navigate to="/graph/1" />} />
-            <Route path="/graph" element={<Navigate to="/graph/1" />} />
+            <Route path="/" element={<Navigate to="/graph/1" replace={true} />} />
+            <Route path="/graph" element={<Navigate to="/graph/1" replace={true} />} />
             <Route path="/graph/:labId" element={<Graph aspectRatio={aspectRatio} />} />
             <Route path="/login" element={<Login login={login} error={loginError} showPasswordResetSuccessfulToast={showPasswordResetSuccessfulToast} setShowPasswordResetSuccessfulToast={setShowPasswordResetSuccessfulToast} />} />
             <Route path="/register" element={<Register register={register} error={registerError} />} />
@@ -194,7 +196,7 @@ function App() {
             <Route path="/deny/:token" Component={Deny} />
             <Route path="/password-reset-request" element={<PasswordResetRequest />} />
             <Route path="/password-reset/:token" element={<PasswordReset setShowPasswordResetSuccessfulToast={setShowPasswordResetSuccessfulToast} />} />
-            <Route path="/*" element={<Navigate to="/error" />} />
+            <Route path="/*" element={<Navigate to="/error" replace={true} />} />
           </Routes>
         </div>
       </React.Fragment>
