@@ -38,7 +38,8 @@ function NavBar({ logout }) {
         fetchAdminStatus();
     }, [baseUrl]);
 
-    const handleGetAdminsClick = () => {
+    const handleGetAdminsClick = (e) => {
+        e.preventDefault();
         const fetchAdminQuery = async () => {
             try {
                 const token = localStorage.getItem('jwt');
@@ -83,7 +84,7 @@ function NavBar({ logout }) {
                     </Nav.Item>
                     {isSysAdmin ? (
                         <Nav.Item className="nav-item ml-4">
-                            <Link onClick={handleGetAdminsClick} to={`/graph/${admin.labId}`}>
+                            <Link onClick={(e) => handleGetAdminsClick(e)}>
                                 Get Admins
                             </Link>
                         </Nav.Item>
