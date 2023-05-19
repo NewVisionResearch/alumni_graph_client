@@ -1,73 +1,75 @@
-import { useState, useEffect, useCallback, useContext } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { ListGroup } from 'react-bootstrap'
-import Loading from '../Components/Loading'
-import { byLastName } from '../services/sorts'
-import FormComponent from './NewAlumnForm'
-import  { AdminContext } from '../Context/Context'
+import { useState, useEffect, useCallback, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { ListGroup } from 'react-bootstrap';
+import Loading from '../Components/Loading';
+import { byLastName } from '../services/sorts';
+import FormComponent from './NewAlumnForm';
+import { AdminContext } from '../Context/Context';
 
-function AddAlumns({ openAlumnShow, removeAlumnId, confirmRemovedAlumn }) {
-    const baseUrl = process.env.REACT_APP_BASE_URL
+function AddAlumns({ onAlumnsChange, openAlumnShow, removeAlumnId, confirmRemovedAlumn }) {
+    const baseUrl = process.env.REACT_APP_BASE_URL;
 
-    const admin = useContext(AdminContext)
+    const admin = useContext(AdminContext);
 
-    const [alumns, setAlumns] = useState([])
-    const [loading, setLoading] = useState(false)
+    const [alumns, setAlumns] = useState([]);
+    const [loading, setLoading] = useState(false);
 
-    const navigate = useNavigate()
+    const navigate = useNavigate();
 
     const memoizedAlumnFetch = useCallback(async () => {
-        const token = localStorage.getItem('jwt')
+        const token = localStorage.getItem('jwt');
 
         const options = {
             method: 'GET',
             headers: {
                 Authorization: `Bearer ${token}`
             }
-        }
+        };
 
         try {
-            const res = await fetch(`${baseUrl}/alumns/${admin.labId}/index`, options)
-            if (!res.ok) { throw res} 
-            const alumnsArray = await res.json()
-            return setAlumns(alumnsArray)
+            const res = await fetch(`${baseUrl}/alumns/${admin.labId}/index`, options);
+            if (!res.ok) { throw res; }
+            const alumnsArray = await res.json();
+            return setAlumns(alumnsArray);
         } catch (res) {
-            console.error(res)
-            navigate("/error")
+            console.error(res);
+            navigate("/error");
         }
-        },
+    },
         [navigate, baseUrl, admin.labId]
     );
 
     useEffect(() => {
         if (!alumns.length && admin.labId !== "") {
-            memoizedAlumnFetch()
+            memoizedAlumnFetch();
         }
-    }, [alumns.length, memoizedAlumnFetch, admin])
+
+        onAlumnsChange(alumns.length);
+    }, [alumns.length, memoizedAlumnFetch, admin, onAlumnsChange]);
 
     useEffect(() => {
         if (alumns.length) {
-            setLoading(false)
+            setLoading(false);
         }
-    }, [alumns.length])
+    }, [alumns.length]);
 
     useEffect(() => {
         if (removeAlumnId) {
             memoizedAlumnFetch()
-                .then(confirmRemovedAlumn)
+                .then(confirmRemovedAlumn);
         }
-    }, [memoizedAlumnFetch, removeAlumnId, confirmRemovedAlumn])
+    }, [memoizedAlumnFetch, removeAlumnId, confirmRemovedAlumn]);
 
     const addAlumn = (alumnDisplayName) => {
-        setLoading(true)
-        const token = localStorage.getItem('jwt')
+        setLoading(true);
+        const token = localStorage.getItem('jwt');
 
-        let alumnObj = { 
+        let alumnObj = {
             alumn: {
                 display_name: alumnDisplayName.toLowerCase(),
                 lab_id: admin.labId
             }
-        }
+        };
 
         let options = {
             method: 'POST',
@@ -76,23 +78,23 @@ function AddAlumns({ openAlumnShow, removeAlumnId, confirmRemovedAlumn }) {
                 Authorization: `Bearer ${token}`
             },
             body: JSON.stringify(alumnObj)
-        }
+        };
 
         fetch(`${baseUrl}/alumns`, options)
             .then(res => {
-                if (!res.ok) { throw res }
-                return res.json()
+                if (!res.ok) { throw res; }
+                return res.json();
             })
             .then(newAlumn => {
-                let newArray = [...alumns, newAlumn]
-                setAlumns(newArray)
-                openAlumnShow(newAlumn.alumn_lab_id)
+                let newArray = [...alumns, newAlumn];
+                setAlumns(newArray);
+                openAlumnShow(newAlumn.alumn_lab_id);
             })
             .catch(err => {
-                console.error(err)
-                navigate("/error")
-            })
-    }
+                console.error(err);
+                navigate("/error");
+            });
+    };
 
     return (
         <div className="add-alumns mr-5 mb-4" >
@@ -110,7 +112,7 @@ function AddAlumns({ openAlumnShow, removeAlumnId, confirmRemovedAlumn }) {
                 </ListGroup>}
             </div>
         </div>
-    )
+    );
 }
 
-export default AddAlumns
+export default AddAlumns;
