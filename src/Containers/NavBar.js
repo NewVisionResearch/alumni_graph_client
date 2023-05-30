@@ -127,7 +127,7 @@ function NavBar({ logout }) {
                     <small>now</small>
                 </Toast.Header>
                 <Toast.Body>
-                    The query has been successfully send to your email!
+                    The query has been successfully sent to your email!
                 </Toast.Body>
             </Toast>
         </div>

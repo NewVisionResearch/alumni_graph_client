@@ -27,7 +27,7 @@ function Menu({ show }) {
             <Dropdown.Menu>
                 <Dropdown.Item onClick={() => navigate(`/graph/${admin.labId}`)}>Home</Dropdown.Item>
                 <Dropdown.Item onClick={() => navigate('/login')}>Login</Dropdown.Item>
-                <Dropdown.Item onClick={() => navigate('/register')}>Sign Up</Dropdown.Item>
+                <Dropdown.Item onClick={() => navigate('/register')}>Register</Dropdown.Item>
                 <Dropdown.Item onClick={() => navigate('/password-reset-request')}>Password Reset</Dropdown.Item>
             </Dropdown.Menu>
         </Dropdown>
