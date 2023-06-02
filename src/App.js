@@ -100,9 +100,9 @@ function App() {
     const { email, name, labName, phoneNumber, howToUse, labUrl } = labInfo;
     let requestObj = {
       request: {
-        lab_name: labName,
-        name: name,
-        email: email,
+        lab_name: labName.trim(),
+        name: name.trim(),
+        email: email.trim(),
         phone_number: phoneNumber,
         how_to_use: howToUse,
         lab_url: labUrl

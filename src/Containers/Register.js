@@ -68,9 +68,8 @@ function Register({ register, error }) {
                         <Form.Control
                             type="tel"
                             name="phoneNumber"
-                            placeholder="1234567890"
+                            placeholder="Enter phone number"
                             required
-                            pattern="[0-9]{3}[0-9]{3}[0-9]{4}"
                             value={lab.phoneNumber}
                             onChange={({ target: { name, value } }) => setLab({ ...lab, [name]: value })}
                         />
@@ -82,11 +81,12 @@ function Register({ register, error }) {
                         <Form.Control
                             type="url"
                             name="labUrl"
-                            placeholder="http://www.example.com"
+                            placeholder="http(s)://www.example.com"
                             required
                             value={lab.url}
                             onChange={({ target: { name, value } }) => setLab({ ...lab, [name]: value })}
                         />
+                        <Form.Text>Please enter the full Url. Ex: "http(s)://www.example.com"</Form.Text>
                     </Col>
                 </Form.Group>
                 <Form.Group as={Row}>
