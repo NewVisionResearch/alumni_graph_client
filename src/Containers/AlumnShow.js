@@ -3,6 +3,7 @@ import { Button } from "react-bootstrap";
 import { byDate, byCoAuthors, sortByTwoFns } from "../services/sorts";
 import PublicationDisplayCheck from "../Components/PublicationDisplayCheck";
 import EditAlumnForm from "./EditAlumnForm";
+import Loading from "../Components/Loading";
 
 function AlumnShow({ alumnLabId, removeAlumn }) {
   const baseUrl = process.env.REACT_APP_BASE_URL;
@@ -14,6 +15,7 @@ function AlumnShow({ alumnLabId, removeAlumn }) {
   });
   const [idObj, setIdObj] = useState({});
   const [editSearchNames, setEditSearchNames] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (alumnLabId) {
@@ -93,6 +95,8 @@ function AlumnShow({ alumnLabId, removeAlumn }) {
   };
 
   const refetchPublications = () => {
+    setLoading(true);
+
     const options = {
       method: "GET",
       headers: {
@@ -103,7 +107,10 @@ function AlumnShow({ alumnLabId, removeAlumn }) {
     };
     fetch(`${baseUrl}/alumns/${alumnLabId}/refetch`, options)
       .then((res) => res.json())
-      .then((alumnObj) => setAlumn(alumnObj));
+      .then((alumnObj) => {
+        setAlumn(alumnObj);
+        setLoading(false);
+      });
   };
 
   const updateSearchNames = (alumnInfo) => {
@@ -166,21 +173,23 @@ function AlumnShow({ alumnLabId, removeAlumn }) {
         Delete Researcher
       </Button>
       <p>Publications ({filterValidPublications().length || "Loading..."}):</p>
-      <ul
-        style={{ maxHeight: "500px", overflowY: "hidden", overflow: "scroll" }}
-      >
-        {sortByTwoFns(byDate, byCoAuthors, filterValidPublications()).map(
-          (alumn_pub, idx) => (
-            <PublicationDisplayCheck
-              key={`${alumn_pub.lab_alumn_publication_id}_${idx}`}
-              alumnName={alumn.search_names[0]}
-              alumn_publication={alumn_pub}
-              updateIdArray={updateIdArray}
-              invalidatePublication={invalidatePublication}
-            />
-          )
-        )}
-      </ul>
+      {loading ? <Loading /> :
+        <ul
+          style={{ maxHeight: "500px", overflowY: "hidden", overflow: "scroll" }}
+        >
+          {sortByTwoFns(byDate, byCoAuthors, filterValidPublications()).map(
+            (alumn_pub, idx) => (
+              <PublicationDisplayCheck
+                key={`${alumn_pub.lab_alumn_publication_id}_${idx}`}
+                alumnName={alumn.search_names[0]}
+                alumn_publication={alumn_pub}
+                updateIdArray={updateIdArray}
+                invalidatePublication={invalidatePublication}
+              />
+            )
+          )}
+        </ul>
+      }
       <Button className="mr-3" onClick={updateDatabase}>
         Update Publications
       </Button>
