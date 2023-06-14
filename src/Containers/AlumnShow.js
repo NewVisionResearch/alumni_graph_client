@@ -156,14 +156,14 @@ function AlumnShow({ alumnLabId, removeAlumn }) {
           closeModal={closeModal}
         />
       ) : (
-        <Button onClick={() => setEditSearchNames(true)}>Edit Alumn</Button>
+        <Button onClick={() => setEditSearchNames(true)}>Edit Researcher</Button>
       )}
       <Button
         className={(editSearchNames && "mb-3") || (!editSearchNames && "ml-3")}
         variant="danger"
         onClick={(e) => removeAlumn(e, alumnLabId)}
       >
-        Delete Alumn
+        Delete Researcher
       </Button>
       <p>Publications ({filterValidPublications().length || "Loading..."}):</p>
       <ul
