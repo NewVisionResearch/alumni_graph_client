@@ -36,6 +36,18 @@ animation-direction: alternate;
 text-shadow: 0 0 1px black;
 }
 
+.non-animate {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  margin: auto;
+  margin-bottom: 1rem;
+  /* 	width: 350px; */
+  /* 	font-size:26px; */
+  font-family: Helvetica, sans-serif, Arial;
+}
+
 .nav-item {
   height: 100%;
   padding: 0 25px;
