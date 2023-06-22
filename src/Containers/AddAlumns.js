@@ -94,10 +94,46 @@ function AddAlumns({
                 }
                 return res.json();
             })
-            .then((newAlumn) => {
-                let newArray = [...alumns, newAlumn];
-                setAlumns(newArray);
-                openAlumnShow(newAlumn.alumn_lab_id);
+            .then((response) => {
+                const { job_id } = response;
+
+                const pollJobStatus = setInterval(() => {
+                    fetch(`${baseUrl}/jobs/${job_id}`, {
+                        headers: { Authorization: `Bearer ${token}` },
+                    })
+                        .then((res) => {
+                            if (!res.ok) {
+                                throw new Error("Job status request failed");
+                            }
+
+                            return res.json();
+                        })
+                        .then((res) => {
+                            if (res.job.status === "completed") {
+                                clearInterval(pollJobStatus);
+                                let newArray = [
+                                    ...alumns,
+                                    {
+                                        alumn_lab_id: res.alumn_lab_id,
+                                        full_name: res.full_name,
+                                        search_names: res.search_names,
+                                        my_lab_alumn_publications: res.my_lab_alumn_publications
+                                    }
+                                ];
+                                setAlumns(newArray);
+                                openAlumnShow(res.alumn_lab_id);
+                            } else if (res.job.status === "failed") {
+                                clearInterval(pollJobStatus);
+                                console.error("Job failed:", res.error);
+                                navigate("/error");
+                            }
+                        })
+                        .catch((err) => {
+                            console.error(err);
+                            clearInterval(pollJobStatus);
+                            navigate("/error");
+                        });
+                }, 5000);
             })
             .catch((err) => {
                 console.error(err);
