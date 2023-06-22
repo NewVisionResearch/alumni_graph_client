@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Button } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 import { byDate, byCoAuthors, sortByTwoFns } from "../services/sorts";
 import PublicationDisplayCheck from "../Components/PublicationDisplayCheck";
 import EditAlumnForm from "./EditAlumnForm";
@@ -16,6 +17,8 @@ function AlumnShow({ alumnLabId, removeAlumn }) {
   const [idObj, setIdObj] = useState({});
   const [editSearchNames, setEditSearchNames] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (alumnLabId) {
@@ -106,10 +109,43 @@ function AlumnShow({ alumnLabId, removeAlumn }) {
       },
     };
     fetch(`${baseUrl}/alumns/${alumnLabId}/refetch`, options)
-      .then((res) => res.json())
-      .then((alumnObj) => {
-        setAlumn(alumnObj);
-        setLoading(false);
+      .then((res) => {
+        if (!res.ok) {
+          throw res;
+        }
+        return res.json();
+      })
+      .then((response) => {
+        const { job_id } = response;
+
+        const pollJobStatus = setInterval(() => {
+          fetch(`${baseUrl}/jobs/${job_id}`, {
+            headers: { Authorization: `Bearer ${token}` },
+          })
+            .then((res) => {
+              if (!res.ok) {
+                throw new Error("Job status request failed");
+              }
+
+              return res.json();
+            })
+            .then((res) => {
+              if (res.job.status === "completed") {
+                clearInterval(pollJobStatus);
+                setAlumn({
+                  alumn_lab_id: res.alumn_lab_id,
+                  full_name: res.full_name,
+                  search_names: res.search_names,
+                  my_lab_alumn_publications: res.my_lab_alumn_publications
+                });
+                setLoading(false);
+              } else if (res.job.status === "failed") {
+                clearInterval(pollJobStatus);
+                console.error("Job failed:", res.error);
+                navigate("/error");
+              }
+            });
+        }, 5000);
       });
   };
 
