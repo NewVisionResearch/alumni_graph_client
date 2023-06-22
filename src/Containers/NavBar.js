@@ -69,11 +69,11 @@ function NavBar({ logout }) {
     return (
         <div
             className="d-flex justify-content-center align-items-center border-bottom border-secondary"
-            style={{ position: 'relative', width: "100%", height: "50px" }}>
+            style={{ position: 'relative', width: "100%", height: "75px" }}>
             <Nav
                 className="d-flex justify-content-between"
                 style={{ position: 'absolute', top: 0, width: "85%", height: "100%" }}>
-                <Nav.Item className="nav-item">
+                <Nav.Item className="nav-item" style={{ padding: "0.5rem 0" }}>
                     <Image src='../NVR1-TC.png' rounded />
                 </Nav.Item>
                 <Nav.Item className="nav-item">
