@@ -1,10 +1,12 @@
 import { useState, useEffect, useContext } from 'react';
+import { Image, Nav } from 'react-bootstrap';
+
 import ForceGraph from 'force-graph';
 import AlumnGraphShow from '../Components/AlumnGraphShow';
 import SearchBar from './SearchBar';
 import Menu from './Menu';
 import { decideZoomOnClick } from '../services/zoom';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { AdminContext } from '../Context/Context';
 
 
@@ -231,6 +233,18 @@ function Graph({ aspectRatio }) {
             }
             <SearchBar graph={stateGraph.create} nodes={gData.nodes} setAlumnLabId={setAlumnLabId} />
             <Menu show={admin.email === ""}></Menu>
+            <Nav.Item className="nav-item" style={{ padding: "0.5rem 0", width: "5rem", display: admin.email === "" ? "block" : "none" }}>
+                <Link reloadDocument to={"https://newvisionresearch.org"}>
+                    <Image style={{
+                        position: 'absolute',
+                        right: 50,
+                        bottom: 50,
+                        width: "5rem",
+                        height: 'fit-content',
+                        zIndex: 1000
+                    }} src='../NVR1-TC.png' rounded />
+                </Link>
+            </Nav.Item>
         </div >
     );
 }
