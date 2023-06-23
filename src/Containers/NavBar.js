@@ -74,7 +74,7 @@ function NavBar({ logout }) {
                 className="d-flex justify-content-between"
                 style={{ position: 'absolute', top: 0, width: "85%", height: "100%" }}>
                 <Nav.Item className="nav-item" style={{ padding: "0.5rem 0", width: "5rem" }}>
-                    <Image src='../NVR1-TC.png' rounded />
+                    <Link reloadDocument to={"https://newvisionresearch.org"}><Image style={{ width: "100%" }} src='../NVR1-TC.png' rounded /></Link>
                 </Nav.Item>
                 <Nav.Item className="nav-item">
                     <Link reloadDocument to={`/graph/${admin.labId}`}>Graph</Link>
