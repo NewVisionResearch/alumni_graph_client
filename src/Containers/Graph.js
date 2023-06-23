@@ -240,7 +240,6 @@ function Graph({ aspectRatio }) {
                         right: 50,
                         bottom: 50,
                         width: "5rem",
-                        height: 'fit-content',
                         zIndex: 1000
                     }} src='../NVR1-TC.png' rounded />
                 </Link>
