@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { Button, Form, Toast, Row, Col } from 'react-bootstrap';
+import PhoneInput from 'react-phone-number-input';
+import 'react-phone-number-input/style.css';
 import Menu from "./Menu";
 
 function Register({ register, error }) {
@@ -65,13 +67,13 @@ function Register({ register, error }) {
                 <Form.Group as={Row}>
                     <Form.Label column sm={4}>Phone Number: </Form.Label>
                     <Col sm={8}>
-                        <Form.Control
-                            type="tel"
-                            name="phoneNumber"
+                        <PhoneInput
+                            international
+                            countryCallingCodeEditable={false}
+                            defaultCountry="US"
                             placeholder="Enter phone number"
-                            required
                             value={lab.phoneNumber}
-                            onChange={({ target: { name, value } }) => setLab({ ...lab, [name]: value })}
+                            onChange={(value) => setLab({ ...lab, phoneNumber: value })}
                         />
                     </Col>
                 </Form.Group>
