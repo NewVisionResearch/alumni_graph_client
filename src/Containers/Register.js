@@ -81,14 +81,13 @@ function Register({ register, error }) {
                     <Form.Label column sm={4}>Lab Url: </Form.Label>
                     <Col sm={8}>
                         <Form.Control
-                            type="url"
+                            type="text"
                             name="labUrl"
-                            placeholder="http(s)://www.example.com"
+                            placeholder="www.example.com"
                             required
                             value={lab.url}
                             onChange={({ target: { name, value } }) => setLab({ ...lab, [name]: value })}
                         />
-                        <Form.Text>Please enter the full Url. Ex: "http(s)://www.example.com"</Form.Text>
                     </Col>
                 </Form.Group>
                 <Form.Group as={Row}>
