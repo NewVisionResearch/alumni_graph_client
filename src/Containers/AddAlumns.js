@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { ListGroup } from "react-bootstrap";
+import { ListGroup, Button, Modal } from "react-bootstrap";
 import Loading from "../Components/Loading";
 import { byLastName } from "../services/sorts";
 import FormComponent from "./NewAlumnForm";
@@ -17,9 +17,15 @@ function AddAlumns({
     const admin = useContext(AdminContext);
 
     const [alumns, setAlumns] = useState([]);
+    const [showAlumnQuerySearchModal, setShowAlumnQuerySearchModal] =
+        useState(false);
+    const [alumnQueryResults, setAlumnQueryResults] = useState({});
     const [loading, setLoading] = useState(false);
 
     const navigate = useNavigate();
+
+    const handleModalClose = () => setShowAlumnQuerySearchModal(false);
+    const handleModalShow = () => setShowAlumnQuerySearchModal(true);
 
     const memoizedAlumnFetch = useCallback(async () => {
         const token = localStorage.getItem("jwt");
@@ -68,6 +74,7 @@ function AddAlumns({
     }, [memoizedAlumnFetch, removeAlumnId, confirmRemovedAlumn]);
 
     const addAlumn = (alumnDisplayName) => {
+        setShowAlumnQuerySearchModal(false);
         setLoading(true);
         const token = localStorage.getItem("jwt");
 
@@ -75,6 +82,7 @@ function AddAlumns({
             alumn: {
                 display_name: alumnDisplayName.toLowerCase(),
                 lab_id: admin.labId,
+                search_names: [alumnQueryResults.esearchresult.querytranslation]
             },
         };
 
@@ -117,8 +125,8 @@ function AddAlumns({
                                         alumn_lab_id: res.alumn_lab_id,
                                         full_name: res.full_name,
                                         search_names: res.search_names,
-                                        my_lab_alumn_publications: res.my_lab_alumn_publications
-                                    }
+                                        my_lab_alumn_publications: res.my_lab_alumn_publications,
+                                    },
                                 ];
                                 setAlumns(newArray);
                                 openAlumnShow(res.alumn_lab_id);
@@ -143,7 +151,30 @@ function AddAlumns({
 
     return (
         <div className="add-alumns mr-5 mb-4">
-            <FormComponent submitInput={addAlumn} />
+            <FormComponent
+                submitInput={addAlumn}
+                handleModalShow={handleModalShow}
+                setAlumnQueryResults={setAlumnQueryResults}
+            />
+            <Modal show={showAlumnQuerySearchModal} onHide={handleModalClose}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Modal heading</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <div>
+                        <p>Query: {JSON.stringify(alumnQueryResults.esearchresult?.querytranslation)}</p>
+                        <p>Query returned with {JSON.stringify(alumnQueryResults.esearchresult?.count)} results</p>
+                    </div>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleModalClose}>
+                        Close
+                    </Button>
+                    <Button variant="primary" onClick={() => addAlumn(JSON.stringify(alumnQueryResults.esearchresult.querytranslation))}>
+                        Save Changes
+                    </Button>
+                </Modal.Footer>
+            </Modal>
             {loading ? (
                 <Loading />
             ) : (
