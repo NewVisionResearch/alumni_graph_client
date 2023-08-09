@@ -4,7 +4,6 @@ import { Image, Nav } from 'react-bootstrap';
 import ForceGraph from 'force-graph';
 import AlumnGraphShow from '../Components/AlumnGraphShow';
 import SearchBar from './SearchBar';
-import Menu from './Menu';
 import { decideZoomOnClick } from '../services/zoom';
 import { Link, useParams } from 'react-router-dom';
 import { AdminContext } from '../Context/Context';
@@ -232,7 +231,6 @@ function Graph({ aspectRatio }) {
                 : null
             }
             <SearchBar graph={stateGraph.create} nodes={gData.nodes} setAlumnId={setAlumnId} />
-            <Menu show={admin.email === ""}></Menu>
             <Nav.Item className="nav-item" style={{ padding: "0.5rem 0", width: "5rem", display: admin.email === "" ? "block" : "none" }}>
                 <Link reloadDocument to={"https://newvisionresearch.org"}>
                     <Image style={{

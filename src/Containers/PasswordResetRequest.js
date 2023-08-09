@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Button, Form, Toast, InputGroup } from 'react-bootstrap';
-import Menu from "./Menu";
 
 function PasswordResetRequest() {
     const [email, setEmail] = useState("");
@@ -76,7 +75,6 @@ function PasswordResetRequest() {
                 </Form.Group>
                 <Button style={{ marginTop: 5 }} type="submit">Submit</Button>
             </Form>
-            <Menu show={true}></Menu>
             <Toast
                 style={{
                     position: 'absolute',

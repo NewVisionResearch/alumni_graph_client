@@ -1,13 +1,4 @@
 import React, { useState, useEffect, useRef } from "react";
-import NavBar from "./Containers/NavBar";
-import Graph from "./Containers/Graph";
-import Dashboard from "./Containers/Dashboard";
-import Login from "./Containers/Login";
-import Register from "./Containers/Register";
-import Approve from "./Containers/Approve";
-import Deny from "./Containers/Deny";
-import PasswordReset from "./Containers/PasswordReset";
-import PasswordResetRequest from "./Containers/PasswordResetRequest";
 import {
   Navigate,
   Route,
@@ -15,11 +6,22 @@ import {
   useLocation,
   useNavigate,
 } from "react-router-dom";
-import "./App.css";
+
+import NavBar from "./Containers/NavBar";
+import Graph from "./Containers/Graph";
+import Dashboard from "./Containers/Dashboard";
+import Login from "./Containers/Login";
+import RegisterContainer from "./Containers/RegisterContainer";
+import Approve from "./Containers/Approve";
+import Deny from "./Containers/Deny";
+import PasswordReset from "./Containers/PasswordReset";
+import PasswordResetRequest from "./Containers/PasswordResetRequest";
 import ErrorPage from "./Containers/ErrorPage";
 import { AdminContext } from "./Context/Context";
-import * as authService from "./services/authService";
+import Menu from "./Containers/Menu";
 import useAdmin from "./hooks/useAdmin";
+
+import "./App.css";
 
 function App() {
   console.log(
@@ -32,7 +34,6 @@ function App() {
   const { pathname } = useLocation();
   const { admin, login, logout, loginError } = useAdmin();
 
-  const [registerError, setRegisterError] = useState("");
   const [aspectRatio, setAspectRatio] = useState(
     (window.innerHeight * window.innerWidth) / 1000000
   );
@@ -86,39 +87,11 @@ function App() {
     }
   }, [pathname, admin.email, loginError]);
 
-  const handleRegister = async (e, labInfo, setShowRegisterToast, setLab) => {
-    e.preventDefault();
-
-    try {
-      const res = await authService.register(labInfo);
-
-      if (!res.ok) throw res;
-
-      const request = await res.json();
-      setRegisterError("");
-      setLab({
-        email: "",
-        name: "",
-        labName: "",
-        phoneNumber: "",
-        howToUse: "",
-        labUrl: "",
-      });
-      setShowRegisterToast(true);
-      console.log("Request: ", request);
-    } catch (error) {
-      const err = await error.json();
-      setLab((prev) => ({ ...prev, email: "" }));
-      setRegisterError(err);
-      console.log(err);
-    }
-  };
-
   return (
     <AdminContext.Provider value={admin}>
       <React.Fragment>
         <div id="App" style={{ height: "100vh", width: "100vw" }}>
-          {admin.email !== "" ? <NavBar logout={logout} /> : null}
+          {admin.email === "" ? <Menu show={true} /> : <NavBar logout={logout} />}
           <Routes>
             <Route
               path="/"
@@ -150,7 +123,7 @@ function App() {
             <Route
               path="/register"
               element={
-                <Register register={handleRegister} error={registerError} />
+                <RegisterContainer />
               }
             />
             <Route path="/dashboard" element={<Dashboard />} />

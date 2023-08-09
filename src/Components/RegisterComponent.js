@@ -1,17 +1,12 @@
-import { useState } from "react";
-import { Button, Form, Toast, Row, Col } from 'react-bootstrap';
+import { Form, Button, Row, Col } from 'react-bootstrap';
 import PhoneInput from 'react-phone-number-input';
-import 'react-phone-number-input/style.css';
-import Menu from "./Menu";
 
-function Register({ register, error }) {
-    const [lab, setLab] = useState({ email: "", name: "", labName: "", phoneNumber: "", howToUse: "", labUrl: "" });
-    const [showRegisterToast, setShowRegisterToast] = useState(false);
+import 'react-phone-number-input/style.css';
+
+function RegisterComponent({ lab, setLab, handleRegister, registerError }) {
 
     return (
-        <div
-            className="login d-flex flex-column justify-content-center align-items-center pt-3"
-            style={{ width: '100%' }}>
+        <>
             <div
                 className="d-flex flex-column justify-content-center align-items-center pb-3">
                 <p
@@ -22,7 +17,8 @@ function Register({ register, error }) {
             </div>
             <Form
                 onSubmit={(e) => {
-                    register(e, lab, setShowRegisterToast, setLab);
+                    e.preventDefault();
+                    handleRegister(lab);
                 }}
             >
                 <Form.Group as={Row}>
@@ -85,7 +81,7 @@ function Register({ register, error }) {
                             name="labUrl"
                             placeholder="www.example.com"
                             required
-                            value={lab.url}
+                            value={lab.labUrl}
                             onChange={({ target: { name, value } }) => setLab({ ...lab, [name]: value })}
                         />
                     </Col>
@@ -104,7 +100,7 @@ function Register({ register, error }) {
                         />
                     </Col>
                 </Form.Group>
-                <Form.Text className="text-danger">{error}</Form.Text>
+                <Form.Text className="text-danger">{registerError}</Form.Text>
                 <div style={{
                     display: "flex",
                     "alignItems": "center",
@@ -116,26 +112,8 @@ function Register({ register, error }) {
                     <Button style={{ marginTop: 5 }} type="submit">Submit</Button>
                 </div>
             </Form>
-            <Menu show={true}></Menu>
-            <Toast
-                style={{
-                    position: 'absolute',
-                    top: 10,
-                    backgroundColor: "green"
-                }}
-                animation={true}
-                show={showRegisterToast}
-                onClose={() => setShowRegisterToast(false)}>
-                <Toast.Header>
-                    <strong className="mr-auto">Success!</strong>
-                    <small>now</small>
-                </Toast.Header>
-                <Toast.Body>
-                    Your request has been successfully submitted!
-                </Toast.Body>
-            </Toast>
-        </div>
+        </>
     );
 }
 
-export default Register;
+export default RegisterComponent;

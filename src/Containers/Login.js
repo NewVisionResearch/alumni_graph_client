@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Button, Form, Toast, InputGroup } from 'react-bootstrap';
 import { AiFillEyeInvisible, AiFillEye } from 'react-icons/ai';
 import { useNavigate } from 'react-router-dom';
-import Menu from "./Menu";
 
 function Login({ login, error, showPasswordResetSuccessfulToast, setShowPasswordResetSuccessfulToast }) {
 
@@ -86,7 +85,6 @@ function Login({ login, error, showPasswordResetSuccessfulToast, setShowPassword
           </div>
         </div>
       </Form>
-      <Menu show={admin.email === ""}></Menu>
       <Toast
         style={{
           position: 'absolute',
