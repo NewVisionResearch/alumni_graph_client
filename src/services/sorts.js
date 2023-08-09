@@ -22,7 +22,7 @@ const byName = (array) => {
 };
 
 const byLastName = (array) => {
-    return array.sort((a, b) => a.search_names[1] > b.search_names[1] ? 1 : -1);
+    return array.sort((a, b) => a.full_name > b.full_name ? 1 : -1);
 };
 
 module.exports = { byCoAuthors, byDate, sortByTwoFns, byName, byLastName };

@@ -18,7 +18,7 @@ function Graph({ aspectRatio }) {
 
     const [stateGraph, setStateGraph] = useState({ create: () => { } });
     const [publications, setPublications] = useState([]);
-    const [alumnLabId, setAlumnLabId] = useState(null);
+    const [alumnId, setAlumnId] = useState(null);
     const [gData, setGData] = useState({ nodes: [], links: [] });
 
     useEffect(() => {
@@ -97,7 +97,7 @@ function Graph({ aspectRatio }) {
                 return resArray;
             }
             const data = {
-                nodes: uniqueIds(publications).map(alumn => ({ id: alumn.display_name, alumn_lab_id: alumn.alumn_lab_id })),
+                nodes: uniqueIds(publications).map(alumn => ({ id: alumn.display_name, alumn_id: alumn.alumn_id })),
                 links: createPairs(publications)
                     .map(arr => ({
                         source: arr[0].display_name,
@@ -176,13 +176,13 @@ function Graph({ aspectRatio }) {
                         if (stateGraph.create.zoom && stateGraph.create.zoom() > 1.25) {
                             stateGraph.create.centerAt((window.innerWidth <= 425 ? node.x : node.x + 75), (window.innerWidth <= 425 ? node.y + 25 : node.y), 1000);
                             stateGraph.create.zoom(decideZoomOnClick(), 1000);
-                            setAlumnLabId(node.alumn_lab_id);
+                            setAlumnId(node.alumn_id);
                         }
                         return;
                     }
                     stateGraph.create.centerAt((window.innerWidth <= 425 ? node.x : node.x + 75), (window.innerWidth <= 425 ? node.y + 25 : node.y), 1000);
                     stateGraph.create.zoom(decideZoomOnClick(), 1000);
-                    setAlumnLabId(node.alumn_lab_id);
+                    setAlumnId(node.alumn_id);
                 })
                 .onNodeDragEnd(node => {
                     node.fx = node.x;
@@ -203,7 +203,7 @@ function Graph({ aspectRatio }) {
     }, [aspectRatio, gData, stateGraph.create]);
 
     const closeModal = () => {
-        setAlumnLabId(null);
+        setAlumnId(null);
         stateGraph.create.centerAt(0, -40, 1000);
         stateGraph.create.zoom(0.55, 1000);
     };
@@ -216,7 +216,7 @@ function Graph({ aspectRatio }) {
                 id="graph"
                 style={{ border: '3px solid', width: '100%', height: '100%' }}>
             </div>
-            {alumnLabId ?
+            {alumnId ?
                 <div
                     id="alumn-graph-show"
                     className="mt-3 mr-3 rounded d-flex-column justify-content-center align-items-center"
@@ -227,11 +227,11 @@ function Graph({ aspectRatio }) {
                         boxShadow: '-7px 10px 20px rgb(31, 31, 31)',
                         overflowY: 'scroll'
                     }}>
-                    <AlumnGraphShow alumnLabId={alumnLabId} closeModal={closeModal} />
+                    <AlumnGraphShow alumnId={alumnId} closeModal={closeModal} />
                 </div>
                 : null
             }
-            <SearchBar graph={stateGraph.create} nodes={gData.nodes} setAlumnLabId={setAlumnLabId} />
+            <SearchBar graph={stateGraph.create} nodes={gData.nodes} setAlumnId={setAlumnId} />
             <Menu show={admin.email === ""}></Menu>
             <Nav.Item className="nav-item" style={{ padding: "0.5rem 0", width: "5rem", display: admin.email === "" ? "block" : "none" }}>
                 <Link reloadDocument to={"https://newvisionresearch.org"}>

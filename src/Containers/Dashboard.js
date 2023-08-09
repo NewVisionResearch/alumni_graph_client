@@ -7,15 +7,15 @@ import { Button, Card } from "react-bootstrap";
 function Dashboard() {
   const baseUrl = process.env.REACT_APP_BASE_URL;
 
-  const [alumnLabShowId, setAlumnLabShowId] = useState(null);
-  const [removeAlumnLabId, setRemoveAlumnLabId] = useState(null);
+  const [alumnShowId, setAlumnShowId] = useState(null);
+  const [removeAlumnId, setRemoveAlumnId] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
-  const openAlumnShow = (alumn_lab_id) => {
-    setAlumnLabShowId(alumn_lab_id);
+  const openAlumnShow = (alumn_id) => {
+    setAlumnShowId(alumn_id);
   };
 
-  const removeAlumn = (e, alumn_lab_id) => {
+  const removeAlumn = (e, alumn_id) => {
     const token = localStorage.getItem("jwt");
 
     const options = {
@@ -27,14 +27,14 @@ function Dashboard() {
       },
     };
 
-    fetch(`${baseUrl}/alumn_labs/${alumn_lab_id}`, options)
+    fetch(`${baseUrl}/alumns/${alumn_id}`, options)
       .then((res) => res.json())
-      .then((data) => setRemoveAlumnLabId(alumn_lab_id))
-      .then(() => setAlumnLabShowId(null));
+      .then((data) => setRemoveAlumnId(alumn_id))
+      .then(() => setAlumnShowId(null));
   };
 
   const confirmRemovedAlumn = () => {
-    setRemoveAlumnLabId(null);
+    setRemoveAlumnId(null);
   };
 
   const handleInfoClick = () => {
@@ -55,7 +55,7 @@ function Dashboard() {
       <AddAlumns
         onAlumnsChange={handleAlumnsChange}
         openAlumnShow={openAlumnShow}
-        removeAlumnLabId={removeAlumnLabId}
+        removeAlumnId={removeAlumnId}
         confirmRemovedAlumn={confirmRemovedAlumn}
       />
       {showModal ?
@@ -78,8 +78,8 @@ function Dashboard() {
           </Card.Body>
           <Card.Footer className="text-muted text-center">New Vision Research</Card.Footer>
         </Card>) : <div></div>}
-      {alumnLabShowId ? (
-        <AlumnShow alumnLabId={alumnLabShowId} removeAlumn={removeAlumn} />
+      {alumnShowId ? (
+        <AlumnShow alumnId={alumnShowId} removeAlumn={removeAlumn} />
       ) : (
         <div></div>
       )}

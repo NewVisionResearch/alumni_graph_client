@@ -1,27 +1,28 @@
-import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { Accordion } from 'react-bootstrap'
-import { byDate, byCoAuthors, sortByTwoFns } from '../services/sorts'
-import AccordionCitation from '../Containers/AccordionCitation'
-import Loading from './Loading'
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Accordion } from 'react-bootstrap';
+import { byDate, byCoAuthors, sortByTwoFns } from '../services/sorts';
+import AccordionCitation from '../Containers/AccordionCitation';
+import Loading from './Loading';
 
-function AlumnGraphShow({ alumnLabId, closeModal }) {
-    const baseUrl = process.env.REACT_APP_BASE_URL
+function AlumnGraphShow({ alumnId, closeModal }) {
+    const baseUrl = process.env.REACT_APP_BASE_URL;
 
-    const [alumn, setAlumn] = useState({ full_name: "", search_names: [], my_lab_alumn_publications: [] })
-    const navigate = useNavigate()
+    const [alumn, setAlumn] = useState({ full_name: "", search_query: "", my_lab_alumn_publications: [] });
+    const navigate = useNavigate();
 
     useEffect(() => {
-        fetch(`${baseUrl}/alumns/${alumnLabId}`)
+        fetch(`${baseUrl}/alumns/${alumnId}`)
             .then(res => {
-                if (!res.ok) { throw res }
-                return res.json()
+                if (!res.ok) { throw res; }
+                return res.json();
             })
             .then(alumnObj => setAlumn(alumnObj))
             .catch((res) => {
-                console.error(res)
-                navigate("/error")})
-    }, [navigate, alumnLabId, baseUrl])
+                console.error(res);
+                navigate("/error");
+            });
+    }, [navigate, alumnId, baseUrl]);
 
     return (
         <>
@@ -40,11 +41,11 @@ function AlumnGraphShow({ alumnLabId, closeModal }) {
                         <Accordion>
                             {
                                 sortByTwoFns(byDate, byCoAuthors, alumn.my_lab_alumn_publications).map((alumn_pub, idx) => {
-                                    const { publication, coauthors } = alumn_pub
+                                    const { publication, coauthors } = alumn_pub;
 
                                     return (
-                                        <AccordionCitation key={`${alumn_pub}_${idx}`} listNum={idx} alumnName={alumn.search_names[0]} publication={publication} coauthors={coauthors} />
-                                    )
+                                        <AccordionCitation key={`${alumn_pub}_${idx}`} listNum={idx} alumnName={alumn.search_query} publication={publication} coauthors={coauthors} />
+                                    );
                                 })
                             }
                         </Accordion>
@@ -55,7 +56,7 @@ function AlumnGraphShow({ alumnLabId, closeModal }) {
                     </div>
             }
         </ >
-    )
+    );
 }
 
-export default AlumnGraphShow
+export default AlumnGraphShow;

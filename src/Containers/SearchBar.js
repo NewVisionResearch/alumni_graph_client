@@ -1,49 +1,49 @@
-import { useState } from 'react'
-import Input from '../Components/Input'
-import { SearchResult } from '../Components/SearchResult'
-import { decideZoomOnClick } from '../services/zoom'
+import { useState } from 'react';
+import Input from '../Components/Input';
+import { SearchResult } from '../Components/SearchResult';
+import { decideZoomOnClick } from '../services/zoom';
 
-export default function SearchBar({ graph, nodes, setAlumnLabId }) {
+export default function SearchBar({ graph, nodes, setAlumnId }) {
 
-  const [searchTerm, setSearchTerm] = useState('')
+  const [searchTerm, setSearchTerm] = useState('');
 
   const focusFxn = (id, x, y) => {
-    setAlumnLabId(id)
-    setSearchTerm('')
+    setAlumnId(id);
+    setSearchTerm('');
     graph.centerAt((window.innerWidth <= 425 ? x : x + 75), (window.innerWidth <= 425 ? y + 25 : y), 1000);
-    graph.zoom(decideZoomOnClick(), 1000)
-  }
+    graph.zoom(decideZoomOnClick(), 1000);
+  };
 
   const filterResults = () => {
     if (searchTerm) {
-      let gNodes = nodes.filter(alumn => alumn.id.toLowerCase().includes(searchTerm.toLowerCase()))
-      return gNodes.map((node, i) => <SearchResult key={`${node.id}_${i}`} node={node} focusFxn={focusFxn} />)
+      let gNodes = nodes.filter(alumn => alumn.id.toLowerCase().includes(searchTerm.toLowerCase()));
+      return gNodes.map((node, i) => <SearchResult key={`${node.id}_${i}`} node={node} focusFxn={focusFxn} />);
     }
-  }
+  };
 
   (function changeWidthOnFocus() {
-    const input = document.getElementById('alumn-search')
+    const input = document.getElementById('alumn-search');
     if (input) {
-      let windowWidth = window.innerWidth
-      let outer = input.parentNode.parentNode
+      let windowWidth = window.innerWidth;
+      let outer = input.parentNode.parentNode;
       if (outer.classList.contains('search-bar')) {
         input.onfocus = function () {
           if (windowWidth > 825) {
-            this.parentNode.parentNode.style.width = '25%'
+            this.parentNode.parentNode.style.width = '25%';
           } else {
-            this.parentNode.parentNode.style.width = '85%'
+            this.parentNode.parentNode.style.width = '85%';
           }
-        }
+        };
         input.onblur = function () {
           if (windowWidth > 825) {
-            this.parentNode.parentNode.style.width = '10%'
+            this.parentNode.parentNode.style.width = '10%';
           } else {
-            this.parentNode.parentNode.style.width = '25%'
+            this.parentNode.parentNode.style.width = '25%';
           }
-        }
+        };
       }
     }
-  })()
+  })();
 
 
   return (
@@ -71,5 +71,5 @@ export default function SearchBar({ graph, nodes, setAlumnLabId }) {
         {filterResults()}
       </ul>
     </div >
-  )
+  );
 }

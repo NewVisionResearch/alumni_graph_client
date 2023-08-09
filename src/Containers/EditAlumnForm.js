@@ -4,20 +4,20 @@ import Input from '../Components/Input';
 
 function EditAlumnForm({ submitInput, propsValue, closeModal }) {
 
-    const [full_name, search_names] = propsValue;
+    const [full_name, search_query] = propsValue;
 
-    const [alumnInfo, setAlumnInfo] = useState({ display_name: "", search_names: [] });
+    const [alumnInfo, setAlumnInfo] = useState({ display_name: "", search_query: "" });
 
     useEffect(() => {
-        setAlumnInfo({ display_name: full_name, search_names });
-    }, [full_name, search_names]);
+        setAlumnInfo({ display_name: full_name, search_query });
+    }, [full_name, search_query]);
 
     const displayNameChangeHandler = (value) => {
         setAlumnInfo({ ...alumnInfo, display_name: value });
     };
 
     const searchNamesChangeHandler = (value) => {
-        setAlumnInfo({ ...alumnInfo, search_names: value.split(", ") });
+        setAlumnInfo({ ...alumnInfo, search_query: value });
     };
 
     return (
@@ -42,8 +42,8 @@ function EditAlumnForm({ submitInput, propsValue, closeModal }) {
                         <Input name="display_name" callback={displayNameChangeHandler} propsValue={alumnInfo.display_name} isPlainTextAndReadOnly={true} />
                     </Form.Group>
                     <Form.Group >
-                        <Form.Label>Search Names: </Form.Label>
-                        <Input name="search_names" callback={searchNamesChangeHandler} propsValue={alumnInfo.search_names} isPlainTextAndReadOnly={false} />
+                        <Form.Label>Search Query: </Form.Label>
+                        <Input name="search_query" callback={searchNamesChangeHandler} propsValue={alumnInfo.search_query} isPlainTextAndReadOnly={false} />
                     </Form.Group>
                 </div>
                 <Button className="mb-3" type="submit" style={{ height: '50px' }}>Edit Researcher</Button>

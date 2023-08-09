@@ -6,12 +6,12 @@ import PublicationDisplayCheck from "../Components/PublicationDisplayCheck";
 import EditAlumnForm from "./EditAlumnForm";
 import Loading from "../Components/Loading";
 
-function AlumnShow({ alumnLabId, removeAlumn }) {
+function AlumnShow({ alumnId, removeAlumn }) {
   const baseUrl = process.env.REACT_APP_BASE_URL;
 
   const [alumn, setAlumn] = useState({
     full_name: "",
-    search_names: [],
+    search_query: "",
     my_lab_alumn_publications: [],
   });
   const [idObj, setIdObj] = useState({});
@@ -21,9 +21,9 @@ function AlumnShow({ alumnLabId, removeAlumn }) {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (alumnLabId) {
+    if (alumnId) {
       const fetchAlumn = () => {
-        fetch(`${baseUrl}/alumns/${alumnLabId}`)
+        fetch(`${baseUrl}/alumns/${alumnId}`)
           .then((res) => res.json())
           .then((alumnObj) => setAlumn(alumnObj));
       };
@@ -31,7 +31,7 @@ function AlumnShow({ alumnLabId, removeAlumn }) {
       fetchAlumn();
       setEditSearchNames();
     }
-  }, [alumnLabId, baseUrl]);
+  }, [alumnId, baseUrl]);
 
   const invalidatePublication = (e, labPublicationId) => {
     let bodyObj = {
@@ -77,7 +77,7 @@ function AlumnShow({ alumnLabId, removeAlumn }) {
     for (const id in idObj) {
       let bodyObj = {
         lab_alumn_publication: {
-          alumn_lab_id: alumnLabId,
+          alumn_id: alumnId,
           alumn_publication_id: id,
           display: idObj[id],
         },
@@ -108,7 +108,7 @@ function AlumnShow({ alumnLabId, removeAlumn }) {
         Authorization: `Bearer ${token}`,
       },
     };
-    fetch(`${baseUrl}/alumns/${alumnLabId}/refetch`, options)
+    fetch(`${baseUrl}/alumns/${alumnId}/refetch`, options)
       .then((res) => {
         if (!res.ok) {
           throw res;
@@ -133,9 +133,9 @@ function AlumnShow({ alumnLabId, removeAlumn }) {
               if (res.job.status === "completed") {
                 clearInterval(pollJobStatus);
                 setAlumn({
-                  alumn_lab_id: res.alumn_lab_id,
+                  alumn_id: res.alumn_id,
                   full_name: res.full_name,
-                  search_names: res.search_names,
+                  search_query: res.search_query,
                   my_lab_alumn_publications: res.my_lab_alumn_publications
                 });
                 setLoading(false);
@@ -167,7 +167,7 @@ function AlumnShow({ alumnLabId, removeAlumn }) {
       body: JSON.stringify(bodyObj),
     };
 
-    fetch(`${baseUrl}/alumns/${alumnLabId}`, options)
+    fetch(`${baseUrl}/alumns/${alumnId}`, options)
       .then((res) => res.json())
       .then((alumnObj) => setAlumn(alumnObj))
       .then(() => setEditSearchNames(false));
@@ -186,16 +186,11 @@ function AlumnShow({ alumnLabId, removeAlumn }) {
   return (
     <div className="ml-auto mr-auto" style={{ maxWidth: "60%" }}>
       <h1>{alumn.full_name}</h1>
-      Search names:
-      <ol>
-        {alumn.search_names.map((name, idx) => (
-          <li key={`${name}_${alumnLabId}`}>{name}</li>
-        ))}
-      </ol>
+      <p>Search Query: {alumn.search_query}</p>
       {editSearchNames ? (
         <EditAlumnForm
           submitInput={updateSearchNames}
-          propsValue={[alumn.full_name, alumn.search_names]}
+          propsValue={[alumn.full_name, alumn.search_query]}
           closeModal={closeModal}
         />
       ) : (
@@ -204,7 +199,7 @@ function AlumnShow({ alumnLabId, removeAlumn }) {
       <Button
         className={(editSearchNames && "mb-3") || (!editSearchNames && "ml-3")}
         variant="danger"
-        onClick={(e) => removeAlumn(e, alumnLabId)}
+        onClick={(e) => removeAlumn(e, alumnId)}
       >
         Delete Researcher
       </Button>
@@ -217,7 +212,7 @@ function AlumnShow({ alumnLabId, removeAlumn }) {
             (alumn_pub, idx) => (
               <PublicationDisplayCheck
                 key={`${alumn_pub.lab_alumn_publication_id}_${idx}`}
-                alumnName={alumn.search_names[0]}
+                alumnName={alumn.search_query}
                 alumn_publication={alumn_pub}
                 updateIdArray={updateIdArray}
                 invalidatePublication={invalidatePublication}

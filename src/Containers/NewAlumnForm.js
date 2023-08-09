@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button, Form, Dropdown, ButtonGroup } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 
-function NewAlumnForm({ submitInput, handleModalShow, setAlumnQueryResults }) {
+function NewAlumnForm({ handleModalShow, setAlumnQueryResults }) {
     const baseUrl = process.env.REACT_APP_BASE_URL;
 
     const navigate = useNavigate();
