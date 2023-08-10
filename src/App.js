@@ -9,7 +9,7 @@ import {
 
 import NavBar from "./Containers/NavBar";
 import Graph from "./Containers/Graph";
-import Dashboard from "./Containers/Dashboard";
+import DashboardContainer from "./Containers/DashboardContainer";
 import LoginContainer from "./Containers/LoginContainer";
 import RegisterContainer from "./Containers/RegisterContainer";
 import Approve from "./Containers/Approve";
@@ -125,7 +125,7 @@ function App() {
                 <RegisterContainer />
               }
             />
-            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/dashboard" element={<DashboardContainer />} />
             <Route path="/error" element={<ErrorPage />} />
             <Route path="/approve/:token" element={<Approve />} />
             <Route path="/deny/:token" element={<Deny />} />

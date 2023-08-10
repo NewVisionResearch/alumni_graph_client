@@ -6,7 +6,7 @@ import PublicationDisplayCheck from "../Components/PublicationDisplayCheck";
 import EditAlumnForm from "./EditAlumnForm";
 import Loading from "../Components/Loading";
 
-function AlumnShow({ alumnId, removeAlumn }) {
+function AlumnShow({ alumnId, handleRemoveAlumn }) {
   const baseUrl = process.env.REACT_APP_BASE_URL;
 
   const [alumn, setAlumn] = useState({
@@ -199,7 +199,7 @@ function AlumnShow({ alumnId, removeAlumn }) {
       <Button
         className={(editSearchNames && "mb-3") || (!editSearchNames && "ml-3")}
         variant="danger"
-        onClick={(e) => removeAlumn(e, alumnId)}
+        onClick={() => handleRemoveAlumn(alumnId)}
       >
         Delete Researcher
       </Button>
