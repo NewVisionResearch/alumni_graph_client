@@ -10,7 +10,7 @@ import {
 import NavBar from "./Containers/NavBar";
 import Graph from "./Containers/Graph";
 import Dashboard from "./Containers/Dashboard";
-import Login from "./Containers/Login";
+import LoginContainer from "./Containers/LoginContainer";
 import RegisterContainer from "./Containers/RegisterContainer";
 import Approve from "./Containers/Approve";
 import Deny from "./Containers/Deny";
@@ -32,7 +32,7 @@ function App() {
 
   const navigate = useRef(useNavigate());
   const { pathname } = useLocation();
-  const { admin, login, logout, loginError } = useAdmin();
+  const { admin, login, logout, loginError, clearLoginError } = useAdmin();
 
   const [aspectRatio, setAspectRatio] = useState(
     (window.innerHeight * window.innerWidth) / 1000000
@@ -66,9 +66,7 @@ function App() {
       }
     } else {
       // If JWT doesn't exist and the user is not logged in:
-      if (loginError) {
-        navigate.current("/login", { replace: true });
-      } else if (
+      if (
         admin.email === "" &&
         (pathname === "/login" || pathname === "/register")
       ) {
@@ -108,15 +106,16 @@ function App() {
             <Route
               path="/login"
               element={
-                <Login
+                <LoginContainer
                   login={login}
-                  error={loginError}
+                  loginError={loginError}
                   showPasswordResetSuccessfulToast={
                     showPasswordResetSuccessfulToast
                   }
                   setShowPasswordResetSuccessfulToast={
                     setShowPasswordResetSuccessfulToast
                   }
+                  clearLoginError={clearLoginError}
                 />
               }
             />

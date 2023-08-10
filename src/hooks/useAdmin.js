@@ -1,5 +1,5 @@
 // hooks/useAdmin.js
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from "react-router-dom";
 
 import * as authService from "../services/authService";
@@ -35,9 +35,11 @@ export default function useAdmin() {
         };
     }, []);
 
-    const login = async (e, adminInfo) => {
-        e.preventDefault();
+    const clearLoginError = useCallback(() => {
+        setLoginError("");
+    }, []);
 
+    const login = async (adminInfo) => {
         try {
             const res = await authService.login(adminInfo);
 
@@ -48,7 +50,7 @@ export default function useAdmin() {
             setAdmin({ email, labId });
             navigate("/dashboard");
         } catch (err) {
-            const { error } = await err.text();
+            const { error } = await err.json();
             setLoginError(error); // Assuming error is in a readable format
         }
     };
@@ -63,6 +65,7 @@ export default function useAdmin() {
         admin,
         login,
         logout,
-        error: loginError
+        loginError,
+        clearLoginError
     };
 }
