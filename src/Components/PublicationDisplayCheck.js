@@ -1,11 +1,11 @@
-import { useState } from 'react'
-import { Button, InputGroup } from 'react-bootstrap'
-import FullCitation from './FullCitation'
+import { useState } from 'react';
+import { Button, InputGroup } from 'react-bootstrap';
+import FullCitation from './FullCitation';
 
 function PublicationDisplayCheck({ alumnName, alumn_publication, updateIdArray, invalidatePublication }) {
 
-    const { lab_alumn_publication_id, display, publication, coauthors } = alumn_publication
-    const [displayed, setDisplayed] = useState(display)
+    const { lab_alumn_publication_id, display, publication, coauthors } = alumn_publication;
+    const [displayed, setDisplayed] = useState(display);
     return (
         <div
             className="d-flex align-items-center justify-content-between mb-5 p-3 border border-secondary"
@@ -16,8 +16,8 @@ function PublicationDisplayCheck({ alumnName, alumn_publication, updateIdArray, 
                 size="md"
                 checked={displayed}
                 onChange={() => {
-                    setDisplayed(!displayed)
-                    updateIdArray(lab_alumn_publication_id, !displayed)
+                    setDisplayed(!displayed);
+                    updateIdArray(lab_alumn_publication_id, !displayed);
                 }} />
             <FullCitation
                 alumnName={alumnName}
@@ -25,15 +25,15 @@ function PublicationDisplayCheck({ alumnName, alumn_publication, updateIdArray, 
                 coauthors={coauthors} />
             <Button
                 className="ml-1"
-                onClick={(e) => invalidatePublication(e, publication.lab_publication_id)}
+                onClick={() => invalidatePublication(publication.lab_publication_id)}
                 variant="danger"
                 size="sm"
             >
                 Remove
             </Button>
         </div>
-    )
+    );
 
 }
 
-export default PublicationDisplayCheck
+export default PublicationDisplayCheck;

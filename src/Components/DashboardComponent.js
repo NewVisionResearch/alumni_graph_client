@@ -1,14 +1,12 @@
 import { Button, Card } from "react-bootstrap";
 import { AiFillInfoCircle } from "react-icons/ai";
 
-import AlumnShow from "../Containers/AlumnShow";
 import AddAlumns from "../Containers/AddAlumns";
 
 function DashboardComponent({
     showModal,
     setShowModal,
     openAlumnShow,
-    alumnShowId,
     removeAlumnId,
     confirmRemovedAlumn,
     handleAlumnsChange,
@@ -83,11 +81,6 @@ function DashboardComponent({
                         New Vision Research
                     </Card.Footer>
                 </Card>
-            ) : (
-                <div></div>
-            )}
-            {alumnShowId ? (
-                <AlumnShow alumnId={alumnShowId} handleRemoveAlumn={handleRemoveAlumn} />
             ) : (
                 <div></div>
             )}

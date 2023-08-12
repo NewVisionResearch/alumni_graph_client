@@ -1,6 +1,7 @@
 import { useCallback, useState } from "react";
 
 import DashboardComponent from "../Components/DashboardComponent";
+import AlumnShowContainer from "./AlumnShowContainer";
 import { deleteAlumn } from "../services/api";
 
 function DashboardContainer() {
@@ -12,7 +13,7 @@ function DashboardContainer() {
     setAlumnShowId(alumn_id);
   };
 
-  const handleRemoveAlumn = async (alumn_id) => {
+  const handleDeleteAlumn = async (alumn_id) => {
     try {
       const token = localStorage.getItem("jwt");
       const res = await deleteAlumn(alumn_id, token);
@@ -44,17 +45,24 @@ function DashboardContainer() {
   }, []);
 
   return (
-    <DashboardComponent
-      showModal={showModal}
-      setShowModal={setShowModal}
-      openAlumnShow={openAlumnShow}
-      alumnShowId={alumnShowId}
-      removeAlumnId={removeAlumnId}
-      confirmRemovedAlumn={confirmRemovedAlumn}
-      handleAlumnsChange={handleAlumnsChange}
-      handleRemoveAlumn={handleRemoveAlumn}
-      handleInfoClick={handleInfoClick}
-    />
+    <div>
+
+      <DashboardComponent
+        showModal={showModal}
+        setShowModal={setShowModal}
+        openAlumnShow={openAlumnShow}
+        removeAlumnId={removeAlumnId}
+        confirmRemovedAlumn={confirmRemovedAlumn}
+        handleAlumnsChange={handleAlumnsChange}
+        handleDeleteAlumn={handleDeleteAlumn}
+        handleInfoClick={handleInfoClick}
+      />
+      {
+        alumnShowId && (
+          <AlumnShowContainer alumnId={alumnShowId} handleDeleteAlumn={handleDeleteAlumn} />
+        )
+      }
+    </div>
   );
 }
 
