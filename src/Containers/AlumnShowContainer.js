@@ -2,10 +2,16 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 import AlumnShowComponent from "../Components/AlumnShowComponent";
-import * as API from "../services/api";
+import {
+  fetchAlumnById,
+  patchLabPublication,
+  patchLabAlumnPublication,
+  refetchAlumnPublications,
+  pollJobStatus,
+  updateSearchNamesForAlumn,
+} from "../services/api";
 
 function AlumnShowContainer({ alumnId, handleDeleteAlumn }) {
-
   const [alumn, setAlumn] = useState({
     full_name: "",
     search_query: "",
@@ -19,7 +25,10 @@ function AlumnShowContainer({ alumnId, handleDeleteAlumn }) {
 
   useEffect(() => {
     if (alumnId) {
-      API.fetchAlumnById(alumnId)
+      const controller = new AbortController();
+      const signal = controller.signal;
+
+      fetchAlumnById(alumnId, signal)
         .then((res) => {
           if (!res.ok) throw res;
 
@@ -29,6 +38,10 @@ function AlumnShowContainer({ alumnId, handleDeleteAlumn }) {
         .catch((err) => console.error(err));
 
       setEditSearchNames(false);
+
+      return () => {
+        controller.abort();
+      };
     }
   }, [alumnId]);
 
@@ -40,7 +53,7 @@ function AlumnShowContainer({ alumnId, handleDeleteAlumn }) {
     };
 
     try {
-      const res = await API.patchLabPublication(labPublicationId, bodyObj);
+      const res = await patchLabPublication(labPublicationId, bodyObj);
       if (!res.ok) throw res;
 
       const publicationId = await res.json();
@@ -71,12 +84,11 @@ function AlumnShowContainer({ alumnId, handleDeleteAlumn }) {
       };
 
       try {
-        const res = await API.patchLabAlumnPublication(bodyObj);
+        const res = await patchLabAlumnPublication(bodyObj);
 
         if (!res.ok) throw res;
 
         setIdObj({});
-
       } catch (err) {
         console.error(err);
       }
@@ -87,21 +99,21 @@ function AlumnShowContainer({ alumnId, handleDeleteAlumn }) {
     setLoading(true);
 
     try {
-      const res = await API.refetchAlumnPublications(alumnId);
+      const res = await refetchAlumnPublications(alumnId);
 
       if (!res.ok) throw res;
 
       const { job_id } = await res.json();
 
-      const pollJobStatus = setInterval(async () => {
-        const pollRes = await API.pollJobStatus(job_id);
+      const pollJobStatusInterval = setInterval(async () => {
+        const pollRes = await pollJobStatus(job_id);
 
         if (!pollRes.ok) throw new Error("Job status request failed");
 
         const response = await pollRes.json();
 
         if (response.job.status === "completed") {
-          clearInterval(pollJobStatus);
+          clearInterval(pollJobStatusInterval);
           setAlumn({
             alumn_id: response.alumn_id,
             full_name: response.full_name,
@@ -110,11 +122,10 @@ function AlumnShowContainer({ alumnId, handleDeleteAlumn }) {
           });
           setLoading(false);
         } else if (response.job.status === "failed") {
-          clearInterval(pollJobStatus);
+          clearInterval(pollJobStatusInterval);
           throw new Error("Job Failed", response.error);
         }
       }, 5000);
-
     } catch (err) {
       console.error(err);
       navigate("/error");
@@ -129,7 +140,7 @@ function AlumnShowContainer({ alumnId, handleDeleteAlumn }) {
       },
     };
 
-    const res = await API.updateSearchNamesForAlumn(bodyObj);
+    const res = await updateSearchNamesForAlumn(bodyObj);
 
     if (!res.ok) throw res;
 

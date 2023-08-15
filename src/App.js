@@ -8,7 +8,7 @@ import {
 } from "react-router-dom";
 
 import NavBar from "./Containers/NavBar";
-import Graph from "./Containers/Graph";
+import GraphContainer from "./Containers/GraphContainer";
 import DashboardContainer from "./Containers/DashboardContainer";
 import LoginContainer from "./Containers/LoginContainer";
 import RegisterContainer from "./Containers/RegisterContainer";
@@ -101,7 +101,7 @@ function App() {
             />
             <Route
               path="/graph/:labId"
-              element={<Graph aspectRatio={aspectRatio} />}
+              element={<GraphContainer aspectRatio={aspectRatio} />}
             />
             <Route
               path="/login"

@@ -6,8 +6,12 @@ const headers = {
     Authorization: `Bearer ${localStorage.getItem("jwt")}`,
 };
 
-export const fetchAlumnById = (alumnId) => {
-    return fetch(`${baseUrl}/alumns/${alumnId}`);
+export const fetchGraphPublications = (labId, signal) => {
+    return fetch(`${baseUrl}/graphs/${labId}`, { signal });
+};
+
+export const fetchAlumnById = (alumnId, signal) => {
+    return fetch(`${baseUrl}/alumns/${alumnId}`, { signal });
 };
 
 export const patchLabPublication = (labPublicationId, bodyObj) => {
