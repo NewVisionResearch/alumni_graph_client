@@ -156,10 +156,11 @@ function AddAlumns({
                         });
                 }, 5000);
             })
-            .catch((err) => err.text())
-            .then((err) => {
-                console.error(err);
-                setDuplicateDisplayNameError(JSON.parse(err));
+            .catch((err) => {
+                return err.json().then((errorResponse) => {
+                    console.error(errorResponse);
+                    setDuplicateDisplayNameError(errorResponse);
+                });
             });
     };
 
