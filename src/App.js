@@ -18,7 +18,7 @@ import PasswordReset from "./Containers/PasswordReset";
 import PasswordResetRequest from "./Containers/PasswordResetRequest";
 import ErrorPage from "./Containers/ErrorPage";
 import { AdminContext } from "./Context/Context";
-import Menu from "./Containers/Menu";
+import Menu from "./Components/Menu";
 import useAdmin from "./hooks/useAdmin";
 
 import "./App.css";
