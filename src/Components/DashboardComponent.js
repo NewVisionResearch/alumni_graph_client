@@ -31,7 +31,7 @@ function DashboardComponent({
                             (the name will populate so long as the research has published an
                             article and it is on PubMed).
                         </Card.Title>
-                        <Card.Text className="text-left" style={{ padding: 10 }}>
+                        <div className="text-left" style={{ padding: 10 }}>
                             <ol>
                                 <li>
                                     Enter the full name of the investigator you are searching for
@@ -72,7 +72,7 @@ function DashboardComponent({
                                     you can click on the "Fetch New Publications" button.
                                 </li>
                             </ol>
-                        </Card.Text>
+                        </div>
                         <Button variant="primary" onClick={() => setShowModal(false)}>
                             Hide
                         </Button>

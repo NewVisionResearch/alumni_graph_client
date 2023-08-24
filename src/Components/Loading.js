@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 function Loading() {
     const [showLongLoadingMessage, setShowLongLoadingMessage] = useState(false);
@@ -6,17 +6,26 @@ function Loading() {
     const [showNoReallyLoadingMessage, setShowNoReallyLoadingMessage] = useState(false);
 
 
-    setTimeout(() => {
-        setShowLongLoadingMessage(true);
-    }, 5000);
+    useEffect(() => {
+        const longTimeout = setTimeout(() => {
+            setShowLongLoadingMessage(true);
+        }, 5000);
 
-    setTimeout(() => {
-        setShowCoffeeLoadingMessage(true);
-    }, 15000);
+        const coffeeTimeout = setTimeout(() => {
+            setShowCoffeeLoadingMessage(true);
+        }, 15000);
 
-    setTimeout(() => {
-        setShowNoReallyLoadingMessage(true);
-    }, 25000);
+        const noCoffeeTimeout = setTimeout(() => {
+            setShowNoReallyLoadingMessage(true);
+        }, 25000);
+
+        // Cleanup function to cancel timeouts when the component is unmounted
+        return () => {
+            clearTimeout(longTimeout);
+            clearTimeout(coffeeTimeout);
+            clearTimeout(noCoffeeTimeout);
+        };
+    }, []);
 
     return (
         <div>

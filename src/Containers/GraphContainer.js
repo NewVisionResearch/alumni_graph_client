@@ -37,7 +37,8 @@ function Graph({ aspectRatio }) {
                 .then((res) => res.json())
                 .then((publications) => {
                     setPublications(publications);
-                });
+                })
+                .catch((err) => console.error(err));
         }
 
         return () => {
@@ -111,6 +112,7 @@ function Graph({ aspectRatio }) {
             const elem = document.getElementById("graph");
             let graphWidth = elem.clientWidth;
             let graphHeight = elem.clientHeight;
+            console.log(document.getElementsByTagName('canvas')[0].getContext('2d').getContextAttributes());
 
             stateGraph.create &&
                 stateGraph.create

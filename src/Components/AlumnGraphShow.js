@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Accordion } from "react-bootstrap";
 import { byDate, byCoAuthors, sortByTwoFns } from "../services/sorts";
@@ -12,7 +12,7 @@ function AlumnGraphShow({ alumnId, closeModal }) {
         search_query: "",
         my_lab_alumn_publications: [],
     });
-    const navigate = useNavigate();
+    const navigate = useRef(useNavigate());
 
     useEffect(() => {
         if (alumnId) {
@@ -35,14 +35,14 @@ function AlumnGraphShow({ alumnId, closeModal }) {
                 .then((alumnObj) => setAlumn(alumnObj))
                 .catch((res) => {
                     console.error(res);
-                    navigate("/error");
+                    navigate.current("/error");
                 });
 
             return () => {
                 controller.abort();
             };
         }
-    }, [navigate, alumnId]);
+    }, [alumnId]);
 
     return (
         <div
