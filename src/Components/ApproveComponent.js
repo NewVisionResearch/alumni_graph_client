@@ -1,40 +1,6 @@
-import { useEffect, useState } from "react";
 import { Spinner } from 'react-bootstrap';
-import { useParams } from 'react-router-dom';
 
-function Approve() {
-    let { token } = useParams();
-
-    let [loading, setLoading] = useState(true);
-
-    const baseUrl = process.env.REACT_APP_BASE_URL;
-
-    useEffect(() => {
-
-        let options = {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                Accept: 'application/json'
-            },
-        };
-
-        fetch(`${baseUrl}/requests/${token}/approve`, options)
-            .then(res => {
-                console.log(res);
-                if (!res.ok) { throw res; }
-                return res.json();
-            })
-            .then((request) => {
-                setLoading(false);
-                console.log("Request: ", request);
-            })
-            .catch((res) => res.json())
-            .then((err) => {
-                console.log(err);
-            }
-            );
-    }, [baseUrl, token]);
+function ApproveComponent({ loading }) {
 
     return (
         <div
@@ -63,4 +29,4 @@ function Approve() {
     );
 }
 
-export default Approve;
+export default ApproveComponent;

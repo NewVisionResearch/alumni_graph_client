@@ -12,7 +12,7 @@ import GraphContainer from "./Containers/GraphContainer";
 import DashboardContainer from "./Containers/DashboardContainer";
 import LoginContainer from "./Containers/LoginContainer";
 import RegisterContainer from "./Containers/RegisterContainer";
-import Approve from "./Containers/Approve";
+import ApproveContainer from "./Containers/ApproveContainer";
 import Deny from "./Containers/Deny";
 import PasswordReset from "./Containers/PasswordResetContainer";
 import PasswordResetRequestContainer from "./Containers/PasswordResetRequestContainer";
@@ -115,7 +115,7 @@ function App() {
             <Route path="/register" element={<RegisterContainer />} />
             <Route path="/dashboard" element={<DashboardContainer />} />
             <Route path="/error" element={<ErrorPageComponent />} />
-            <Route path="/approve/:token" element={<Approve />} />
+            <Route path="/approve/:token" element={<ApproveContainer />} />
             <Route path="/deny/:token" element={<Deny />} />
             <Route
               path="/password-reset-request"

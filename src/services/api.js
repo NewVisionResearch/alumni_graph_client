@@ -110,3 +110,14 @@ export const passwordResetRequest = (emailObj) => {
 
     return fetch(`${baseUrl}/password-reset/request`, options);
 };
+
+export const approveRequest = (token, signal) => {
+    const options = {
+        method: 'POST',
+        headers: headersWithoutToken,
+        signal,
+    };
+
+    return fetch(`${baseUrl}/requests/${token}/approve`, options);
+
+};
