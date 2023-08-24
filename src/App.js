@@ -16,7 +16,7 @@ import Approve from "./Containers/Approve";
 import Deny from "./Containers/Deny";
 import PasswordReset from "./Containers/PasswordResetContainer";
 import PasswordResetRequestContainer from "./Containers/PasswordResetRequestContainer";
-import ErrorPage from "./Containers/ErrorPage";
+import ErrorPageComponent from "./Components/ErrorPageComponent";
 import { AdminContext } from "./Context/Context";
 import Menu from "./Components/Menu";
 import useAdmin from "./hooks/useAdmin";
@@ -114,7 +114,7 @@ function App() {
             />
             <Route path="/register" element={<RegisterContainer />} />
             <Route path="/dashboard" element={<DashboardContainer />} />
-            <Route path="/error" element={<ErrorPage />} />
+            <Route path="/error" element={<ErrorPageComponent />} />
             <Route path="/approve/:token" element={<Approve />} />
             <Route path="/deny/:token" element={<Deny />} />
             <Route

@@ -1,4 +1,4 @@
-function ErrorPage() {
+function ErrorPageComponent() {
     return (
         <div
             className="d-flex-column justify-content-center align-items-center"
@@ -8,7 +8,7 @@ function ErrorPage() {
             <h3>It appears you have encountered an error</h3>
             <p>Please return to the previous page and try again. If the problem persists, don't hesitate to let us know!</p>
         </div>
-    )
+    );
 }
 
-export default ErrorPage
+export default ErrorPageComponent;
