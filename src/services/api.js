@@ -1,9 +1,14 @@
 const baseUrl = process.env.REACT_APP_BASE_URL;
 
-const headers = {
+const headersWithToken = {
     "content-type": "application/json",
     Accept: "application/json",
     Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+};
+
+const headersWithoutToken = {
+    "content-type": "application/json",
+    Accept: "application/json",
 };
 
 export const fetchGraphPublications = (labId, signal) => {
@@ -17,7 +22,7 @@ export const fetchAlumnById = (alumnId, signal) => {
 export const patchLabPublication = (labPublicationId, bodyObj) => {
     const options = {
         method: "PATCH",
-        headers: headers,
+        headers: headersWithToken,
         body: JSON.stringify(bodyObj),
     };
 
@@ -27,7 +32,7 @@ export const patchLabPublication = (labPublicationId, bodyObj) => {
 export const patchLabAlumnPublication = (bodyObj) => {
     const options = {
         method: "PATCH",
-        headers: headers,
+        headers: headersWithToken,
         body: JSON.stringify(bodyObj),
     };
 
@@ -37,7 +42,7 @@ export const patchLabAlumnPublication = (bodyObj) => {
 export const refetchAlumnPublications = (alumnId) => {
     const options = {
         method: "GET",
-        headers: headers,
+        headers: headersWithToken,
     };
 
     return fetch(`${baseUrl}/alumns/${alumnId}/refetch`, options);
@@ -45,7 +50,7 @@ export const refetchAlumnPublications = (alumnId) => {
 
 export const pollJobStatus = (job_id) => {
     const options = {
-        headers: headers,
+        headers: headersWithToken,
     };
 
     return fetch(`${baseUrl}/jobs/${job_id}`, options);
@@ -54,19 +59,20 @@ export const pollJobStatus = (job_id) => {
 export const updateSearchNamesForAlumn = (alumnId, bodyObj) => {
     const options = {
         method: "PATCH",
-        headers: headers,
-        body: JSON.stringify(bodyObj)
+        headers: headersWithToken,
+        body: JSON.stringify(bodyObj),
     };
 
     return fetch(`${baseUrl}/alumns/${alumnId}`, options);
 };
 
-export const getProfile = (token) => {
+export const getProfile = (token, signal) => {
     const options = {
         method: "GET",
         headers: {
             Authorization: `Bearer ${token}`,
         },
+        signal,
     };
 
     return fetch(`${baseUrl}/profile`, options);
@@ -83,4 +89,14 @@ export const deleteAlumn = (alumn_id, token) => {
     };
 
     return fetch(`${baseUrl}/alumns/${alumn_id}`, options);
+};
+
+export const passwordReset = (token, passwordObj) => {
+    const options = {
+        method: "POST",
+        headers: headersWithoutToken,
+        body: JSON.stringify(passwordObj),
+    };
+
+    return fetch(`${baseUrl}/password-reset/${token}/update`, options);
 };
