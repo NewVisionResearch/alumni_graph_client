@@ -121,3 +121,14 @@ export const approveRequest = (token, signal) => {
     return fetch(`${baseUrl}/requests/${token}/approve`, options);
 
 };
+
+export const denyRequest = (token, signal) => {
+    const options = {
+        method: 'POST',
+        headers: headersWithoutToken,
+        signal
+    };
+
+    return fetch(`${baseUrl}/requests/${token}/deny`, options);
+
+};

@@ -13,8 +13,8 @@ import DashboardContainer from "./Containers/DashboardContainer";
 import LoginContainer from "./Containers/LoginContainer";
 import RegisterContainer from "./Containers/RegisterContainer";
 import ApproveContainer from "./Containers/ApproveContainer";
-import Deny from "./Containers/Deny";
-import PasswordReset from "./Containers/PasswordResetContainer";
+import DenyContainer from "./Containers/DenyContainer";
+import PasswordResetContainer from "./Containers/PasswordResetContainer";
 import PasswordResetRequestContainer from "./Containers/PasswordResetRequestContainer";
 import ErrorPageComponent from "./Components/ErrorPageComponent";
 import { AdminContext } from "./Context/Context";
@@ -116,7 +116,7 @@ function App() {
             <Route path="/dashboard" element={<DashboardContainer />} />
             <Route path="/error" element={<ErrorPageComponent />} />
             <Route path="/approve/:token" element={<ApproveContainer />} />
-            <Route path="/deny/:token" element={<Deny />} />
+            <Route path="/deny/:token" element={<DenyContainer />} />
             <Route
               path="/password-reset-request"
               element={<PasswordResetRequestContainer />}
@@ -124,7 +124,7 @@ function App() {
             <Route
               path="/password-reset/:token"
               element={
-                <PasswordReset
+                <PasswordResetContainer
                   setShowPasswordResetSuccessfulToast={
                     setShowPasswordResetSuccessfulToast
                   }
