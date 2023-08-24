@@ -100,3 +100,13 @@ export const passwordReset = (token, passwordObj) => {
 
     return fetch(`${baseUrl}/password-reset/${token}/update`, options);
 };
+
+export const passwordResetRequest = (emailObj) => {
+    let options = {
+        method: "POST",
+        headers: headersWithoutToken,
+        body: JSON.stringify(emailObj),
+    };
+
+    return fetch(`${baseUrl}/password-reset/request`, options);
+};

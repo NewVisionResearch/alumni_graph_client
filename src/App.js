@@ -15,7 +15,7 @@ import RegisterContainer from "./Containers/RegisterContainer";
 import Approve from "./Containers/Approve";
 import Deny from "./Containers/Deny";
 import PasswordReset from "./Containers/PasswordResetContainer";
-import PasswordResetRequest from "./Containers/PasswordResetRequest";
+import PasswordResetRequestContainer from "./Containers/PasswordResetRequestContainer";
 import ErrorPage from "./Containers/ErrorPage";
 import { AdminContext } from "./Context/Context";
 import Menu from "./Components/Menu";
@@ -119,7 +119,7 @@ function App() {
             <Route path="/deny/:token" element={<Deny />} />
             <Route
               path="/password-reset-request"
-              element={<PasswordResetRequest />}
+              element={<PasswordResetRequestContainer />}
             />
             <Route
               path="/password-reset/:token"
