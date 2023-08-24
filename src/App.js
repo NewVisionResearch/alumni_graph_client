@@ -14,7 +14,7 @@ import LoginContainer from "./Containers/LoginContainer";
 import RegisterContainer from "./Containers/RegisterContainer";
 import Approve from "./Containers/Approve";
 import Deny from "./Containers/Deny";
-import PasswordReset from "./Containers/PasswordReset";
+import PasswordReset from "./Containers/PasswordResetContainer";
 import PasswordResetRequest from "./Containers/PasswordResetRequest";
 import ErrorPage from "./Containers/ErrorPage";
 import { AdminContext } from "./Context/Context";
@@ -54,42 +54,35 @@ function App() {
     };
   }, []);
 
-  useEffect(() => {
-    const token = localStorage.getItem("jwt");
+  const token = localStorage.getItem("jwt");
 
-    // If JWT exists and the user's email is set, they are logged in.
+  useEffect(() => {
+    // If JWT exists and the user's email is set, they are logged in:
     if (token && admin.email) {
       if (pathname === "/login" || pathname === "/register") {
-        navigate.current("/dashboard", { replace: true });
+        navigate.current("/dashboard");
       } else {
-        navigate.current(pathname, { replace: true }); // Stay or navigate to the current route.
+        // Stay at current route.
       }
-    } else {
-      // If JWT doesn't exist and the user is not logged in:
-      if (
-        admin.email === "" &&
-        (pathname === "/login" || pathname === "/register")
-      ) {
+    } else if (!token && admin.email === "") {
+      // If JWT doesn't exist and user's email is NOT set, they are NOT logged in:
+      if (pathname === "/login" || pathname === "/register") {
         // Let them stay on /login or /register
       } else if (pathname.includes("/dashboard")) {
-        navigate.current("/login", { replace: true });
-      } else if (
-        pathname.includes("/approve") ||
-        pathname.includes("/deny") ||
-        pathname.includes("/password-reset")
-      ) {
-        navigate.current(pathname, { replace: true });
-      } else {
-        navigate.current(pathname, { replace: true }); // In other cases, navigate to the current route.
+        navigate.current("/login");
       }
     }
-  }, [pathname, admin.email, loginError]);
+  }, [pathname, admin.email, token]);
 
   return (
     <AdminContext.Provider value={admin}>
       <React.Fragment>
         <div id="App" style={{ height: "100vh", width: "100vw" }}>
-          {admin.email === "" ? <Menu show={true} /> : <NavBar logout={logout} />}
+          {admin.email === "" ? (
+            <Menu show={true} />
+          ) : (
+            <NavBar logout={logout} />
+          )}
           <Routes>
             <Route
               path="/"
@@ -119,12 +112,7 @@ function App() {
                 />
               }
             />
-            <Route
-              path="/register"
-              element={
-                <RegisterContainer />
-              }
-            />
+            <Route path="/register" element={<RegisterContainer />} />
             <Route path="/dashboard" element={<DashboardContainer />} />
             <Route path="/error" element={<ErrorPage />} />
             <Route path="/approve/:token" element={<Approve />} />

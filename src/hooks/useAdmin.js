@@ -12,26 +12,23 @@ export default function useAdmin() {
     const [loginError, setLoginError] = useState(null);
 
     useEffect(() => {
-        let isMounted = true;
+        const controller = new AbortController();
+        const signal = controller.signal;
 
         const token = localStorage.getItem("jwt");
 
         if (token) {
-            getProfile(token)
+            getProfile(token, signal)
                 .then(res => {
                     if (!res.ok) throw res;
                     return res.json();
                 })
-                .then(adminData => {
-                    if (isMounted) setAdmin(adminData);
-                })
-                .catch(err => {
-                    if (isMounted) console.error(err); // or set a state error if desired
-                });
+                .then(adminData => setAdmin(adminData))
+                .catch(err => console.error(err));
         }
 
         return () => {
-            isMounted = false;
+            controller.abort();
         };
     }, []);
 
