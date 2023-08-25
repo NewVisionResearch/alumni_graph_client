@@ -7,7 +7,7 @@ import {
   useNavigate,
 } from "react-router-dom";
 
-import NavBar from "./Containers/NavBar";
+import NavBarContainer from "./Containers/NavBarContainer";
 import GraphContainer from "./Containers/GraphContainer";
 import DashboardContainer from "./Containers/DashboardContainer";
 import LoginContainer from "./Containers/LoginContainer";
@@ -81,7 +81,7 @@ function App() {
           {admin.email === "" ? (
             <Menu show={true} />
           ) : (
-            <NavBar logout={logout} />
+            <NavBarContainer logout={logout} />
           )}
           <Routes>
             <Route

@@ -113,22 +113,39 @@ export const passwordResetRequest = (emailObj) => {
 
 export const approveRequest = (token, signal) => {
     const options = {
-        method: 'POST',
+        method: "POST",
         headers: headersWithoutToken,
         signal,
     };
 
     return fetch(`${baseUrl}/requests/${token}/approve`, options);
-
 };
 
 export const denyRequest = (token, signal) => {
     const options = {
-        method: 'POST',
+        method: "POST",
         headers: headersWithoutToken,
-        signal
+        signal,
     };
 
     return fetch(`${baseUrl}/requests/${token}/deny`, options);
+};
 
+export const getAdminStatus = (signal) => {
+    const options = {
+        method: "GET",
+        headers: headersWithToken,
+        signal,
+    };
+
+    return fetch(`${baseUrl}/admins/check_admin_status`, options);
+};
+
+export const getAdmins = () => {
+    const options = {
+        method: "GET",
+        headers: headersWithToken,
+    };
+
+    return fetch(`${baseUrl}/admins/get_admins`, options);
 };
