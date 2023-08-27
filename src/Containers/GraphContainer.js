@@ -3,7 +3,7 @@ import { Image, Nav } from "react-bootstrap";
 
 import ForceGraph from "force-graph";
 import AlumnGraphShow from "../Components/AlumnGraphShow";
-import SearchBar from "./SearchBar";
+import SearchBar from "../Components/SearchBar";
 import { decideZoomOnClick } from "../services/zoom";
 import { Link, useParams } from "react-router-dom";
 import { AdminContext } from "../Context/Context";

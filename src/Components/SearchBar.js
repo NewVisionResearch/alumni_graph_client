@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import Input from '../Components/Input';
-import { SearchResult } from '../Components/SearchResult';
+import Input from './Input';
+import { SearchResult } from './SearchResult';
 import { decideZoomOnClick } from '../services/zoom';
 
 export default function SearchBar({ graph, nodes, setAlumnId }) {
