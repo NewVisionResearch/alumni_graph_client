@@ -9,14 +9,17 @@ function Loading() {
     useEffect(() => {
         const longTimeout = setTimeout(() => {
             setShowLongLoadingMessage(true);
+            console.log("long timer started");
         }, 5000);
 
         const coffeeTimeout = setTimeout(() => {
             setShowCoffeeLoadingMessage(true);
+            console.log("coffee timer started");
         }, 15000);
 
         const noCoffeeTimeout = setTimeout(() => {
             setShowNoReallyLoadingMessage(true);
+            console.log("no coffee timer started");
         }, 25000);
 
         // Cleanup function to cancel timeouts when the component is unmounted

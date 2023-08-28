@@ -2,7 +2,7 @@ import { useState, useEffect, useContext } from "react";
 import { Image, Nav } from "react-bootstrap";
 
 import ForceGraph from "force-graph";
-import AlumnGraphShow from "../Components/AlumnGraphShow";
+import GraphAlumnDetailsModalContainer from "./GraphAlumnDetailsModalContainer";
 import SearchBar from "../Components/SearchBar";
 import { decideZoomOnClick } from "../services/zoom";
 import { Link, useParams } from "react-router-dom";
@@ -10,7 +10,7 @@ import { AdminContext } from "../Context/Context";
 import GraphComponent from "../Components/GraphComponent";
 import { fetchGraphPublications } from "../services/api";
 
-function Graph({ aspectRatio }) {
+function GraphContainer({ aspectRatio }) {
     const admin = useContext(AdminContext);
     const { labId } = useParams();
 
@@ -112,7 +112,6 @@ function Graph({ aspectRatio }) {
             const elem = document.getElementById("graph");
             let graphWidth = elem.clientWidth;
             let graphHeight = elem.clientHeight;
-            console.log(document.getElementsByTagName('canvas')[0].getContext('2d').getContextAttributes());
 
             stateGraph.create &&
                 stateGraph.create
@@ -230,7 +229,7 @@ function Graph({ aspectRatio }) {
             style={{ height: "100%", width: "100%", position: "relative" }}
         >
             <GraphComponent />
-            <AlumnGraphShow alumnId={alumnId} closeModal={closeModal} />
+            {alumnId !== null && <GraphAlumnDetailsModalContainer alumnId={alumnId} closeModal={closeModal} />}
             <SearchBar
                 graph={stateGraph.create}
                 nodes={gData.nodes}
@@ -262,4 +261,4 @@ function Graph({ aspectRatio }) {
     );
 }
 
-export default Graph;
+export default GraphContainer;
