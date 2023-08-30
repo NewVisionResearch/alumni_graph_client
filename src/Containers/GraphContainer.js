@@ -229,7 +229,12 @@ function GraphContainer({ aspectRatio }) {
             style={{ height: "100%", width: "100%", position: "relative" }}
         >
             <GraphComponent />
-            {alumnId !== null && <GraphAlumnDetailsModalContainer alumnId={alumnId} closeModal={closeModal} />}
+            {alumnId !== null && (
+                <GraphAlumnDetailsModalContainer
+                    alumnId={alumnId}
+                    closeModal={closeModal}
+                />
+            )}
             <SearchBar
                 graph={stateGraph.create}
                 nodes={gData.nodes}
