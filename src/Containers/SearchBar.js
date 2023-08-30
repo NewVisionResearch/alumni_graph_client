@@ -3,12 +3,12 @@ import Input from '../Components/Input'
 import { SearchResult } from '../Components/SearchResult'
 import { decideZoomOnClick } from '../services/zoom'
 
-export default function SearchBar({ graph, nodes, setAlumnId }) {
+export default function SearchBar({ graph, nodes, setAlumnLabId }) {
 
   const [searchTerm, setSearchTerm] = useState('')
 
   const focusFxn = (id, x, y) => {
-    setAlumnId(id)
+    setAlumnLabId(id)
     setSearchTerm('')
     graph.centerAt((window.innerWidth <= 425 ? x : x + 75), (window.innerWidth <= 425 ? y + 25 : y), 1000);
     graph.zoom(decideZoomOnClick(), 1000)

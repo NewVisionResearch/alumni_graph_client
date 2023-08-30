@@ -4,12 +4,12 @@ import FullCitation from './FullCitation'
 
 function PublicationDisplayCheck({ alumnName, alumn_publication, updateIdArray, invalidatePublication }) {
 
-    const { ap_id, display, publication, coauthors } = alumn_publication
+    const { lab_alumn_publication_id, display, publication, coauthors } = alumn_publication
     const [displayed, setDisplayed] = useState(display)
     return (
         <div
             className="d-flex align-items-center justify-content-between mb-5 p-3 border border-secondary"
-            key={`${ap_id}_${alumnName}`}>
+            key={`${lab_alumn_publication_id}_${alumnName}`}>
             <InputGroup.Checkbox
                 className=""
                 aria-label="Checkbox for following citation"
@@ -17,7 +17,7 @@ function PublicationDisplayCheck({ alumnName, alumn_publication, updateIdArray, 
                 checked={displayed}
                 onChange={() => {
                     setDisplayed(!displayed)
-                    updateIdArray(ap_id, !displayed)
+                    updateIdArray(lab_alumn_publication_id, !displayed)
                 }} />
             <FullCitation
                 alumnName={alumnName}
@@ -25,7 +25,7 @@ function PublicationDisplayCheck({ alumnName, alumn_publication, updateIdArray, 
                 coauthors={coauthors} />
             <Button
                 className="ml-1"
-                onClick={(e) => invalidatePublication(e, publication.id)}
+                onClick={(e) => invalidatePublication(e, publication.lab_publication_id)}
                 variant="danger"
                 size="sm"
             >

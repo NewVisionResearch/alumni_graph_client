@@ -1,54 +1,111 @@
-import { useState } from "react"
-import { Button, Form, InputGroup } from 'react-bootstrap'
-import { AiFillEyeInvisible, AiFillEye } from 'react-icons/ai'
+import { useState } from "react";
+import { Button, Form, Toast, InputGroup } from 'react-bootstrap';
+import { AiFillEyeInvisible, AiFillEye } from 'react-icons/ai';
+import { useNavigate } from 'react-router-dom';
+import Menu from "./Menu";
 
-function Login({ login, error }) {
+function Login({ login, error, showPasswordResetSuccessfulToast, setShowPasswordResetSuccessfulToast }) {
 
-    const [admin, setAdmin] = useState({ username: "", password: "" })
-    const [viewPassword, setViewPassword] = useState(false)
+  let navigate = useNavigate();
 
-    return (
-        <div
-            className="login d-flex justify-content-center align-items-center"
-            style={{ width: '100%', height: '100%' }}>
-            <Form
-                onSubmit={(e) => {
-                    setAdmin({ username: "", password: "" })
-                    login(e, admin)
-                }}
-                style={{ width: '25%', height: '35%' }}>
-                <Form.Group>
-                    <Form.Label>Username: </Form.Label>
-                    <Form.Control
-                        type="text"
-                        name="username"
-                        value={admin.username}
-                        onChange={({ target: { name, value } }) => setAdmin({ ...admin, [name]: value })}
-                    />
-                </Form.Group>
-                <Form.Group>
-                    <Form.Label>Password: </Form.Label>
-                    <InputGroup>
-                        <Form.Control
-                            type={viewPassword ? "text" : "password"}
-                            name="password"
-                            value={admin.password}
-                            onChange={({ target: { name, value } }) => setAdmin({ ...admin, [name]: value })}
-                        />
-                        <InputGroup.Append>
-                            <Button
-                                variant="secondary"
-                                onClick={() => setViewPassword(!viewPassword)}
-                            >{viewPassword ? <AiFillEyeInvisible /> : <AiFillEye />}
-                            </Button>
-                        </InputGroup.Append>
-                    </InputGroup>
-                    <Form.Text className="text-danger">{error}</Form.Text>
-                </Form.Group>
-                <Button type="submit">Login</Button>
-            </Form>
+  const [admin, setAdmin] = useState({ email: "", password: "" });
+  const [viewPassword, setViewPassword] = useState(false);
+
+  const handleResetPasswordClick = () => {
+    navigate("/password-reset-request");
+  };
+
+  return (
+    <div
+      className="login d-flex flex-column justify-content-center align-items-center pt-5"
+      style={{ width: '100%' }}>
+      <div
+        className="d-flex flex-column justify-content-center align-items-center pb-2">
+        <h1
+          style={{ fontSize: '1.25em' }}>
+          Login
+        </h1>
+      </div>
+      <Form
+        onSubmit={(e) => {
+          setAdmin({ email: "", password: "" });
+          login(e, admin);
+        }}
+        style={{ width: '25%', height: '35%' }}>
+        <Form.Group>
+          <Form.Label>Email: </Form.Label>
+          <Form.Control
+            type="email"
+            name="email"
+            placeholder="Enter email"
+            required
+            value={admin.email}
+            onChange={({ target: { name, value } }) => setAdmin({ ...admin, [name]: value })}
+          />
+        </Form.Group>
+        <Form.Group>
+          <Form.Label>Password: </Form.Label>
+          <InputGroup>
+            <Form.Control
+              type={viewPassword ? "text" : "password"}
+              name="password"
+              placeholder="Password"
+              required
+              value={admin.password}
+              onChange={({ target: { name, value } }) => setAdmin({ ...admin, [name]: value })}
+            />
+            <InputGroup.Append>
+              <Button
+                variant="secondary"
+                onClick={() => setViewPassword(!viewPassword)}
+              >{viewPassword ? <AiFillEyeInvisible /> : <AiFillEye />}
+              </Button>
+            </InputGroup.Append>
+          </InputGroup>
+          <Form.Text className="text-danger">{error}</Form.Text>
+        </Form.Group>
+        <div style={{
+          display: "flex",
+          "alignItems": "center",
+          "flexWrap": "wrap",
+          "flexDirection": "row",
+          "justifyContent": "space-between",
+          gap: 20
+        }}>
+          <Button type="submit">Login</Button>
+          <div style={{
+            display: "flex",
+            'flexDirection': "row",
+            'alignContent': "center",
+            'alignItems': "center",
+            'flexWrap': "wrap",
+            'justifyContent': "flex-start"
+          }}
+          >
+            <Button style={{ padding: 0 }} onClick={handleResetPasswordClick} variant="link">Forgot password? Reset!</Button>
+          </div>
         </div>
-    )
+      </Form>
+      <Menu show={admin.email === ""}></Menu>
+      <Toast
+        style={{
+          position: 'absolute',
+          top: 10,
+          backgroundColor: "green"
+        }}
+        animation={true}
+        show={showPasswordResetSuccessfulToast}
+        onClose={() => setShowPasswordResetSuccessfulToast(false)}>
+        <Toast.Header>
+          <strong className="mr-auto">Success!</strong>
+          <small>now</small>
+        </Toast.Header>
+        <Toast.Body>
+          Your password has been successfully reset!
+        </Toast.Body>
+      </Toast>
+    </div>
+  );
 }
 
-export default Login
+export default Login;

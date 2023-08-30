@@ -27,12 +27,25 @@ justify-content: center;
 align-items: center;
 height:100%;
 margin: auto;
+margin-bottom: 1rem;
 /* 	width: 350px; */
 /* 	font-size:26px; */
 font-family: Helvetica, sans-serif, Arial;
 animation: load 1.2s infinite 0s ease-in-out;
 animation-direction: alternate;
 text-shadow: 0 0 1px black;
+}
+
+.non-animate {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  margin: auto;
+  margin-bottom: 1rem;
+  /* 	width: 350px; */
+  /* 	font-size:26px; */
+  font-family: Helvetica, sans-serif, Arial;
 }
 
 .nav-item {
@@ -120,4 +133,20 @@ button.accordion-title, div.card-body {
     height: 40%;
     transform: translate(10%, 140%);
   }
+}
+
+.PhoneInputInput {
+display: block;
+  width: 100%;
+  height: calc(1.5em + 0.75rem + 2px);
+  padding: 0.375rem 0.75rem;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #495057;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid #ced4da;
+  border-radius: 0.25rem;
+  transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
 }
