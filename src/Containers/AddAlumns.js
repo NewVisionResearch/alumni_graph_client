@@ -1,21 +1,15 @@
 import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button, Modal, Row, Col, Form } from "react-bootstrap";
+
 import FormComponent from "./NewAlumnForm";
 import { AdminContext } from "../Context/Context";
+import { fetchAlumns, pollJobStatus } from "../services/api";
 
-function AddAlumns({
-    alumns,
-    setAlumns,
-    openAlumnShow,
-    setLoading,
-}) {
-    const baseUrl = process.env.REACT_APP_BASE_URL;
-
+function AddAlumns({ alumns, setAlumns, openAlumnShow, setAddAlumnLoading }) {
     const admin = useContext(AdminContext);
 
-    const [showAlumnQuerySearchModal, setShowAlumnQuerySearchModal] =
-        useState(false);
+    const [showAlumnQuerySearchModal, setShowAlumnQuerySearchModal] = useState(false);
     const [showAddAlumnModal, setShowAddAlumnModal] = useState(false);
     const [alumnQueryResults, setAlumnQueryResults] = useState({});
     const [addAlumnDisplayName, setAddAlumnDisplayName] = useState("");
@@ -37,93 +31,70 @@ function AddAlumns({
         setDuplicateDisplayNameError("");
     };
 
-    const addAlumn = () => {
-        setLoading(true);
-
-        const token = localStorage.getItem("jwt");
-
-        let alumnObj = {
-            alumn: {
-                display_name: addAlumnDisplayName.toLowerCase(),
-                lab_id: admin.labId,
-                search_query: alumnQueryResults.esearchresult.querytranslation,
-            },
-        };
-
-        let options = {
-            method: "POST",
-            headers: {
-                "content-type": "application/json",
-                Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify(alumnObj),
-        };
-
-        fetch(`${baseUrl}/alumns`, options)
-            .then((res) => {
-                if (!res.ok) {
-                    throw res;
-                }
-                return res.json();
-            })
-            .then((response) => {
-
-                handleAddAlumnModalClose();
-
-                const { job_id } = response;
-
-                const pollJobStatus = setInterval(() => {
-                    fetch(`${baseUrl}/jobs/${job_id}`, {
-                        headers: { Authorization: `Bearer ${token}` },
-                    })
-                        .then((res) => {
-                            if (!res.ok) {
-                                throw new Error("Job status request failed");
-                            }
-
-                            return res.json();
-                        })
-                        .then((res) => {
-                            if (res.job.status === "completed") {
-                                setLoading(false);
-                                clearInterval(pollJobStatus);
-                                let newArray = [
-                                    ...alumns,
-                                    {
-                                        alumn_id: res.alumn_id,
-                                        full_name: res.full_name,
-                                        search_query: res.search_query,
-                                        my_lab_alumn_publications: res.my_lab_alumn_publications,
-                                    },
-                                ];
-                                setAlumns(newArray);
-                                openAlumnShow(res.alumn_id);
-                            } else if (res.job.status === "failed") {
-                                setLoading(false);
-                                clearInterval(pollJobStatus);
-                                console.error("Job failed:", res.error);
-                                navigate("/error");
-                            }
-                        })
-                        .catch((err) => {
-                            console.error(err);
-                            clearInterval(pollJobStatus);
-                            setLoading(false);
-                            navigate("/error");
-                        });
-                }, 5000);
-            })
-            .catch((err) => {
-                return err.json().then((errorResponse) => {
-                    console.error(errorResponse);
-                    setDuplicateDisplayNameError(errorResponse);
-                });
-            });
-    };
-
     const handleContinue = () => {
         handleAlumnQuerySearchModalClose();
         handleAddAlumnModalShow();
+    };
+
+    const addAlumn = async () => {
+        try {
+            const alumnObj = {
+                alumn: {
+                    display_name: addAlumnDisplayName.toLowerCase(),
+                    lab_id: admin.labId,
+                    search_query: alumnQueryResults.esearchresult.querytranslation,
+                },
+            };
+
+            const res = await fetchAlumns(alumnObj);
+
+            if (!res.ok) throw res;
+
+            const alumnsResponse = await res.json();
+            const { job_id } = alumnsResponse;
+
+            handleAddAlumnModalClose();
+            setAddAlumnLoading(true);
+
+            const pollJobStatusInterval = setInterval(async () => {
+                try {
+                    const jobRes = await pollJobStatus(job_id);
+
+                    if (!jobRes.ok) throw new Error("Job status request failed");
+
+                    const jobData = await jobRes.json();
+
+                    if (jobData.job.status === "completed") {
+                        const newArray = [
+                            ...alumns,
+                            {
+                                alumn_id: jobData.alumn_id,
+                                full_name: jobData.full_name,
+                                search_query: jobData.search_query,
+                                my_lab_alumn_publications: jobData.my_lab_alumn_publications,
+                            },
+                        ];
+
+                        setAddAlumnLoading(false);
+                        clearInterval(pollJobStatusInterval);
+                        setAlumns(newArray);
+                        openAlumnShow(jobData.alumn_id);
+                    } else if (jobData.job.status === "failed") {
+                        throw jobData.error;
+                    }
+                } catch (error) {
+                    setAddAlumnLoading(false);
+                    clearInterval(pollJobStatusInterval);
+                    console.error("Job failed:", error);
+                    navigate("/error");
+                }
+            }, 5000);
+        } catch (error) {
+            let errorResponse = await error.json();
+            console.error(errorResponse);
+            setDuplicateDisplayNameError(errorResponse);
+            setAddAlumnLoading(false);
+        }
     };
 
     return (
@@ -145,19 +116,19 @@ function AddAlumns({
                         <p>
                             Your query{" "}
                             <strong>
-                                {
-                                    alumnQueryResults.esearchresult?.querytranslation}
+                                {alumnQueryResults.esearchresult?.querytranslation}
                             </strong>{" "}
                             came back with{" "}
-                            <strong>
-                                {alumnQueryResults.esearchresult?.count}
-                            </strong>{" "}
-                            results.
+                            <strong>{alumnQueryResults.esearchresult?.count}</strong> results.
                         </p>
-                        {alumnQueryResults.esearchresult?.count === "0" ? <p>Please try a different query.</p> : <p>
-                            Would you like to continue and save this researcher and their
-                            publications?
-                        </p>}
+                        {alumnQueryResults.esearchresult?.count === "0" ? (
+                            <p>Please try a different query.</p>
+                        ) : (
+                            <p>
+                                Would you like to continue and save this researcher and their
+                                publications?
+                            </p>
+                        )}
                     </div>
                 </Modal.Body>
                 <Modal.Footer>
@@ -167,7 +138,11 @@ function AddAlumns({
                     >
                         Cancel
                     </Button>
-                    <Button disabled={alumnQueryResults.esearchresult?.count === "0"} variant="primary" onClick={handleContinue}>
+                    <Button
+                        disabled={alumnQueryResults.esearchresult?.count === "0"}
+                        variant="primary"
+                        onClick={handleContinue}
+                    >
                         Continue
                     </Button>
                 </Modal.Footer>
@@ -228,8 +203,13 @@ function AddAlumns({
                                         This is the name that will be displayed in your graph. We
                                         suggest entering the researchers full name.
                                     </Form.Text>
-                                    {duplicateDisplayNameError.error ? duplicateDisplayNameError.error.map((val) => <Form.Text className="text-danger">{val}</Form.Text>) : <></>}
-
+                                    {duplicateDisplayNameError.error ? (
+                                        duplicateDisplayNameError.error.map((val) => (
+                                            <Form.Text className="text-danger">{val}</Form.Text>
+                                        ))
+                                    ) : (
+                                        <></>
+                                    )}
                                 </Col>
                             </Form.Group>
                         </div>

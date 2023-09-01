@@ -149,3 +149,13 @@ export const getAdmins = () => {
 
     return fetch(`${baseUrl}/admins/get_admins`, options);
 };
+
+export const fetchAlumns = (alumnObj) => {
+    const options = {
+        method: "POST",
+        headers: headersWithToken,
+        body: JSON.stringify(alumnObj),
+    };
+
+    return fetch(`${baseUrl}/alumns`, options);
+};

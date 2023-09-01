@@ -11,6 +11,7 @@ function DashboardContainer() {
   const [removeAlumnId, setRemoveAlumnId] = useState(null);
   const [showInfoModal, setShowInfoModal] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [addAlumnLoading, setAddAlumnLoading] = useState(false);
 
   const baseUrl = process.env.REACT_APP_BASE_URL;
 
@@ -101,20 +102,20 @@ function DashboardContainer() {
   }, [memoizedAlumnFetch, removeAlumnId, confirmRemovedAlumn]);
 
   return (
-    <div>
-      <DashboardComponent
-        showInfoModal={showInfoModal}
-        setShowInfoModal={setShowInfoModal}
-        openAlumnShow={openAlumnShow}
-        handleInfoClick={handleInfoClick}
-        handleDeleteAlumn={handleDeleteAlumn}
-        loading={loading}
-        setLoading={setLoading}
-        alumns={alumns}
-        setAlumns={setAlumns}
-        alumnShowId={alumnShowId}
-      />
-    </div>
+    <DashboardComponent
+      showInfoModal={showInfoModal}
+      setShowInfoModal={setShowInfoModal}
+      openAlumnShow={openAlumnShow}
+      handleInfoClick={handleInfoClick}
+      handleDeleteAlumn={handleDeleteAlumn}
+      loading={loading}
+      setLoading={setLoading}
+      addAlumnLoading={addAlumnLoading}
+      setAddAlumnLoading={setAddAlumnLoading}
+      alumns={alumns}
+      setAlumns={setAlumns}
+      alumnShowId={alumnShowId}
+    />
   );
 }
 

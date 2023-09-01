@@ -5,6 +5,7 @@ import { byLastName } from "../services/sorts";
 
 import AlumnShowContainer from "../Containers/AlumnShowContainer";
 import AddAlumns from "../Containers/AddAlumns";
+import Loading from "./Loading";
 
 function DashboardComponent({
     showInfoModal,
@@ -14,6 +15,8 @@ function DashboardComponent({
     handleDeleteAlumn,
     loading,
     setLoading,
+    addAlumnLoading,
+    setAddAlumnLoading,
     alumns,
     setAlumns,
     alumnShowId,
@@ -94,7 +97,7 @@ function DashboardComponent({
                                         alumns={alumns}
                                         setAlumns={setAlumns}
                                         openAlumnShow={openAlumnShow}
-                                        setLoading={setLoading}
+                                        setAddAlumnLoading={setAddAlumnLoading}
                                     />
                                 </Col>
                             </Row>
@@ -128,13 +131,18 @@ function DashboardComponent({
                     </Col>
                     <Col md={6}>
                         {/* Right Column */}
-                        {alumnShowId && (
-                            <AlumnShowContainer
-                                alumnId={alumnShowId}
-                                handleDeleteAlumn={handleDeleteAlumn}
-                                loading={loading}
-                                setLoading={setLoading}
-                            />
+                        {addAlumnLoading ? (
+                            <Loading />
+                        ) : (
+                            alumnShowId && (
+                                <AlumnShowContainer
+                                    alumnId={alumnShowId}
+                                    handleDeleteAlumn={handleDeleteAlumn}
+                                    loading={loading}
+                                    setLoading={setLoading}
+                                    addAlumnLoading={addAlumnLoading}
+                                />
+                            )
                         )}
                     </Col>
                 </Row>
@@ -154,7 +162,6 @@ function DashboardComponent({
             >
                 <AiFillInfoCircle size={"2em"} />
             </Button>
-
         </div>
     );
 }
