@@ -2,9 +2,11 @@ import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button, Modal, Row, Col, Form } from "react-bootstrap";
 
-import FormComponent from "./NewAlumnForm";
+import NewAlumnForm from "./NewAlumnForm";
 import { AdminContext } from "../Context/Context";
 import { fetchAlumns, pollJobStatus } from "../services/api";
+
+import "../styles/AddAlumns.css";
 
 function AddAlumns({ alumns, setAlumns, openAlumnShow, setAddAlumnLoading }) {
     const admin = useContext(AdminContext);
@@ -98,8 +100,8 @@ function AddAlumns({ alumns, setAlumns, openAlumnShow, setAddAlumnLoading }) {
     };
 
     return (
-        <div className="add-alumns mr-5 mb-4">
-            <FormComponent
+        <div className="add-alumns">
+            <NewAlumnForm
                 handleModalShow={handleAlumnQuerySearchModalShow}
                 setAlumnQueryResults={setAlumnQueryResults}
             />
@@ -159,7 +161,7 @@ function AddAlumns({ alumns, setAlumns, openAlumnShow, setAddAlumnLoading }) {
                     <Modal.Header closeButton>
                         <Modal.Title>Add Researcher</Modal.Title>
                     </Modal.Header>
-                    <Modal.Body style={{ borderBottom: "1px solid #dee2e6" }}>
+                    <Modal.Body className="border-bottom">
                         <Row>
                             <Col>
                                 <p>
@@ -183,36 +185,34 @@ function AddAlumns({ alumns, setAlumns, openAlumnShow, setAddAlumnLoading }) {
                         </Row>
                     </Modal.Body>
                     <Modal.Body>
-                        <div>
-                            <Form.Group as={Row} controlId="formDisplayName">
-                                <Form.Label column sm={4}>
-                                    Display Name:
-                                </Form.Label>
-                                <Col sm={8}>
-                                    <Form.Control
-                                        type="text"
-                                        placeholder="Enter display name"
-                                        name="displayName"
-                                        required
-                                        value={addAlumnDisplayName}
-                                        onChange={({ target: { name, value } }) =>
-                                            setAddAlumnDisplayName(value)
-                                        }
-                                    />
-                                    <Form.Text className="text-muted">
-                                        This is the name that will be displayed in your graph. We
-                                        suggest entering the researchers full name.
-                                    </Form.Text>
-                                    {duplicateDisplayNameError.error ? (
-                                        duplicateDisplayNameError.error.map((val) => (
-                                            <Form.Text className="text-danger">{val}</Form.Text>
-                                        ))
-                                    ) : (
-                                        <></>
-                                    )}
-                                </Col>
-                            </Form.Group>
-                        </div>
+                        <Form.Group as={Row} controlId="formDisplayName">
+                            <Form.Label column sm={4}>
+                                Display Name:
+                            </Form.Label>
+                            <Col sm={8}>
+                                <Form.Control
+                                    type="text"
+                                    placeholder="Enter display name"
+                                    name="displayName"
+                                    required
+                                    value={addAlumnDisplayName}
+                                    onChange={({ target: { name, value } }) =>
+                                        setAddAlumnDisplayName(value)
+                                    }
+                                />
+                                <Form.Text className="text-muted">
+                                    This is the name that will be displayed in your graph. We
+                                    suggest entering the researchers full name.
+                                </Form.Text>
+                                {duplicateDisplayNameError.error ? (
+                                    duplicateDisplayNameError.error.map((val) => (
+                                        <Form.Text className="text-danger">{val}</Form.Text>
+                                    ))
+                                ) : (
+                                    <></>
+                                )}
+                            </Col>
+                        </Form.Group>
                     </Modal.Body>
                     <Modal.Footer>
                         <Button variant="secondary" onClick={handleAddAlumnModalClose}>

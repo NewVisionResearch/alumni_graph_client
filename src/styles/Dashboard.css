@@ -1,0 +1,29 @@
+.dashboard {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    /* padding: 3em; */
+}
+
+.text-left-padding {
+    padding: 10px;
+    text-align: left;
+}
+
+.scrollable-list {
+    display: flex;
+    max-height: 700px;
+    overflow: hidden;
+    overflow-y: scroll;
+}
+
+.info-button {
+    position: absolute;
+    padding: 0;
+    right: 30px;
+    top: 60px;
+    z-index: 1000;
+    border-radius: 50%;
+    box-shadow: -1px 1px 10px rgb(31, 31, 31);
+}

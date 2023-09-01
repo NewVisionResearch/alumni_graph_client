@@ -2,10 +2,11 @@ import { Button, Card, Container, Row, Col, ListGroup } from "react-bootstrap";
 import { AiFillInfoCircle } from "react-icons/ai";
 
 import { byLastName } from "../services/sorts";
-
 import AlumnShowContainer from "../Containers/AlumnShowContainer";
 import AddAlumns from "../Containers/AddAlumns";
 import Loading from "./Loading";
+
+import "../styles/Dashboard.css";
 
 function DashboardComponent({
     showInfoModal,
@@ -22,7 +23,7 @@ function DashboardComponent({
     alumnShowId,
 }) {
     return (
-        <div className="dashboard d-flex flex-wrap align-items-center justify-content-center p-5">
+        <div className="dashboard">
             {showInfoModal ? (
                 <Card border="info">
                     <Card.Header className="text-center">Instructions</Card.Header>
@@ -84,7 +85,7 @@ function DashboardComponent({
                     </Card.Footer>
                 </Card>
             ) : (
-                <div></div>
+                <></>
             )}
             <Container fluid>
                 <Row className="justify-content-md-center">
@@ -104,15 +105,8 @@ function DashboardComponent({
                             <Row>
                                 <Col>
                                     {/* Content for the second row in the left column */}
-                                    <div
-                                        style={{
-                                            display: "flex",
-                                            maxHeight: "700px",
-                                            overflow: "hidden",
-                                            overflowY: "scroll",
-                                        }}
-                                    >
-                                        <ListGroup as="ul" style={{ width: "100%" }}>
+                                    <div className="scrollable-list">
+                                        <ListGroup as="ul" className="w-100">
                                             {byLastName(alumns).map((alumn) => (
                                                 <ListGroup.Item
                                                     as="li"
@@ -147,19 +141,7 @@ function DashboardComponent({
                     </Col>
                 </Row>
             </Container>
-            <Button
-                style={{
-                    position: "absolute",
-                    padding: 0,
-                    right: 30,
-                    top: 60,
-                    zIndex: 1000,
-                    borderRadius: "50%",
-                    boxShadow: "-1px 1px 10px rgb(31, 31, 31)",
-                }}
-                variant="info"
-                onClick={handleInfoClick}
-            >
+            <Button className="info-button" variant="info" onClick={handleInfoClick}>
                 <AiFillInfoCircle size={"2em"} />
             </Button>
         </div>

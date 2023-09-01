@@ -60,11 +60,6 @@ text-shadow: 0 0 1px black;
   margin: auto 0;
 }
 
-.add-alumns ul li:hover {
-  cursor: pointer;
-  background: rgb(206, 206, 206);
-}
-
 span.alumn {
   color: rgb(77, 172, 147)
 }
@@ -82,6 +77,31 @@ div#alumn-graph-show {
 
 h3.author-show-name {
   font-size: 2rem;
+}
+.button {
+  background-color: #4F2D7F;
+  border-color: #4F2D7F;
+}
+
+.button:hover {
+  background-color: #00B092;
+  border-color: #00A092;
+}
+
+.button:disabled {
+  background-color: #4F2D7F;
+  border-color: #4F2D7F;
+}
+
+.button:focus {
+  background-color: #00B092!important;
+  border-color: #00A092!important;
+  box-shadow: 0 0 0 0.2rem #009092!important; 
+}
+
+.form-control:focus {
+  border-color: #00A092;
+  box-shadow: 0 0 0 0.2rem #009092;
 }
 
 button.accordion-title, div.card-body {
