@@ -11,7 +11,12 @@ import {
   updateSearchNamesForAlumn,
 } from "../services/api";
 
-function AlumnShowContainer({ alumnId, handleDeleteAlumn }) {
+function AlumnShowContainer({
+  alumnId,
+  handleDeleteAlumn,
+  loading,
+  setLoading,
+}) {
   const [alumn, setAlumn] = useState({
     full_name: "",
     search_query: "",
@@ -19,7 +24,6 @@ function AlumnShowContainer({ alumnId, handleDeleteAlumn }) {
   });
   const [idObj, setIdObj] = useState({});
   const [editSearchNames, setEditSearchNames] = useState(false);
-  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
@@ -28,14 +32,22 @@ function AlumnShowContainer({ alumnId, handleDeleteAlumn }) {
       const controller = new AbortController();
       const signal = controller.signal;
 
+      setLoading(true);
+
       fetchAlumnById(alumnId, signal)
         .then((res) => {
           if (!res.ok) throw res;
 
           return res.json();
         })
-        .then((alumnObj) => setAlumn(alumnObj))
-        .catch((err) => console.error(err));
+        .then((alumnObj) => {
+          setAlumn(alumnObj);
+          setLoading(false);
+        })
+        .catch((err) => {
+          console.error(err);
+          setLoading(false);
+        });
 
       setEditSearchNames(false);
 
@@ -43,7 +55,7 @@ function AlumnShowContainer({ alumnId, handleDeleteAlumn }) {
         controller.abort();
       };
     }
-  }, [alumnId]);
+  }, [alumnId, setLoading]);
 
   const invalidatePublication = async (labPublicationId) => {
     let bodyObj = {

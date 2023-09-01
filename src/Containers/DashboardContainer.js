@@ -1,13 +1,22 @@
-import { useCallback, useState } from "react";
+import { useCallback, useState, useEffect, useContext, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 
 import DashboardComponent from "../Components/DashboardComponent";
-import AlumnShowContainer from "./AlumnShowContainer";
 import { deleteAlumn } from "../services/api";
+import { AdminContext } from "../Context/Context";
 
 function DashboardContainer() {
+  const [alumns, setAlumns] = useState([]);
   const [alumnShowId, setAlumnShowId] = useState(null);
   const [removeAlumnId, setRemoveAlumnId] = useState(null);
-  const [showModal, setShowModal] = useState(false);
+  const [showInfoModal, setShowInfoModal] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const baseUrl = process.env.REACT_APP_BASE_URL;
+
+  const admin = useContext(AdminContext);
+
+  const navigate = useRef(useNavigate());
 
   const openAlumnShow = (alumn_id) => {
     setAlumnShowId(alumn_id);
@@ -23,45 +32,88 @@ function DashboardContainer() {
       setRemoveAlumnId(alumn_id);
       setAlumnShowId(null);
     } catch (error) {
-      console.eror("Network response was not ok");
-
+      console.error("Network response was not ok");
     }
-  };
-
-  const confirmRemovedAlumn = () => {
-    setRemoveAlumnId(null);
   };
 
   const handleInfoClick = () => {
-    setShowModal((prev) => !prev);
+    setShowInfoModal((prev) => !prev);
   };
+
+  const confirmRemovedAlumn = useCallback(() => {
+    setRemoveAlumnId(null);
+  }, []);
 
   const handleAlumnsChange = useCallback((alumnsLength) => {
     if (alumnsLength > 0) {
-      setShowModal(false);
+      setShowInfoModal(false);
     } else if (alumnsLength === 0) {
-      setShowModal(true);
+      setShowInfoModal(true);
     }
   }, []);
 
+  // useEffect(() => {
+  //   if (alumns.length) {
+  //     setLoading(false);
+  //   }
+  // }, [alumns.length]);
+
+  const memoizedAlumnFetch = useCallback(async () => {
+    const token = localStorage.getItem("jwt");
+
+    const options = {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    try {
+      const res = await fetch(
+        `${baseUrl}/alumns/${admin.labId}/index`,
+        options
+      );
+      if (!res.ok) {
+        throw res;
+      }
+      const alumnsArray = await res.json();
+      return setAlumns(alumnsArray);
+    } catch (res) {
+      console.error(res);
+      navigate.current("/error");
+    }
+  }, [admin.labId, baseUrl]);
+
+  // fetch alumns when alumns or admin changes
+  useEffect(() => {
+    if (!alumns.length && admin.labId !== "") {
+      memoizedAlumnFetch();
+    }
+
+    handleAlumnsChange(alumns.length);
+  }, [alumns.length, admin, memoizedAlumnFetch, handleAlumnsChange]);
+
+  // fetch alumns when alumn removed
+  useEffect(() => {
+    if (removeAlumnId) {
+      memoizedAlumnFetch().then(confirmRemovedAlumn);
+    }
+  }, [memoizedAlumnFetch, removeAlumnId, confirmRemovedAlumn]);
+
   return (
     <div>
-
       <DashboardComponent
-        showModal={showModal}
-        setShowModal={setShowModal}
+        showInfoModal={showInfoModal}
+        setShowInfoModal={setShowInfoModal}
         openAlumnShow={openAlumnShow}
-        removeAlumnId={removeAlumnId}
-        confirmRemovedAlumn={confirmRemovedAlumn}
-        handleAlumnsChange={handleAlumnsChange}
-        handleDeleteAlumn={handleDeleteAlumn}
         handleInfoClick={handleInfoClick}
+        handleDeleteAlumn={handleDeleteAlumn}
+        loading={loading}
+        setLoading={setLoading}
+        alumns={alumns}
+        setAlumns={setAlumns}
+        alumnShowId={alumnShowId}
       />
-      {
-        alumnShowId && (
-          <AlumnShowContainer alumnId={alumnShowId} handleDeleteAlumn={handleDeleteAlumn} />
-        )
-      }
     </div>
   );
 }

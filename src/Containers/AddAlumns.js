@@ -1,91 +1,45 @@
-import { useState, useEffect, useCallback, useContext } from "react";
+import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { ListGroup, Button, Modal, Row, Col, Form } from "react-bootstrap";
-import Loading from "../Components/Loading";
-import { byLastName } from "../services/sorts";
+import { Button, Modal, Row, Col, Form } from "react-bootstrap";
 import FormComponent from "./NewAlumnForm";
 import { AdminContext } from "../Context/Context";
 
 function AddAlumns({
-    onAlumnsChange,
+    alumns,
+    setAlumns,
     openAlumnShow,
-    removeAlumnId,
-    confirmRemovedAlumn,
+    setLoading,
 }) {
     const baseUrl = process.env.REACT_APP_BASE_URL;
 
     const admin = useContext(AdminContext);
 
-    const [alumns, setAlumns] = useState([]);
     const [showAlumnQuerySearchModal, setShowAlumnQuerySearchModal] =
         useState(false);
     const [showAddAlumnModal, setShowAddAlumnModal] = useState(false);
     const [alumnQueryResults, setAlumnQueryResults] = useState({});
-    const [loading, setLoading] = useState(false);
     const [addAlumnDisplayName, setAddAlumnDisplayName] = useState("");
     const [duplicateDisplayNameError, setDuplicateDisplayNameError] = useState({});
 
     const navigate = useNavigate();
 
-    const handleAlumnQuerySearchModalClose = () =>
-        setShowAlumnQuerySearchModal(false);
     const handleAlumnQuerySearchModalShow = () =>
         setShowAlumnQuerySearchModal(true);
+
+    const handleAlumnQuerySearchModalClose = () =>
+        setShowAlumnQuerySearchModal(false);
+
+    const handleAddAlumnModalShow = () => setShowAddAlumnModal(true);
 
     const handleAddAlumnModalClose = () => {
         setShowAddAlumnModal(false);
         setAddAlumnDisplayName("");
         setDuplicateDisplayNameError("");
     };
-    const handleAddAlumnModalShow = () => setShowAddAlumnModal(true);
-
-    const memoizedAlumnFetch = useCallback(async () => {
-        const token = localStorage.getItem("jwt");
-
-        const options = {
-            method: "GET",
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        };
-
-        try {
-            const res = await fetch(
-                `${baseUrl}/alumns/${admin.labId}/index`,
-                options
-            );
-            if (!res.ok) {
-                throw res;
-            }
-            const alumnsArray = await res.json();
-            return setAlumns(alumnsArray);
-        } catch (res) {
-            console.error(res);
-            navigate("/error");
-        }
-    }, [navigate, baseUrl, admin.labId]);
-
-    useEffect(() => {
-        if (!alumns.length && admin.labId !== "") {
-            memoizedAlumnFetch();
-        }
-
-        onAlumnsChange(alumns.length);
-    }, [alumns.length, memoizedAlumnFetch, admin, onAlumnsChange]);
-
-    useEffect(() => {
-        if (alumns.length) {
-            setLoading(false);
-        }
-    }, [alumns.length]);
-
-    useEffect(() => {
-        if (removeAlumnId) {
-            memoizedAlumnFetch().then(confirmRemovedAlumn);
-        }
-    }, [memoizedAlumnFetch, removeAlumnId, confirmRemovedAlumn]);
 
     const addAlumn = () => {
+        setLoading(true);
+
         const token = localStorage.getItem("jwt");
 
         let alumnObj = {
@@ -113,7 +67,7 @@ function AddAlumns({
                 return res.json();
             })
             .then((response) => {
-                setLoading(true);
+
                 handleAddAlumnModalClose();
 
                 const { job_id } = response;
@@ -131,6 +85,7 @@ function AddAlumns({
                         })
                         .then((res) => {
                             if (res.job.status === "completed") {
+                                setLoading(false);
                                 clearInterval(pollJobStatus);
                                 let newArray = [
                                     ...alumns,
@@ -144,6 +99,7 @@ function AddAlumns({
                                 setAlumns(newArray);
                                 openAlumnShow(res.alumn_id);
                             } else if (res.job.status === "failed") {
+                                setLoading(false);
                                 clearInterval(pollJobStatus);
                                 console.error("Job failed:", res.error);
                                 navigate("/error");
@@ -152,6 +108,7 @@ function AddAlumns({
                         .catch((err) => {
                             console.error(err);
                             clearInterval(pollJobStatus);
+                            setLoading(false);
                             navigate("/error");
                         });
                 }, 5000);
@@ -292,31 +249,6 @@ function AddAlumns({
                 </Form>
             </Modal>
             {/* Add Alumn Modal ENDS*/}
-            {loading ? (
-                <Loading />
-            ) : (
-                <div
-                    style={{
-                        display: "flex",
-                        maxHeight: "700px",
-                        overflow: "hidden",
-                        overflowY: "scroll",
-                    }}
-                >
-                    <ListGroup as="ul" style={{ width: "100%" }}>
-                        {byLastName(alumns).map((alumn) => (
-                            <ListGroup.Item
-                                as="li"
-                                key={alumn.alumn_id}
-                                onClick={() => openAlumnShow(alumn.alumn_id)}
-                                className=""
-                            >
-                                {alumn.full_name}
-                            </ListGroup.Item>
-                        ))}
-                    </ListGroup>
-                </div>
-            )}
         </div>
     );
 }

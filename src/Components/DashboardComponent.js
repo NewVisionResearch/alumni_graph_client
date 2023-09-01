@@ -1,27 +1,26 @@
-import { Button, Card } from "react-bootstrap";
+import { Button, Card, Container, Row, Col, ListGroup } from "react-bootstrap";
 import { AiFillInfoCircle } from "react-icons/ai";
 
+import { byLastName } from "../services/sorts";
+
+import AlumnShowContainer from "../Containers/AlumnShowContainer";
 import AddAlumns from "../Containers/AddAlumns";
 
 function DashboardComponent({
-    showModal,
-    setShowModal,
+    showInfoModal,
+    setShowInfoModal,
     openAlumnShow,
-    removeAlumnId,
-    confirmRemovedAlumn,
-    handleAlumnsChange,
-    handleRemoveAlumn,
     handleInfoClick,
+    handleDeleteAlumn,
+    loading,
+    setLoading,
+    alumns,
+    setAlumns,
+    alumnShowId,
 }) {
     return (
         <div className="dashboard d-flex flex-wrap align-items-center justify-content-center p-5">
-            <AddAlumns
-                onAlumnsChange={handleAlumnsChange}
-                openAlumnShow={openAlumnShow}
-                removeAlumnId={removeAlumnId}
-                confirmRemovedAlumn={confirmRemovedAlumn}
-            />
-            {showModal ? (
+            {showInfoModal ? (
                 <Card border="info">
                     <Card.Header className="text-center">Instructions</Card.Header>
                     <Card.Body>
@@ -73,7 +72,7 @@ function DashboardComponent({
                                 </li>
                             </ol>
                         </div>
-                        <Button variant="primary" onClick={() => setShowModal(false)}>
+                        <Button variant="primary" onClick={() => setShowInfoModal(false)}>
                             Hide
                         </Button>
                     </Card.Body>
@@ -84,6 +83,62 @@ function DashboardComponent({
             ) : (
                 <div></div>
             )}
+            <Container fluid>
+                <Row className="justify-content-md-center">
+                    <Col md={6}>
+                        <Container>
+                            <Row>
+                                <Col>
+                                    {/* Content for the first row in the left column */}
+                                    <AddAlumns
+                                        alumns={alumns}
+                                        setAlumns={setAlumns}
+                                        openAlumnShow={openAlumnShow}
+                                        setLoading={setLoading}
+                                    />
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col>
+                                    {/* Content for the second row in the left column */}
+                                    <div
+                                        style={{
+                                            display: "flex",
+                                            maxHeight: "700px",
+                                            overflow: "hidden",
+                                            overflowY: "scroll",
+                                        }}
+                                    >
+                                        <ListGroup as="ul" style={{ width: "100%" }}>
+                                            {byLastName(alumns).map((alumn) => (
+                                                <ListGroup.Item
+                                                    as="li"
+                                                    key={alumn.alumn_id}
+                                                    onClick={() => openAlumnShow(alumn.alumn_id)}
+                                                    className=""
+                                                >
+                                                    {alumn.full_name}
+                                                </ListGroup.Item>
+                                            ))}
+                                        </ListGroup>
+                                    </div>
+                                </Col>
+                            </Row>
+                        </Container>
+                    </Col>
+                    <Col md={6}>
+                        {/* Right Column */}
+                        {alumnShowId && (
+                            <AlumnShowContainer
+                                alumnId={alumnShowId}
+                                handleDeleteAlumn={handleDeleteAlumn}
+                                loading={loading}
+                                setLoading={setLoading}
+                            />
+                        )}
+                    </Col>
+                </Row>
+            </Container>
             <Button
                 style={{
                     position: "absolute",
@@ -99,6 +154,7 @@ function DashboardComponent({
             >
                 <AiFillInfoCircle size={"2em"} />
             </Button>
+
         </div>
     );
 }
