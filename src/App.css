@@ -1,3 +1,11 @@
+:root {
+  --custom-grey: #f5f5f5;
+  --custom-purple: #4F2D7F;
+  --custom-teal: #00B092;
+  --custom-teal-border: #00A092;
+  --custom-teal-shadow: #009092;
+}
+
 body, * {
   margin: 0;
   padding: 0;
@@ -79,29 +87,29 @@ h3.author-show-name {
   font-size: 2rem;
 }
 .button {
-  background-color: #4F2D7F;
-  border-color: #4F2D7F;
+  background-color: var(--custom-purple);
+  border-color: var(--custom-purple);
 }
 
 .button:hover {
-  background-color: #00B092;
-  border-color: #00A092;
+  background-color: var(--custom-teal);
+  border-color: var(--custom-teal-border);
 }
 
 .button:disabled {
-  background-color: #4F2D7F;
-  border-color: #4F2D7F;
+  background-color: var(--custom-purple);
+  border-color: var(--custom-purple);
 }
 
 .button:focus {
-  background-color: #00B092!important;
-  border-color: #00A092!important;
-  box-shadow: 0 0 0 0.2rem #009092!important; 
+  background-color: var(--custom-teal)!important;
+  border-color: var(--custom-teal-border)!important;
+  box-shadow: 0 0 0 0.2rem var(--custom-teal-shadow)!important; 
 }
 
 .form-control:focus {
-  border-color: #00A092;
-  box-shadow: 0 0 0 0.2rem #009092;
+  border-color: var(--custom-teal-border);
+  box-shadow: 0 0 0 0.2rem var(--custom-teal-shadow);
 }
 
 button.accordion-title, div.card-body {
