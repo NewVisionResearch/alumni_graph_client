@@ -101,6 +101,7 @@ function AddAlumns({ alumns, setAlumns, openAlumnShow, setAddAlumnLoading }) {
 
     return (
         <div className="add-alumns">
+            <h1 className="text-center m-2">Add Researcher</h1>
             <NewAlumnForm
                 handleModalShow={handleAlumnQuerySearchModalShow}
                 setAlumnQueryResults={setAlumnQueryResults}
