@@ -152,7 +152,7 @@ function AlumnShowContainer({
       },
     };
 
-    const res = await updateSearchNamesForAlumn(bodyObj);
+    const res = await updateSearchNamesForAlumn(alumnId, bodyObj);
 
     if (!res.ok) throw res;
 
