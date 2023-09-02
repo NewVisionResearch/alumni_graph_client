@@ -11,13 +11,6 @@
     text-align: left;
 }
 
-.scrollable-list {
-    display: flex;
-    max-height: 700px;
-    overflow: hidden;
-    overflow-y: scroll;
-}
-
 .info-button {
     position: absolute;
     padding: 0;

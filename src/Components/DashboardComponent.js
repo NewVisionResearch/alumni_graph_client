@@ -1,10 +1,10 @@
-import { Button, Card, Container, Row, Col, ListGroup } from "react-bootstrap";
+import { Button, Card, Container, Row, Col } from "react-bootstrap";
 import { AiFillInfoCircle } from "react-icons/ai";
 
-import { byLastName } from "../services/sorts";
 import AlumnShowContainer from "../Containers/AlumnShowContainer";
 import AddAlumns from "../Containers/AddAlumns";
 import Loading from "./Loading";
+import AlumnsListContainer from "../Containers/AlumnsListContainer";
 
 import "../styles/Dashboard.css";
 
@@ -105,20 +105,7 @@ function DashboardComponent({
                             <Row>
                                 <Col>
                                     {/* Content for the second row in the left column */}
-                                    <div className="scrollable-list">
-                                        <ListGroup as="ul" className="w-100">
-                                            {byLastName(alumns).map((alumn) => (
-                                                <ListGroup.Item
-                                                    as="li"
-                                                    key={alumn.alumn_id}
-                                                    onClick={() => openAlumnShow(alumn.alumn_id)}
-                                                    className=""
-                                                >
-                                                    {alumn.full_name}
-                                                </ListGroup.Item>
-                                            ))}
-                                        </ListGroup>
-                                    </div>
+                                    <AlumnsListContainer alumns={alumns} openAlumnShow={openAlumnShow} />
                                 </Col>
                             </Row>
                         </Container>

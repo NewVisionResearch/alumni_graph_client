@@ -78,7 +78,8 @@ function DashboardContainer() {
         throw res;
       }
       const alumnsArray = await res.json();
-      return setAlumns(alumnsArray);
+
+      return setAlumns([...alumnsArray]);
     } catch (res) {
       console.error(res);
       navigate.current("/error");

@@ -105,7 +105,6 @@ function NewAlumnForm({ handleModalShow, setAlumnQueryResults }) {
 
     return (
         <Form
-            // className="d-flex"
             id="searchForm"
             onSubmit={(e) => {
                 e.preventDefault();
@@ -135,7 +134,6 @@ function NewAlumnForm({ handleModalShow, setAlumnQueryResults }) {
                         <Dropdown as={ButtonGroup} className="mt-2 mr-2 ml-2">
                             <Button
                                 className="button"
-                                // back
                                 type="button"
                                 onClick={appendToQuery}
                             >

@@ -226,7 +226,7 @@ function GraphContainer({ aspectRatio }) {
     return (
         <div
             className="d-flex justify-content-center"
-            style={{ height: "100%", width: "100%", position: "relative" }}
+            style={{ height: window.innerHeight - 75, width: "100%", position: "relative" }}
         >
             <GraphComponent />
             {alumnId !== null && (

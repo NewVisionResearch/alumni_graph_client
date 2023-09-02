@@ -77,7 +77,7 @@ function App() {
   return (
     <AdminContext.Provider value={admin}>
       <React.Fragment>
-        <div id="App" style={{ height: "100vh", width: "100vw" }}>
+        <div id="App">
           {admin.email === "" ? (
             <Menu show={true} />
           ) : (
