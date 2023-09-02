@@ -3,7 +3,6 @@ import { AiFillInfoCircle } from "react-icons/ai";
 
 import AlumnShowContainer from "../Containers/AlumnShowContainer";
 import AddAlumns from "../Containers/AddAlumns";
-import Loading from "./Loading";
 import AlumnsListContainer from "../Containers/AlumnsListContainer";
 
 import "../styles/Dashboard.css";
@@ -20,7 +19,7 @@ function DashboardComponent({
     setAddAlumnLoading,
     alumns,
     setAlumns,
-    alumnShowId,
+    alumnShowIdAndName,
 }) {
     return (
         <div className="dashboard">
@@ -105,26 +104,23 @@ function DashboardComponent({
                             <Row>
                                 <Col>
                                     {/* Content for the second row in the left column */}
-                                    <AlumnsListContainer alumns={alumns} openAlumnShow={openAlumnShow} />
+                                    <AlumnsListContainer
+                                        alumns={alumns}
+                                        openAlumnShow={openAlumnShow}
+                                    />
                                 </Col>
                             </Row>
                         </Container>
                     </Col>
                     <Col md={6}>
                         {/* Right Column */}
-                        {addAlumnLoading ? (
-                            <Loading />
-                        ) : (
-                            alumnShowId && (
-                                <AlumnShowContainer
-                                    alumnId={alumnShowId}
-                                    handleDeleteAlumn={handleDeleteAlumn}
-                                    loading={loading}
-                                    setLoading={setLoading}
-                                    addAlumnLoading={addAlumnLoading}
-                                />
-                            )
-                        )}
+                        <AlumnShowContainer
+                            alumnShowIdAndName={alumnShowIdAndName}
+                            handleDeleteAlumn={handleDeleteAlumn}
+                            loading={loading}
+                            setLoading={setLoading}
+                            addAlumnLoading={addAlumnLoading}
+                        />
                     </Col>
                 </Row>
             </Container>

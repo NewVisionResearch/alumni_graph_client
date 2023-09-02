@@ -13,30 +13,28 @@ function AlumnsListComponent({
 }) {
     return (
         <div className="alumns-list">
-            <Container>
+            <Container className="p-0">
                 <Row>
                     <Col>
                         <h1 className="text-center m-2">Your Researchers</h1>
-                        <Form.Group as={Row} className="p-2">
-                            <Form.Label column sm={4}>
+                        <Form inline className="alumns-list-search">
+                            <Form.Label>
                                 Search Researcher:{" "}
                             </Form.Label>
-                            <Col sm={8}>
-                                <Form.Control
-                                    id="alumns-list-search"
-                                    type="text"
-                                    value={searchTerm}
-                                    placeholder="Search..."
-                                    onChange={({ target: { value } }) => setSearchTerm(value)}
-                                />
-                            </Col>
-                        </Form.Group>
-                        <ListGroup as="ul" className="m-2 w-100 alumns-list-scrollable">
+                            <Form.Control
+                                id="alumns-list-search"
+                                type="text"
+                                value={searchTerm}
+                                placeholder="Search..."
+                                onChange={({ target: { value } }) => setSearchTerm(value)}
+                            />
+                        </Form>
+                        <ListGroup as="ul" className="alumns-list-scrollable">
                             {byLastName(filteredAlumns).map((alumn) => (
                                 <ListGroup.Item
                                     as="li"
                                     key={alumn.alumn_id}
-                                    onClick={() => openAlumnShow(alumn.alumn_id)}
+                                    onClick={() => openAlumnShow(alumn.alumn_id, alumn.full_name)}
                                     className="alumn-list-item"
                                     action
                                 >

@@ -23,9 +23,9 @@ function AlumnShowComponent({
     };
 
     return (
-        <div className="ml-auto mr-auto" style={{ maxWidth: "60%" }}>
-            <h1>{alumn.full_name}</h1>
-            <p>Search Query: {alumn.search_query}</p>
+        <div className="col">
+            <h1 className="text-center m-2">{alumn.full_name}</h1>
+            <p className="m-2">Search Query: {loading ? "Loading..." : alumn.search_query}</p>
             {editSearchNames ? (
                 <EditAlumnForm
                     submitInput={updateSearchNames}
@@ -45,18 +45,12 @@ function AlumnShowComponent({
                 Delete Researcher
             </Button>
             <p>
-                Publications ({filterValidPublications(alumn).length || "Loading..."}):
+                Publications ({loading ? "Loading..." : filterValidPublications(alumn).length}):
             </p>
             {loading ? (
                 <Loading />
             ) : (
-                <ul
-                    style={{
-                        maxHeight: "500px",
-                        overflowY: "hidden",
-                        overflow: "scroll",
-                    }}
-                >
+                <ul className="alumn-show-list" >
                     {sortByTwoFns(
                         byDate,
                         byCoAuthors,

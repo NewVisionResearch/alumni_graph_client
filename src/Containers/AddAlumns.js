@@ -80,7 +80,7 @@ function AddAlumns({ alumns, setAlumns, openAlumnShow, setAddAlumnLoading }) {
                         setAddAlumnLoading(false);
                         clearInterval(pollJobStatusInterval);
                         setAlumns(newArray);
-                        openAlumnShow(jobData.alumn_id);
+                        openAlumnShow(jobData.alumn_id, jobData.full_name);
                     } else if (jobData.job.status === "failed") {
                         throw jobData.error;
                     }

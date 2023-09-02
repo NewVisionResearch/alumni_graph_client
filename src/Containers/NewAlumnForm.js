@@ -131,7 +131,7 @@ function NewAlumnForm({ handleModalShow, setAlumnQueryResults }) {
                 </Col>
                 <Col xs={4} sm={4}>
                     <div className="d-flex flex-column">
-                        <Dropdown as={ButtonGroup} className="mt-2 mr-2 ml-2">
+                        <Dropdown as={ButtonGroup} className="mt-2 mr-2 mb-1 ml-2">
                             <Button
                                 className="button"
                                 type="button"
@@ -165,7 +165,7 @@ function NewAlumnForm({ handleModalShow, setAlumnQueryResults }) {
                             </Dropdown.Menu>
                         </Dropdown>
                         <Button
-                            className="button m-2"
+                            className="button mx-2 mt-1"
                             type="submit"
                             onClick={submitAlumnNameQuery}
                         >

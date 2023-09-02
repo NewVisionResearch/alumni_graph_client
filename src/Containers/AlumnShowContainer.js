@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 import AlumnShowComponent from "../Components/AlumnShowComponent";
+import Loading from "../Components/Loading";
 import {
   fetchAlumnById,
   patchLabPublication,
@@ -11,11 +12,14 @@ import {
   updateSearchNamesForAlumn,
 } from "../services/api";
 
+import "../styles/AlumnShow.css";
+
 function AlumnShowContainer({
-  alumnId,
+  alumnShowIdAndName,
   handleDeleteAlumn,
   loading,
   setLoading,
+  addAlumnLoading,
 }) {
   const [alumn, setAlumn] = useState({
     full_name: "",
@@ -28,13 +32,14 @@ function AlumnShowContainer({
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (alumnId) {
+    if (alumnShowIdAndName) {
+      setAlumn((prev) => prev = { ...prev, full_name: alumnShowIdAndName.full_name });
       const controller = new AbortController();
       const signal = controller.signal;
 
       setLoading(true);
 
-      fetchAlumnById(alumnId, signal)
+      fetchAlumnById(alumnShowIdAndName.alumn_id, signal)
         .then((res) => {
           if (!res.ok) throw res;
 
@@ -55,7 +60,7 @@ function AlumnShowContainer({
         controller.abort();
       };
     }
-  }, [alumnId, setLoading]);
+  }, [alumnShowIdAndName, setLoading]);
 
   const invalidatePublication = async (labPublicationId) => {
     let bodyObj = {
@@ -89,7 +94,7 @@ function AlumnShowContainer({
     for (const id in idObj) {
       let bodyObj = {
         lab_alumn_publication: {
-          alumn_id: alumnId,
+          alumn_id: alumnShowIdAndName.alumn_id,
           alumn_publication_id: id,
           display: idObj[id],
         },
@@ -111,7 +116,7 @@ function AlumnShowContainer({
     setLoading(true);
 
     try {
-      const res = await refetchAlumnPublications(alumnId);
+      const res = await refetchAlumnPublications(alumnShowIdAndName.alumn_id);
 
       if (!res.ok) throw res;
 
@@ -152,7 +157,10 @@ function AlumnShowContainer({
       },
     };
 
-    const res = await updateSearchNamesForAlumn(alumnId, bodyObj);
+    const res = await updateSearchNamesForAlumn(
+      alumnShowIdAndName.alumn_id,
+      bodyObj
+    );
 
     if (!res.ok) throw res;
 
@@ -163,22 +171,30 @@ function AlumnShowContainer({
   };
 
   const handleRemoveAlumn = () => {
-    handleDeleteAlumn(alumnId);
+    handleDeleteAlumn(alumnShowIdAndName.alumn_id);
   };
 
   return (
-    <AlumnShowComponent
-      alumn={alumn}
-      editSearchNames={editSearchNames}
-      setEditSearchNames={setEditSearchNames}
-      handleRemoveAlumn={handleRemoveAlumn}
-      invalidatePublication={invalidatePublication}
-      updateIdArray={updateIdArray}
-      loading={loading}
-      updateDatabase={updateDatabase}
-      refetchPublications={refetchPublications}
-      updateSearchNames={updateSearchNames}
-    />
+    <div className="alumn-show">
+      {addAlumnLoading ? (
+        <Loading />
+      ) : alumnShowIdAndName ? (
+        <AlumnShowComponent
+          alumn={alumn}
+          editSearchNames={editSearchNames}
+          setEditSearchNames={setEditSearchNames}
+          handleRemoveAlumn={handleRemoveAlumn}
+          invalidatePublication={invalidatePublication}
+          updateIdArray={updateIdArray}
+          loading={loading}
+          updateDatabase={updateDatabase}
+          refetchPublications={refetchPublications}
+          updateSearchNames={updateSearchNames}
+        />
+      ) : (
+        <h1 className="text-center m-2">Select a researcher to view here</h1>
+      )}
+    </div>
   );
 }
 

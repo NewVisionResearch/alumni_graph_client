@@ -7,7 +7,7 @@ import { AdminContext } from "../Context/Context";
 
 function DashboardContainer() {
   const [alumns, setAlumns] = useState([]);
-  const [alumnShowId, setAlumnShowId] = useState(null);
+  const [alumnShowIdAndName, setAlumnShowIdAndName] = useState(null);
   const [removeAlumnId, setRemoveAlumnId] = useState(null);
   const [showInfoModal, setShowInfoModal] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -19,8 +19,8 @@ function DashboardContainer() {
 
   const navigate = useRef(useNavigate());
 
-  const openAlumnShow = (alumn_id) => {
-    setAlumnShowId(alumn_id);
+  const openAlumnShow = (alumn_id, full_name) => {
+    setAlumnShowIdAndName({ alumn_id, full_name });
   };
 
   const handleDeleteAlumn = async (alumn_id) => {
@@ -31,7 +31,7 @@ function DashboardContainer() {
       if (!res.ok) throw res;
 
       setRemoveAlumnId(alumn_id);
-      setAlumnShowId(null);
+      setAlumnShowIdAndName(null);
     } catch (error) {
       console.error("Network response was not ok");
     }
@@ -115,7 +115,7 @@ function DashboardContainer() {
       setAddAlumnLoading={setAddAlumnLoading}
       alumns={alumns}
       setAlumns={setAlumns}
-      alumnShowId={alumnShowId}
+      alumnShowIdAndName={alumnShowIdAndName}
     />
   );
 }

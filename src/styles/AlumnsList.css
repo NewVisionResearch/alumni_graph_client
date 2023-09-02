@@ -2,20 +2,30 @@
   background: #f5f5f5;
   margin: 1em 0 1em 0;
   border: solid 2px #00b092;
-  /* margin-right: 3em; */
-  /* margin-bottom: 1.5em; */
+}
+
+.alumns-list-search {
+  padding: 0.5em;
+  justify-content: space-between;
+}
+
+.alumns-list-search > label {
+  width: 30%;
+}
+
+.alumns-list-search > .form-control {
+  width: 65%;
 }
 
 .alumns-list-scrollable {
   display: flex;
+  margin: 0.5em;
   max-height: 700px;
   overflow: hidden;
   overflow-y: scroll;
 }
 
 .alumn-list-item:hover {
-  /* background-color: #00B092;
-    border-color: #00A092; */
   background-color: #4f2d7f;
   border-color: #4f2d7f;
   color: white;
