@@ -56,16 +56,42 @@ text-shadow: 0 0 1px black;
   font-family: Helvetica, sans-serif, Arial;
 }
 
-.nav-item {
-  height: 100%;
-  padding: 0 25px;
-  display: flex;
-  justify-content: center;
+.navbar {
+  min-height: 104px;
+  background-color: var(--custom-grey);
+  border-bottom: 1px solid var(--custom-teal);
 }
 
-.nav-item a {
-  align-items: center;
-  margin: auto 0;
+.navbar-nav {
+ margin-left: auto!important;
+ align-items: flex-end!important;
+}
+
+.navbar-toggler {
+  color: var(--custom-purple)!important;
+  border-color: var(--custom-purple)!important;
+}
+
+.navbar-toggler:hover {
+  color: var(--custom-teal)!important;
+  border-color: var(--custom-teal-border)!important;
+}
+
+.navbar-toggler:active {
+  box-shadow: 0 0 0 0.2rem var(--custom-teal-shadow)!important;
+}
+
+.nav-link {
+  color: var(--custom-purple)!important;
+  font-size: 1.2em;
+}
+
+.nav-link:hover {
+  color: var(--custom-teal)!important;
+}
+
+.nav-link:active {
+  text-decoration: underline;
 }
 
 span.alumn {
@@ -86,6 +112,7 @@ div#alumn-graph-show {
 h3.author-show-name {
   font-size: 2rem;
 }
+
 .button {
   background-color: var(--custom-purple);
   border-color: var(--custom-purple);

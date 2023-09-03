@@ -1,50 +1,53 @@
-import { Image, Nav, Toast } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Navbar, Nav, Toast } from "react-bootstrap";
 
-function NavBarComponent({ isSysAdmin, labId, showGetAdminsQueryErrorToast, showGetAdminsQuerySuccessfulToast, setShowGetAdminsQueryErrorToast, setShowGetAdminsQuerySuccessfulToast, handleGetAdminsClick, logout }) {
+function NavBarComponent({
+    isSysAdmin,
+    labId,
+    showGetAdminsQueryErrorToast,
+    showGetAdminsQuerySuccessfulToast,
+    setShowGetAdminsQueryErrorToast,
+    setShowGetAdminsQuerySuccessfulToast,
+    handleGetAdminsClick,
+    logout,
+}) {
     return (
-        <div
-            className="d-flex justify-content-center align-items-center border-bottom border-secondary"
-            style={{ position: "relative", width: "100%", height: "75px" }}
-        >
-            <Nav
-                className="d-flex justify-content-between"
-                style={{ position: "absolute", top: 0, width: "85%", height: "100%" }}
-            >
-                <Nav.Item
-                    className="nav-item"
-                    style={{ padding: "0.5rem 0", width: "5rem" }}
-                >
-                    <Link reloadDocument to={"https://newvisionresearch.org"}>
-                        <Image style={{ width: "100%" }} src="../NVR1-TC.png" rounded />
-                    </Link>
-                </Nav.Item>
-                <Nav.Item className="nav-item">
-                    <Link reloadDocument to={`/graph/${labId}`}>
-                        Graph
-                    </Link>
-                </Nav.Item>
-                <Nav.Item className="nav-item">
-                    <Link to="/dashboard">Dashboard</Link>
-                </Nav.Item>
-                {isSysAdmin ? (
-                    <Nav.Item className="nav-item">
-                        <Link
+        <div>
+            <Navbar expand="sm">
+                <Navbar.Brand href="https://newvisionresearch.org">
+                    <img
+                        src="../NVR1-TC.png"
+                        width="106"
+                        height="76"
+                        className="d-inline-block align-top"
+                        alt="New Vision Research Logo"
+                    />
+                </Navbar.Brand>
+                <Navbar.Toggle aria-controls="basic-navbar-nav" />
+                <Navbar.Collapse id="basic-navbar-nav">
+                    <Nav>
+                        <Nav.Link href={`/graph/${labId}`}>Graph</Nav.Link>
+                        <Nav.Link href="/dashboard">Dashboard</Nav.Link>
+                        {isSysAdmin && (
+                            <Nav.Link
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    handleGetAdminsClick();
+                                }}
+                            >
+                                Export Admins
+                            </Nav.Link>
+                        )}
+                        <Nav.Link
                             onClick={(e) => {
                                 e.preventDefault();
-                                handleGetAdminsClick();
+                                logout();
                             }}
                         >
-                            Get Admins
-                        </Link>
-                    </Nav.Item>
-                ) : (
-                    <></>
-                )}
-                <Nav.Item className="nav-item" onClick={() => logout()}>
-                    <Link to="#">Logout</Link>
-                </Nav.Item>
-            </Nav>
+                            Logout
+                        </Nav.Link>
+                    </Nav>
+                </Navbar.Collapse>
+            </Navbar>
             <Toast
                 style={{
                     position: "absolute",

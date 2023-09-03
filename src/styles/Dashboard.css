@@ -13,8 +13,8 @@
 .info-button {
     position: absolute;
     padding: 0;
-    right: 30px;
-    top: 60px;
+    right: 5px;
+    top: 105px;
     z-index: 1000;
     border-radius: 50%;
     box-shadow: -1px 1px 10px rgb(31, 31, 31);
