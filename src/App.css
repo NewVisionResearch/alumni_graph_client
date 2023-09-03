@@ -143,25 +143,10 @@ button.accordion-title, div.card-body {
   font-size: 100%;
 }
 
-.search-bar {
-  width: 10%;
-  transition: width 300ms ease-in-out;
-}
-
 @media only screen and (max-height: 425px) {
   div#alumn-graph-show {
     height: 75%;
   }
-}
-
-.search-result {
-  padding: 5% 5%;
-  border: 1px solid gray;
-  list-style: none;
-}
-
-.search-result:hover {
-  cursor: pointer;
 }
 
 @media only screen and (max-width: 825px) {
@@ -174,10 +159,6 @@ button.accordion-title, div.card-body {
   
   button.close {
     font-size: 125%;
-  }
-
-  .search-bar {
-    width: 25%;
   }
 }
 

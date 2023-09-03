@@ -32,11 +32,10 @@ function AlumnsListComponent({
                         <ListGroup as="ul" className="alumns-list-scrollable">
                             {byLastName(filteredAlumns).map((alumn) => (
                                 <ListGroup.Item
-                                    as="li"
                                     key={alumn.alumn_id}
-                                    onClick={() => openAlumnShow(alumn.alumn_id, alumn.full_name)}
                                     className="alumn-list-item"
                                     action
+                                    onClick={() => openAlumnShow(alumn.alumn_id, alumn.full_name)}
                                 >
                                     {alumn.full_name}
                                 </ListGroup.Item>
