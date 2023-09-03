@@ -19,7 +19,7 @@
 }
 
 .search-bar-list {
-  max-height: 80vh;
+  max-height: calc(100vh - 180px);
   margin: 0;
   overflow: hidden;
   overflow-y: scroll;

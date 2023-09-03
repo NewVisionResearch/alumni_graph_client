@@ -228,7 +228,7 @@ function GraphContainer({ aspectRatio }) {
             className="d-flex justify-content-center"
             style={{
                 height:
-                    admin.email === "" ? window.innerHeight : window.innerHeight - 75,
+                    admin.email === "" ? window.innerHeight : window.innerHeight - 104,
                 width: "100%",
                 position: "relative",
             }}
