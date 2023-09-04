@@ -2,11 +2,13 @@
   background: var(--custom-grey);
   margin: 1em 0 0 0;
   border: solid 2px var(--custom-teal);
-  min-height: 85vh;
+  height: calc(100vh - 31px);
+  min-height: 500px;
 }
 
 .alumn-show-list {
-  max-height: 500px;
+  max-height: calc(100vh - 280px);
+  min-height: 250px;
   overflow-y: hidden;
   overflow: scroll;
 }

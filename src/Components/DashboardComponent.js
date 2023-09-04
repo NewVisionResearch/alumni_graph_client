@@ -88,7 +88,7 @@ function DashboardComponent({
             )}
             <Container fluid>
                 <Row className="justify-content-md-center">
-                    <Col md={6}>
+                    <Col md={5}>
                         <Container>
                             <Row>
                                 <Col>
@@ -112,7 +112,7 @@ function DashboardComponent({
                             </Row>
                         </Container>
                     </Col>
-                    <Col md={6}>
+                    <Col md={7}>
                         {/* Right Column */}
                         <AlumnShowContainer
                             alumnShowIdAndName={alumnShowIdAndName}

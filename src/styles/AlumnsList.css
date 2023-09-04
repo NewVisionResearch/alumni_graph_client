@@ -2,6 +2,8 @@
   background: var(--custom-grey);
   margin: 1em 0 1em 0;
   border: solid 2px var(--custom-teal);
+  height: calc(100vh - 215px);
+  min-height: 250px;
 }
 
 .alumns-list-search {
@@ -20,7 +22,8 @@
 .alumns-list-scrollable {
   display: flex;
   margin: 0.5em;
-  max-height: 700px;
+  height: calc(100vh - 360px); 
+  min-height: 100px; 
   overflow: hidden;
   overflow-y: scroll;
 }
