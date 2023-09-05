@@ -1,12 +1,18 @@
-import { useEffect, useState } from 'react';
-import { Button, Form } from 'react-bootstrap';
-import Input from '../Components/Input';
+import { useEffect, useState } from "react";
+import { Button, Form } from "react-bootstrap";
 
-function EditAlumnForm({ submitInput, propsValue, closeModal }) {
-
+function EditAlumnForm({
+    submitInput,
+    propsValue,
+    closeModal,
+    editingReseracherError,
+}) {
     const [full_name, search_query] = propsValue;
 
-    const [alumnInfo, setAlumnInfo] = useState({ display_name: "", search_query: "" });
+    const [alumnInfo, setAlumnInfo] = useState({
+        display_name: "",
+        search_query: "",
+    });
 
     useEffect(() => {
         setAlumnInfo({ display_name: full_name, search_query });
@@ -21,34 +27,54 @@ function EditAlumnForm({ submitInput, propsValue, closeModal }) {
     };
 
     return (
-        <div className="d-flex">
-            <Form
-                style={{ position: 'relative' }}
-                onSubmit={(e) => {
-                    e.preventDefault();
-                    submitInput(alumnInfo);
-                }}>
-                <div style={{ width: '300px' }}>
-                    <button
-                        type="button"
-                        className="close"
-                        aria-label="Close"
-                        style={{ position: 'absolute', top: 0, right: 0 }}
-                        onClick={closeModal}>
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    <Form.Group>
-                        <Form.Label>Full Name: </Form.Label>
-                        <Input name="display_name" callback={displayNameChangeHandler} propsValue={alumnInfo.display_name} isPlainTextAndReadOnly={true} />
-                    </Form.Group>
-                    <Form.Group >
-                        <Form.Label>Search Query: </Form.Label>
-                        <Input name="search_query" callback={searchNamesChangeHandler} propsValue={alumnInfo.search_query} isPlainTextAndReadOnly={false} />
-                    </Form.Group>
-                </div>
-                <Button className="mb-3" type="submit" style={{ height: '50px' }}>Edit Researcher</Button>
-            </Form>
-        </div >
+        <Form
+            onSubmit={(e) => {
+                e.preventDefault();
+            }}
+        >
+            <h2 className="text-center m-3">Editing Researcher...</h2>
+            <Form.Group>
+                <Form.Label>Display Name: </Form.Label>
+                <Form.Control
+                    size="lg"
+                    name="display_name"
+                    onChange={({ target: { value } }) => displayNameChangeHandler(value)}
+                    value={alumnInfo.display_name}
+                />
+            </Form.Group>
+            <Form.Group>
+                <Form.Label>Search Query: </Form.Label>
+                <Form.Control
+                    size="lg"
+                    name="search_query"
+                    onChange={({ target: { value } }) => searchNamesChangeHandler(value)}
+                    value={alumnInfo.search_query}
+                />
+            </Form.Group>
+            {editingReseracherError ? (
+                editingReseracherError.map((val) => (
+                    <Form.Text className="text-danger m-1">{val}</Form.Text>
+                ))
+            ) : (
+                <></>
+            )}
+            <Button
+                className="cancel-button m-1"
+                size="lg"
+                type="button"
+                onClick={closeModal}
+            >
+                Cancel
+            </Button>
+            <Button
+                className="button m-1"
+                size="lg"
+                type="button"
+                onClick={() => submitInput(alumnInfo)}
+            >
+                Save
+            </Button>
+        </Form>
     );
 }
 

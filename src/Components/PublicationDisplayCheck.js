@@ -11,7 +11,7 @@ function PublicationDisplayCheck({ alumnName, alumn_publication, updateIdArray, 
             className="d-flex align-items-center justify-content-between mb-5 p-3 border border-secondary"
             key={`${lab_alumn_publication_id}_${alumnName}`}>
             <InputGroup.Checkbox
-                className=""
+                className="button"
                 aria-label="Checkbox for following citation"
                 size="md"
                 checked={displayed}
@@ -24,10 +24,9 @@ function PublicationDisplayCheck({ alumnName, alumn_publication, updateIdArray, 
                 publication={publication}
                 coauthors={coauthors} />
             <Button
-                className="ml-1"
-                onClick={() => invalidatePublication(publication.lab_publication_id)}
-                variant="danger"
+                className="delete-button ml-1"
                 size="sm"
+                onClick={() => invalidatePublication(publication.lab_publication_id)}
             >
                 Remove
             </Button>

@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { Modal, Button } from "react-bootstrap";
 
 import AlumnShowComponent from "../Components/AlumnShowComponent";
 import Loading from "../Components/Loading";
@@ -28,12 +29,16 @@ function AlumnShowContainer({
   });
   const [idObj, setIdObj] = useState({});
   const [editSearchNames, setEditSearchNames] = useState(false);
+  const [editingReseracherError, setEditingReseracherError] = useState([]);
+  const [showConfirmDeleteModal, setShowConfirmDeleteModal] = useState(false);
 
   const navigate = useNavigate();
 
   useEffect(() => {
     if (alumnShowIdAndName) {
-      setAlumn((prev) => prev = { ...prev, full_name: alumnShowIdAndName.full_name });
+      setAlumn(
+        (prev) => (prev = { ...prev, full_name: alumnShowIdAndName.full_name })
+      );
       const controller = new AbortController();
       const signal = controller.signal;
 
@@ -153,25 +158,32 @@ function AlumnShowContainer({
     let bodyObj = {
       alumn: {
         ...alumnInfo,
-        display_name: alumnInfo.display_name.toLowerCase(),
+        display_name: alumnInfo.display_name.toLowerCase().trim(),
       },
     };
 
-    const res = await updateSearchNamesForAlumn(
-      alumnShowIdAndName.alumn_id,
-      bodyObj
-    );
+    try {
+      setEditingReseracherError("");
 
-    if (!res.ok) throw res;
+      const res = await updateSearchNamesForAlumn(
+        alumnShowIdAndName.alumn_id,
+        bodyObj
+      );
 
-    const alumnObj = await res.json();
+      if (!res.ok) throw res;
 
-    setAlumn(alumnObj);
-    setEditSearchNames(false);
+      const alumnObj = await res.json();
+
+      setAlumn(alumnObj);
+      setEditSearchNames(false);
+    } catch (err) {
+      const error = await err.json();
+      setEditingReseracherError(error.error);
+    }
   };
 
   const handleRemoveAlumn = () => {
-    handleDeleteAlumn(alumnShowIdAndName.alumn_id);
+    setShowConfirmDeleteModal(true);
   };
 
   return (
@@ -179,18 +191,54 @@ function AlumnShowContainer({
       {addAlumnLoading ? (
         <Loading />
       ) : alumnShowIdAndName ? (
-        <AlumnShowComponent
-          alumn={alumn}
-          editSearchNames={editSearchNames}
-          setEditSearchNames={setEditSearchNames}
-          handleRemoveAlumn={handleRemoveAlumn}
-          invalidatePublication={invalidatePublication}
-          updateIdArray={updateIdArray}
-          loading={loading}
-          updateDatabase={updateDatabase}
-          refetchPublications={refetchPublications}
-          updateSearchNames={updateSearchNames}
-        />
+        <>
+          <AlumnShowComponent
+            alumn={alumn}
+            editSearchNames={editSearchNames}
+            setEditSearchNames={setEditSearchNames}
+            handleRemoveAlumn={handleRemoveAlumn}
+            invalidatePublication={invalidatePublication}
+            updateIdArray={updateIdArray}
+            loading={loading}
+            updateDatabase={updateDatabase}
+            refetchPublications={refetchPublications}
+            updateSearchNames={updateSearchNames}
+            editingReseracherError={editingReseracherError}
+            setEditingReseracherError={setEditingReseracherError}
+            idObj={idObj}
+          />
+
+          <Modal
+            show={showConfirmDeleteModal}
+            onHide={() => setShowConfirmDeleteModal(false)}
+          >
+            <Modal.Header closeButton>
+              <Modal.Title>Delete {alumnShowIdAndName.full_name}</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              Are you sure you want to delete this researcher? This action
+              cannot be undone, and you would need to re-add the researcher if
+              necessary.
+            </Modal.Body>
+            <Modal.Footer className="mr-auto">
+              <Button
+                className="delete-button"
+                type="button"
+                onClick={() => handleDeleteAlumn(alumnShowIdAndName.alumn_id)}
+              >
+                Delete
+              </Button>
+              <Button
+                className="cancel-button"
+                // variant="secondary"
+                type="button"
+                onClick={() => setShowConfirmDeleteModal(false)}
+              >
+                Cancel
+              </Button>
+            </Modal.Footer>
+          </Modal>
+        </>
       ) : (
         <h1 className="text-center m-2">Select a researcher to view here</h1>
       )}

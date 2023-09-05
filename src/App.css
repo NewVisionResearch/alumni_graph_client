@@ -4,6 +4,14 @@
   --custom-teal: #00B092;
   --custom-teal-border: #00A092;
   --custom-teal-shadow: #009092;
+  --custom-delete: #B0001E;
+  --custom-delete-hover: #99001A;
+  --custom-delete-border: #8C0015;
+  --custom-delete-shadow: rgba(70, 0, 14, 0.5);
+  --custom-cancel: #6c9bad;
+  --custom-cancel-hover: #374f58;
+  --custom-cancel-border: #373f58;
+  --custom-cancel-shadow: #372f58;
 }
 
 body, * {
@@ -134,6 +142,48 @@ h3.author-show-name {
   box-shadow: 0 0 0 0.2rem var(--custom-teal-shadow)!important; 
 }
 
+.delete-button {
+  background-color: var(--custom-delete);
+  border-color: var(--custom-delete);
+}
+
+.delete-button:hover {
+  background-color: var(--custom-delete-hover);
+  border-color: var(--custom-delete-border);
+}
+
+.delete-button:disabled {
+  background-color: var(--custom-delete);
+  border-color: var(--custom-delete);
+}
+
+.delete-button:focus {
+  background-color: var(--custom-delete-hover) !important;
+  border-color: var(--custom-delete-border) !important;
+  box-shadow: 0 0 0 0.2rem var(--custom-delete-shadow) !important;
+}
+
+.cancel-button {
+  background-color: var(--custom-cancel);
+  border-color: var(--custom-cancel);
+}
+
+.cancel-button:hover {
+  background-color: var(--custom-cancel-hover);
+  border-color: var(--custom-cancel-border);
+}
+
+.cancel-button:disabled {
+  background-color: var(--custom-cancel);
+  border-color: var(--custom-cancel);
+}
+
+.cancel-button:focus {
+  background-color: var(--custom-cancel-hover) !important;
+  border-color: var(--custom-cancel-border) !important;
+  box-shadow: 0 0 0 0.2rem var(--custom-cancel-shadow) !important;
+}
+
 .form-control:focus {
   border-color: var(--custom-teal-border);
   box-shadow: 0 0 0 0.2rem var(--custom-teal-shadow);
@@ -155,10 +205,6 @@ button.accordion-title, div.card-body {
   }
   button.accordion-title, div.card-body {
     font-size: 75%;
-  }
-  
-  button.close {
-    font-size: 125%;
   }
 }
 

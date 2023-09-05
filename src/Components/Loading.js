@@ -28,7 +28,7 @@ function Loading() {
     }, []);
 
     return (
-        <div>
+        <div className='m-2'>
             <h2 className="animate">Loading</h2>
             {showLongLoadingMessage ? <h4 className="non-animate">This may take awhile...</h4> : <></>}
             {showCoffeeLoadingMessage ? <h4 className="non-animate">You should grab some coffee 😅</h4> : <></>}

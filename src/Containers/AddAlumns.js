@@ -11,11 +11,14 @@ import "../styles/AddAlumns.css";
 function AddAlumns({ alumns, setAlumns, openAlumnShow, setAddAlumnLoading }) {
     const admin = useContext(AdminContext);
 
-    const [showAlumnQuerySearchModal, setShowAlumnQuerySearchModal] = useState(false);
+    const [showAlumnQuerySearchModal, setShowAlumnQuerySearchModal] =
+        useState(false);
     const [showAddAlumnModal, setShowAddAlumnModal] = useState(false);
     const [alumnQueryResults, setAlumnQueryResults] = useState({});
     const [addAlumnDisplayName, setAddAlumnDisplayName] = useState("");
-    const [duplicateDisplayNameError, setDuplicateDisplayNameError] = useState({});
+    const [duplicateDisplayNameError, setDuplicateDisplayNameError] = useState(
+        {}
+    );
 
     const navigate = useNavigate();
 
@@ -136,14 +139,16 @@ function AddAlumns({ alumns, setAlumns, openAlumnShow, setAddAlumnLoading }) {
                 </Modal.Body>
                 <Modal.Footer>
                     <Button
-                        variant="secondary"
+                        className="cancel-button"
+                        type="button"
                         onClick={handleAlumnQuerySearchModalClose}
                     >
                         Cancel
                     </Button>
                     <Button
+                        className="button"
+                        type="button"
                         disabled={alumnQueryResults.esearchresult?.count === "0"}
-                        variant="primary"
                         onClick={handleContinue}
                     >
                         Continue
@@ -216,13 +221,17 @@ function AddAlumns({ alumns, setAlumns, openAlumnShow, setAddAlumnLoading }) {
                         </Form.Group>
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button variant="secondary" onClick={handleAddAlumnModalClose}>
+                        <Button
+                            className="cancel-button"
+                            type="button"
+                            onClick={handleAddAlumnModalClose}
+                        >
                             Cancel
                         </Button>
                         <Button
+                            className="button"
                             disabled={addAlumnDisplayName.length === 0}
                             type="submit"
-                            variant="primary"
                         >
                             Save
                         </Button>
