@@ -2,7 +2,7 @@ import { Form, ListGroup, Container, Row, Col } from "react-bootstrap";
 
 import { byLastName } from "../services/sorts";
 
-import '../styles/AlumnsList.css';
+import "../styles/AlumnsList.css";
 
 function AlumnsListComponent({
     filteredAlumns,
@@ -10,6 +10,7 @@ function AlumnsListComponent({
     setSearchTerm,
     openAlumnShow,
     showNoResultFoundListItem,
+    showPleaseAddResearchersListItem,
 }) {
     return (
         <div className="alumns-list">
@@ -18,9 +19,7 @@ function AlumnsListComponent({
                     <Col>
                         <h1 className="text-center m-2">Your Researchers</h1>
                         <Form inline className="alumns-list-search">
-                            <Form.Label>
-                                Search Researcher:{" "}
-                            </Form.Label>
+                            <Form.Label>Search Researcher: </Form.Label>
                             <Form.Control
                                 id="alumns-list-search"
                                 type="text"
@@ -43,6 +42,12 @@ function AlumnsListComponent({
                             {showNoResultFoundListItem && (
                                 <ListGroup.Item as="li" key={0} className="">
                                     No Result Found
+                                </ListGroup.Item>
+                            )}
+                            {showPleaseAddResearchersListItem && (
+                                <ListGroup.Item as="li" key={0} className="">
+                                    It looks empty here! Start by adding some researchers in the
+                                    "Add Researcher" section above.
                                 </ListGroup.Item>
                             )}
                         </ListGroup>

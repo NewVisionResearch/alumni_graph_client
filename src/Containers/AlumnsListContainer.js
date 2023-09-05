@@ -7,6 +7,7 @@ function AlumnsListContainer({ alumns, openAlumnShow }) {
 
     let filteredAlumns = [];
     let showNoResultFoundListItem = false;
+    let showPleaseAddResearchersListItem = false;
 
     if (searchTerm && searchTerm.length > 0) {
         filteredAlumns = alumns.filter((alumn) => alumn.full_name.toLowerCase().includes(searchTerm.toLowerCase()));
@@ -20,6 +21,12 @@ function AlumnsListContainer({ alumns, openAlumnShow }) {
         showNoResultFoundListItem = false;
     }
 
+    if (alumns.length === 0) {
+        showPleaseAddResearchersListItem = true;
+    } else {
+        showPleaseAddResearchersListItem = false;
+    }
+
 
     return (
         <AlumnsListComponent
@@ -28,6 +35,7 @@ function AlumnsListContainer({ alumns, openAlumnShow }) {
             setSearchTerm={setSearchTerm}
             openAlumnShow={openAlumnShow}
             showNoResultFoundListItem={showNoResultFoundListItem}
+            showPleaseAddResearchersListItem={showPleaseAddResearchersListItem}
         />
     );
 }
