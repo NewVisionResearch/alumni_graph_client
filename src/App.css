@@ -122,18 +122,18 @@ h3.author-show-name {
 }
 
 .button {
-  background-color: var(--custom-purple);
-  border-color: var(--custom-purple);
+  background-color: var(--custom-purple) !important;
+  border-color: var(--custom-purple) !important;
 }
 
 .button:hover {
-  background-color: var(--custom-teal);
-  border-color: var(--custom-teal-border);
+  background-color: var(--custom-teal) !important;
+  border-color: var(--custom-teal-border) !important;
 }
 
 .button:disabled {
-  background-color: var(--custom-purple);
-  border-color: var(--custom-purple);
+  background-color: var(--custom-purple) !important;
+  border-color: var(--custom-purple) !important;
 }
 
 .button:focus {
@@ -143,18 +143,18 @@ h3.author-show-name {
 }
 
 .delete-button {
-  background-color: var(--custom-delete);
-  border-color: var(--custom-delete);
+  background-color: var(--custom-delete) !important;
+  border-color: var(--custom-delete) !important;
 }
 
 .delete-button:hover {
-  background-color: var(--custom-delete-hover);
-  border-color: var(--custom-delete-border);
+  background-color: var(--custom-delete-hover) !important;
+  border-color: var(--custom-delete-border) !important;
 }
 
 .delete-button:disabled {
-  background-color: var(--custom-delete);
-  border-color: var(--custom-delete);
+  background-color: var(--custom-delete) !important;
+  border-color: var(--custom-delete) !important;
 }
 
 .delete-button:focus {
@@ -164,18 +164,18 @@ h3.author-show-name {
 }
 
 .cancel-button {
-  background-color: var(--custom-cancel);
-  border-color: var(--custom-cancel);
+  background-color: var(--custom-cancel) !important;
+  border-color: var(--custom-cancel) !important;
 }
 
 .cancel-button:hover {
-  background-color: var(--custom-cancel-hover);
-  border-color: var(--custom-cancel-border);
+  background-color: var(--custom-cancel-hover) !important;
+  border-color: var(--custom-cancel-border) !important;
 }
 
 .cancel-button:disabled {
-  background-color: var(--custom-cancel);
-  border-color: var(--custom-cancel);
+  background-color: var(--custom-cancel) !important;
+  border-color: var(--custom-cancel) !important;
 }
 
 .cancel-button:focus {

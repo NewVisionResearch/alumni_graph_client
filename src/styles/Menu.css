@@ -1,0 +1,23 @@
+.dropdown {
+    position: absolute;
+    right: 30px;
+    top: 30px;
+    height: fit-content;
+    z-Index: 500;
+    border-Radius: 0.25rem;
+    box-Shadow: -1px 1px 10px rgb(31, 31, 31);
+}
+
+.dropdown-menu {
+    background-color: var(--custom-grey) !important;
+}
+
+.dropdown-item{
+    color: var(--custom-purple) !important;
+    background-color: var(--custom-grey) !important;
+}
+
+.dropdown-item:hover {
+    color: var(--custom-teal) !important;
+    background-color: var(--custom-grey) !important;
+}
