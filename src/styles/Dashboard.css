@@ -10,6 +10,11 @@
     text-align: left;
 }
 
+.info-card {
+    border: 2px solid var(--custom-teal) !important;
+    margin: 2em;
+}
+
 .info-button {
     position: absolute;
     padding: 0;

@@ -24,7 +24,7 @@ function DashboardComponent({
     return (
         <div className="dashboard">
             {showInfoModal ? (
-                <Card border="info">
+                <Card className="info-card">
                     <Card.Header className="text-center">Instructions</Card.Header>
                     <Card.Body>
                         <Card.Title className="text-center">
@@ -75,7 +75,11 @@ function DashboardComponent({
                                 </li>
                             </ol>
                         </div>
-                        <Button variant="primary" onClick={() => setShowInfoModal(false)}>
+                        <Button
+                            className="button"
+                            type="button"
+                            onClick={() => setShowInfoModal(false)}
+                        >
                             Hide
                         </Button>
                     </Card.Body>
@@ -124,7 +128,11 @@ function DashboardComponent({
                     </Col>
                 </Row>
             </Container>
-            <Button className="info-button" variant="info" onClick={handleInfoClick}>
+            <Button
+                className="button info-button"
+                type="button"
+                onClick={handleInfoClick}
+            >
                 <AiFillInfoCircle size={"2em"} />
             </Button>
         </div>
