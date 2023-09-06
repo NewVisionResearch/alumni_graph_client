@@ -10,7 +10,6 @@ function DashboardContainer() {
   const [alumnShowIdAndName, setAlumnShowIdAndName] = useState(null);
   const [removeAlumnId, setRemoveAlumnId] = useState(null);
   const [showInfoModal, setShowInfoModal] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [addAlumnLoading, setAddAlumnLoading] = useState(false);
 
   const baseUrl = process.env.REACT_APP_BASE_URL;
@@ -109,8 +108,6 @@ function DashboardContainer() {
       openAlumnShow={openAlumnShow}
       handleInfoClick={handleInfoClick}
       handleDeleteAlumn={handleDeleteAlumn}
-      loading={loading}
-      setLoading={setLoading}
       addAlumnLoading={addAlumnLoading}
       setAddAlumnLoading={setAddAlumnLoading}
       alumns={alumns}

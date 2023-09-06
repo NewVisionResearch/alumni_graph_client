@@ -62,7 +62,7 @@ function AlumnShowComponent({
                         {loading ? "Loading..." : filterValidPublications(alumn).length}):
                     </p>
                     {loading ? (
-                        <Loading />
+                        <Loading key={alumn.full_name} />
                     ) : (
                         <ul className="alumn-show-list">
                             {sortByTwoFns(

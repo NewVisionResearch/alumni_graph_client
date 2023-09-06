@@ -13,8 +13,6 @@ function DashboardComponent({
     openAlumnShow,
     handleInfoClick,
     handleDeleteAlumn,
-    loading,
-    setLoading,
     addAlumnLoading,
     setAddAlumnLoading,
     alumns,
@@ -121,8 +119,6 @@ function DashboardComponent({
                         <AlumnShowContainer
                             alumnShowIdAndName={alumnShowIdAndName}
                             handleDeleteAlumn={handleDeleteAlumn}
-                            loading={loading}
-                            setLoading={setLoading}
                             addAlumnLoading={addAlumnLoading}
                         />
                     </Col>

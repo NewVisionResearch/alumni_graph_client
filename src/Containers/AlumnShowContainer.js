@@ -18,8 +18,6 @@ import "../styles/AlumnShow.css";
 function AlumnShowContainer({
   alumnShowIdAndName,
   handleDeleteAlumn,
-  loading,
-  setLoading,
   addAlumnLoading,
 }) {
   const [alumn, setAlumn] = useState({
@@ -31,18 +29,20 @@ function AlumnShowContainer({
   const [editSearchNames, setEditSearchNames] = useState(false);
   const [editingReseracherError, setEditingReseracherError] = useState([]);
   const [showConfirmDeleteModal, setShowConfirmDeleteModal] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
   useEffect(() => {
     if (alumnShowIdAndName) {
+      setLoading(true);
+
       setAlumn(
         (prev) => (prev = { ...prev, full_name: alumnShowIdAndName.full_name })
       );
+
       const controller = new AbortController();
       const signal = controller.signal;
-
-      setLoading(true);
 
       fetchAlumnById(alumnShowIdAndName.alumn_id, signal)
         .then((res) => {
@@ -55,8 +55,10 @@ function AlumnShowContainer({
           setLoading(false);
         })
         .catch((err) => {
-          console.error(err);
-          setLoading(false);
+          if (err.name !== 'AbortError') {
+            console.error(err);
+            setLoading(false);
+          }
         });
 
       setEditSearchNames(false);
@@ -65,7 +67,7 @@ function AlumnShowContainer({
         controller.abort();
       };
     }
-  }, [alumnShowIdAndName, setLoading]);
+  }, [alumnShowIdAndName]);
 
   const invalidatePublication = async (labPublicationId) => {
     let bodyObj = {
