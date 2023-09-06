@@ -1,0 +1,13 @@
+.register {
+    margin: 3em 2em 2em 2em;
+    background: var(--custom-grey);
+    border: solid 2px var(--custom-teal);
+}
+
+.register-toast {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-Color: green;
+    z-index: 1000;
+}

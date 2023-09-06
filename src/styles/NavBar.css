@@ -1,0 +1,15 @@
+.nav-bar-error-toast {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: red;
+    z-index: 1000;
+}
+
+.nav-bar-success-toast {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: green;
+    z-index: 1000;
+}

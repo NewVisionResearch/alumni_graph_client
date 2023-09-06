@@ -1,8 +1,11 @@
 import { useState } from "react";
 import { Toast } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
+
 import PasswordResetComponent from "../Components/PasswordResetComponent";
 import { passwordReset } from "../services/api";
+
+import "../styles/PasswordReset.css";
 
 function PasswordResetContainer({ setShowPasswordResetSuccessfulToast }) {
     const { token } = useParams();
@@ -56,10 +59,7 @@ function PasswordResetContainer({ setShowPasswordResetSuccessfulToast }) {
     };
 
     return (
-        <div
-            className="login d-flex flex-column justify-content-center align-items-center pt-5"
-            style={{ width: "100%" }}
-        >
+        <div>
             <PasswordResetComponent
                 password={password}
                 confirmPassword={confirmPassword}
@@ -74,11 +74,7 @@ function PasswordResetContainer({ setShowPasswordResetSuccessfulToast }) {
                 handleSubmitClick={handleSubmitClick}
             />
             <Toast
-                style={{
-                    position: "absolute",
-                    top: 10,
-                    backgroundColor: "red",
-                }}
+                className="password-reset-error-toast"
                 animation={true}
                 show={showPasswordResetErrorToast}
                 onClose={() => setShowPasswordResetErrorToast(false)}

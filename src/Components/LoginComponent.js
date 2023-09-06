@@ -1,5 +1,17 @@
-import { Button, Form, Toast, InputGroup } from "react-bootstrap";
+import {
+    Button,
+    Form,
+    Toast,
+    InputGroup,
+    Container,
+    Row,
+    Col,
+    ButtonToolbar,
+    ButtonGroup,
+} from "react-bootstrap";
 import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
+
+import "../styles/Login.css";
 
 function LoginComponent({
     admin,
@@ -11,101 +23,79 @@ function LoginComponent({
     loginError,
     showPasswordResetSuccessfulToast,
     setShowPasswordResetSuccessfulToast,
-    clearLoginError
+    clearLoginError,
 }) {
     return (
-        <div
-            className="login d-flex flex-column justify-content-center align-items-center pt-5"
-            style={{ width: "100%" }}
-        >
-            <div className="d-flex flex-column justify-content-center align-items-center pb-2">
-                <h1 style={{ fontSize: "1.25em" }}>Login</h1>
-            </div>
-            <Form
-                onSubmit={(e) => {
-                    e.preventDefault();
-                    handleLogin(admin);
-                }}
-                style={{ width: "25%", height: "35%" }}
-            >
-                <Form.Group>
-                    <Form.Label>Email: </Form.Label>
-                    <Form.Control
-                        type="email"
-                        name="email"
-                        placeholder="Enter email"
-                        required
-                        value={admin.email}
-                        onChange={({ target: { name, value } }) => {
-                            clearLoginError();
-                            setAdmin({ ...admin, [name]: value });
-                        }
-                        }
-                    />
-                </Form.Group>
-                <Form.Group>
-                    <Form.Label>Password: </Form.Label>
-                    <InputGroup>
-                        <Form.Control
-                            type={viewPassword ? "text" : "password"}
-                            name="password"
-                            placeholder="Password"
-                            required
-                            value={admin.password}
-                            onChange={({ target: { name, value } }) => {
-                                clearLoginError();
-                                setAdmin({ ...admin, [name]: value });
-                            }
-                            }
-                        />
-                        <InputGroup.Append>
-                            <Button
-                                variant="secondary"
-                                onClick={() => setViewPassword(!viewPassword)}
-                            >
-                                {viewPassword ? <AiFillEyeInvisible /> : <AiFillEye />}
-                            </Button>
-                        </InputGroup.Append>
-                    </InputGroup>
-                    <Form.Text className="text-danger">{loginError}</Form.Text>
-                </Form.Group>
-                <div
-                    style={{
-                        display: "flex",
-                        alignItems: "center",
-                        flexWrap: "wrap",
-                        flexDirection: "row",
-                        justifyContent: "space-between",
-                        gap: 20,
-                    }}
-                >
-                    <Button type="submit">Login</Button>
-                    <div
-                        style={{
-                            display: "flex",
-                            flexDirection: "row",
-                            alignContent: "center",
-                            alignItems: "center",
-                            flexWrap: "wrap",
-                            justifyContent: "flex-start",
-                        }}
-                    >
-                        <Button
-                            style={{ padding: 0 }}
-                            onClick={handleResetPasswordClick}
-                            variant="link"
+        <div>
+            <Container>
+                <Row className="justify-content-md-center">
+                    <Col className="login" lg={5}>
+                        <h1 className="text-center m-1">Login</h1>
+                        <Form
+                            onSubmit={(e) => {
+                                e.preventDefault();
+                                handleLogin(admin);
+                            }}
                         >
-                            Forgot password? Reset!
-                        </Button>
-                    </div>
-                </div>
-            </Form>
+                            <Form.Group>
+                                <Form.Label>Email: </Form.Label>
+                                <Form.Control
+                                    type="email"
+                                    name="email"
+                                    placeholder="Enter email"
+                                    required
+                                    value={admin.email}
+                                    onChange={({ target: { name, value } }) => {
+                                        clearLoginError();
+                                        setAdmin({ ...admin, [name]: value });
+                                    }}
+                                />
+                            </Form.Group>
+                            <Form.Group>
+                                <Form.Label>Password: </Form.Label>
+                                <InputGroup>
+                                    <Form.Control
+                                        type={viewPassword ? "text" : "password"}
+                                        name="password"
+                                        placeholder="Password"
+                                        required
+                                        value={admin.password}
+                                        onChange={({ target: { name, value } }) => {
+                                            clearLoginError();
+                                            setAdmin({ ...admin, [name]: value });
+                                        }}
+                                    />
+                                    <InputGroup.Append>
+                                        <Button
+                                            variant="secondary"
+                                            onClick={() => setViewPassword(!viewPassword)}
+                                        >
+                                            {viewPassword ? <AiFillEyeInvisible /> : <AiFillEye />}
+                                        </Button>
+                                    </InputGroup.Append>
+                                </InputGroup>
+                                <Form.Text className="text-danger">{loginError}</Form.Text>
+                            </Form.Group>
+                            <ButtonToolbar className="m-2 justify-content-between">
+                                <ButtonGroup>
+                                    <Button className="button" type="submit">Login</Button>
+                                </ButtonGroup>
+                                <ButtonGroup>
+                                    <Button
+                                        className="link"
+                                        variant="link"
+                                        onClick={handleResetPasswordClick}
+                                    >
+                                        Forgot password? Reset!
+                                    </Button>
+                                </ButtonGroup>
+                            </ButtonToolbar>
+                        </Form>
+                    </Col>
+                </Row>
+            </Container>
             <Toast
-                style={{
-                    position: "absolute",
-                    top: 10,
-                    backgroundColor: "green",
-                }}
+                className="login-toast"
                 animation={true}
                 show={showPasswordResetSuccessfulToast}
                 onClose={() => setShowPasswordResetSuccessfulToast(false)}

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Toast } from 'react-bootstrap';
+import { Toast } from "react-bootstrap";
 
 import RegisterComponent from "../Components/RegisterComponent";
 import * as authService from "../services/authService";
@@ -46,32 +46,25 @@ function RegisterContainer() {
     };
 
     return (
-        <div
-            className="login d-flex flex-column justify-content-center align-items-center pt-3"
-            style={{ width: '100%' }}>
-
+        <div>
             <RegisterComponent
                 lab={lab}
                 setLab={setLab}
                 handleRegister={handleRegister}
                 registerError={registerError}
             />
+
             <Toast
-                style={{
-                    position: 'absolute',
-                    top: 10,
-                    backgroundColor: "green"
-                }}
+                className="register-toast"
                 animation={true}
                 show={showRegisterToast}
-                onClose={() => setShowRegisterToast(false)}>
+                onClose={() => setShowRegisterToast(false)}
+            >
                 <Toast.Header>
                     <strong className="mr-auto">Success!</strong>
                     <small>now</small>
                 </Toast.Header>
-                <Toast.Body>
-                    Your request has been successfully submitted!
-                </Toast.Body>
+                <Toast.Body>Your request has been successfully submitted!</Toast.Body>
             </Toast>
         </div>
     );

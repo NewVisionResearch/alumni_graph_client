@@ -1,5 +1,7 @@
 import { Navbar, Nav, Toast } from "react-bootstrap";
 
+import "../styles/NavBar.css";
+
 function NavBarComponent({
     isSysAdmin,
     labId,
@@ -49,11 +51,7 @@ function NavBarComponent({
                 </Navbar.Collapse>
             </Navbar>
             <Toast
-                style={{
-                    position: "absolute",
-                    top: 10,
-                    backgroundColor: "red",
-                }}
+                className="nav-bar-error-toast"
                 animation={true}
                 show={showGetAdminsQueryErrorToast}
                 onClose={() => setShowGetAdminsQueryErrorToast(false)}
@@ -65,11 +63,7 @@ function NavBarComponent({
                 <Toast.Body>There has been an error.</Toast.Body>
             </Toast>
             <Toast
-                style={{
-                    position: "absolute",
-                    top: 10,
-                    backgroundColor: "green",
-                }}
+                className="nav-bar-success-toast"
                 animation={true}
                 show={showGetAdminsQuerySuccessfulToast}
                 onClose={() => setShowGetAdminsQuerySuccessfulToast(false)}

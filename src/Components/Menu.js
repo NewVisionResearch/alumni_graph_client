@@ -13,7 +13,7 @@ function Menu({ show }) {
 
 
     return (
-        <Dropdown style={{
+        <Dropdown className='menu-dropdown' style={{
             display: show ? "block" : "none"
         }}>
             <Dropdown.Toggle className='button' id="dropdown-basic">

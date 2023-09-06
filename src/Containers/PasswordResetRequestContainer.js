@@ -4,6 +4,8 @@ import { Toast } from "react-bootstrap";
 import PasswordResetRequestComponent from "../Components/PasswordResetRequestComponent";
 import { passwordResetRequest } from "../services/api";
 
+import "../styles/PasswordResetRequest.css";
+
 function PasswordResetRequestContainer() {
     const [email, setEmail] = useState("");
     const [passwordResetRequestError, setPasswordResetRequestError] =
@@ -48,21 +50,14 @@ function PasswordResetRequestContainer() {
     };
 
     return (
-        <div
-            className="login d-flex flex-column justify-content-center align-items-center pt-5"
-            style={{ width: "100%" }}
-        >
+        <div>
             <PasswordResetRequestComponent
                 email={email}
                 setEmail={setEmail}
                 handleSubmitClick={handleSubmitClick}
             />
             <Toast
-                style={{
-                    position: "absolute",
-                    top: 10,
-                    backgroundColor: "red",
-                }}
+                className="password-reset-request-error-toast"
                 animation={true}
                 show={showPasswordResetRequestErrorToast}
                 onClose={() => setShowPasswordResetRequestErrorToast(false)}
@@ -74,11 +69,7 @@ function PasswordResetRequestContainer() {
                 <Toast.Body>{passwordResetRequestError}</Toast.Body>
             </Toast>
             <Toast
-                style={{
-                    position: "absolute",
-                    top: 10,
-                    backgroundColor: "green",
-                }}
+                className="password-reset-request-success-toast"
                 animation={true}
                 show={showPasswordResetRequestSuccessfulToast}
                 onClose={() => setShowPasswordResetRequestSuccessfulToast(false)}

@@ -189,6 +189,20 @@ h3.author-show-name {
   box-shadow: 0 0 0 0.2rem var(--custom-teal-shadow);
 }
 
+.dropdown-menu {
+  background-color: var(--custom-grey) !important;
+}
+
+.dropdown-item {
+  color: var(--custom-purple) !important;
+  background-color: var(--custom-grey) !important;
+}
+
+.dropdown-item:hover {
+  color: var(--custom-teal) !important;
+  background-color: var(--custom-grey) !important;
+}
+
 button.accordion-title, div.card-body {
   font-size: 100%;
 }
