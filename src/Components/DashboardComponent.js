@@ -18,6 +18,7 @@ function DashboardComponent({
     alumns,
     setAlumns,
     alumnShowIdAndName,
+    isAlumnListLoading,
 }) {
     return (
         <div className="dashboard">
@@ -109,6 +110,7 @@ function DashboardComponent({
                                     <AlumnsListContainer
                                         alumns={alumns}
                                         openAlumnShow={openAlumnShow}
+                                        isAlumnListLoading={isAlumnListLoading}
                                     />
                                 </Col>
                             </Row>

@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import { useState } from "react";
 
 import AlumnsListComponent from "../Components/AlumnsListComponent";
 
-function AlumnsListContainer({ alumns, openAlumnShow }) {
+function AlumnsListContainer({ alumns, openAlumnShow, isAlumnListLoading }) {
     const [searchTerm, setSearchTerm] = useState("");
 
     let filteredAlumns = [];
@@ -10,7 +10,9 @@ function AlumnsListContainer({ alumns, openAlumnShow }) {
     let showPleaseAddResearchersListItem = false;
 
     if (searchTerm && searchTerm.length > 0) {
-        filteredAlumns = alumns.filter((alumn) => alumn.full_name.toLowerCase().includes(searchTerm.toLowerCase()));
+        filteredAlumns = alumns.filter((alumn) =>
+            alumn.full_name.toLowerCase().includes(searchTerm.toLowerCase())
+        );
     } else {
         filteredAlumns = alumns;
     }
@@ -27,7 +29,6 @@ function AlumnsListContainer({ alumns, openAlumnShow }) {
         showPleaseAddResearchersListItem = false;
     }
 
-
     return (
         <AlumnsListComponent
             filteredAlumns={filteredAlumns}
@@ -36,6 +37,7 @@ function AlumnsListContainer({ alumns, openAlumnShow }) {
             openAlumnShow={openAlumnShow}
             showNoResultFoundListItem={showNoResultFoundListItem}
             showPleaseAddResearchersListItem={showPleaseAddResearchersListItem}
+            isAlumnListLoading={isAlumnListLoading}
         />
     );
 }

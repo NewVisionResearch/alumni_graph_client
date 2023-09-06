@@ -2,17 +2,15 @@ import { useCallback, useState, useEffect, useContext, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
 import DashboardComponent from "../Components/DashboardComponent";
-import { deleteAlumn } from "../services/api";
+import { deleteAlumn, fetchAlumnsIndex } from "../services/api";
 import { AdminContext } from "../Context/Context";
 
 function DashboardContainer() {
   const [alumns, setAlumns] = useState([]);
   const [alumnShowIdAndName, setAlumnShowIdAndName] = useState(null);
-  const [removeAlumnId, setRemoveAlumnId] = useState(null);
   const [showInfoModal, setShowInfoModal] = useState(false);
   const [addAlumnLoading, setAddAlumnLoading] = useState(false);
-
-  const baseUrl = process.env.REACT_APP_BASE_URL;
+  const [isAlumnListLoading, setIsAlumnListLoading] = useState(true);
 
   const admin = useContext(AdminContext);
 
@@ -24,12 +22,11 @@ function DashboardContainer() {
 
   const handleDeleteAlumn = async (alumn_id) => {
     try {
-      const token = localStorage.getItem("jwt");
-      const res = await deleteAlumn(alumn_id, token);
+      const res = await deleteAlumn(alumn_id);
 
       if (!res.ok) throw res;
 
-      setRemoveAlumnId(alumn_id);
+      setAlumns((prevAlumns) => prevAlumns.filter((alumn) => alumn.alumn_id !== alumn_id));
       setAlumnShowIdAndName(null);
     } catch (error) {
       console.error("Network response was not ok");
@@ -40,39 +37,20 @@ function DashboardContainer() {
     setShowInfoModal((prev) => !prev);
   };
 
-  const confirmRemovedAlumn = useCallback(() => {
-    setRemoveAlumnId(null);
-  }, []);
-
   const handleAlumnsChange = useCallback((alumnsLength) => {
     if (alumnsLength > 0) {
       setShowInfoModal(false);
-    } else if (alumnsLength === 0) {
+    } else if (alumnsLength === 0 && !isAlumnListLoading) {
       setShowInfoModal(true);
     }
-  }, []);
-
-  // useEffect(() => {
-  //   if (alumns.length) {
-  //     setLoading(false);
-  //   }
-  // }, [alumns.length]);
+  }, [isAlumnListLoading]);
 
   const memoizedAlumnFetch = useCallback(async () => {
-    const token = localStorage.getItem("jwt");
-
-    const options = {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    };
+    setIsAlumnListLoading(true);
 
     try {
-      const res = await fetch(
-        `${baseUrl}/alumns/${admin.labId}/index`,
-        options
-      );
+      const res = await fetchAlumnsIndex(admin.labId);
+
       if (!res.ok) {
         throw res;
       }
@@ -82,24 +60,23 @@ function DashboardContainer() {
     } catch (res) {
       console.error(res);
       navigate.current("/error");
+    } finally {
+      setIsAlumnListLoading(false);
     }
-  }, [admin.labId, baseUrl]);
+
+  }, [admin.labId]);
 
   // fetch alumns when alumns or admin changes
   useEffect(() => {
-    if (!alumns.length && admin.labId !== "") {
+    if (admin.labId !== "") {
       memoizedAlumnFetch();
     }
 
-    handleAlumnsChange(alumns.length);
-  }, [alumns.length, admin, memoizedAlumnFetch, handleAlumnsChange]);
+  }, [admin.labId, memoizedAlumnFetch]);
 
-  // fetch alumns when alumn removed
   useEffect(() => {
-    if (removeAlumnId) {
-      memoizedAlumnFetch().then(confirmRemovedAlumn);
-    }
-  }, [memoizedAlumnFetch, removeAlumnId, confirmRemovedAlumn]);
+    handleAlumnsChange(alumns.length);
+  }, [alumns.length, handleAlumnsChange]);
 
   return (
     <DashboardComponent
@@ -113,6 +90,7 @@ function DashboardContainer() {
       alumns={alumns}
       setAlumns={setAlumns}
       alumnShowIdAndName={alumnShowIdAndName}
+      isAlumnListLoading={isAlumnListLoading}
     />
   );
 }

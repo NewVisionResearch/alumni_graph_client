@@ -4,7 +4,7 @@ import { Button, Form } from "react-bootstrap";
 function EditAlumnForm({
     submitInput,
     propsValue,
-    closeModal,
+    closeForm,
     editingReseracherError,
 }) {
     const [full_name, search_query] = propsValue;
@@ -62,7 +62,7 @@ function EditAlumnForm({
                 className="cancel-button m-1"
                 size="lg"
                 type="button"
-                onClick={closeModal}
+                onClick={closeForm}
             >
                 Cancel
             </Button>

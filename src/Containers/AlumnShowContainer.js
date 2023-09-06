@@ -55,7 +55,7 @@ function AlumnShowContainer({
           setLoading(false);
         })
         .catch((err) => {
-          if (err.name !== 'AbortError') {
+          if (err.name !== "AbortError") {
             console.error(err);
             setLoading(false);
           }
@@ -188,6 +188,11 @@ function AlumnShowContainer({
     setShowConfirmDeleteModal(true);
   };
 
+  const closeForm = () => {
+    setEditSearchNames(false);
+    setEditingReseracherError("");
+  };
+
   return (
     <div className="alumn-show">
       {addAlumnLoading ? (
@@ -206,8 +211,8 @@ function AlumnShowContainer({
             refetchPublications={refetchPublications}
             updateSearchNames={updateSearchNames}
             editingReseracherError={editingReseracherError}
-            setEditingReseracherError={setEditingReseracherError}
             idObj={idObj}
+            closeForm={closeForm}
           />
 
           <Modal
@@ -232,7 +237,6 @@ function AlumnShowContainer({
               </Button>
               <Button
                 className="cancel-button"
-                // variant="secondary"
                 type="button"
                 onClick={() => setShowConfirmDeleteModal(false)}
               >

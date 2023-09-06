@@ -18,14 +18,9 @@ function AlumnShowComponent({
     refetchPublications,
     updateSearchNames,
     editingReseracherError,
-    setEditingReseracherError,
     idObj,
+    closeForm,
 }) {
-    const closeModal = () => {
-        setEditSearchNames(false);
-        setEditingReseracherError("");
-    };
-
     return (
         <div className="col">
             <h1 className="text-center m-2">{alumn.full_name}</h1>
@@ -33,7 +28,7 @@ function AlumnShowComponent({
                 <EditAlumnForm
                     submitInput={updateSearchNames}
                     propsValue={[alumn.full_name, alumn.search_query]}
-                    closeModal={closeModal}
+                    closeForm={closeForm}
                     editingReseracherError={editingReseracherError}
                 />
             ) : (
