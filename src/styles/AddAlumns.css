@@ -3,3 +3,9 @@
     margin: 1em 0 0 0;
     border: solid 2px var(--custom-teal);
 }
+
+.add-alumns-spinner {
+    align-items: center;
+    border-color: var(--custom-teal);
+    border-right-color: transparent;
+}

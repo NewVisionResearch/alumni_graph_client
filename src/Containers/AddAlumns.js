@@ -1,6 +1,6 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button, Modal, Row, Col, Form } from "react-bootstrap";
+import { Button, Modal, Row, Col, Form, Spinner } from "react-bootstrap";
 
 import NewAlumnForm from "./NewAlumnForm";
 import { AdminContext } from "../Context/Context";
@@ -19,14 +19,20 @@ function AddAlumns({ alumns, setAlumns, openAlumnShow, setAddAlumnLoading }) {
     const [duplicateDisplayNameError, setDuplicateDisplayNameError] = useState(
         {}
     );
+    const [isLoading, setIsLoading] = useState(false);
+
+    const abortControllerRef = useRef(new AbortController());
 
     const navigate = useNavigate();
 
     const handleAlumnQuerySearchModalShow = () =>
         setShowAlumnQuerySearchModal(true);
 
-    const handleAlumnQuerySearchModalClose = () =>
+    const handleAlumnQuerySearchModalClose = () => {
+        abortControllerRef.current.abort();
+        abortControllerRef.current = new AbortController();
         setShowAlumnQuerySearchModal(false);
+    };
 
     const handleAddAlumnModalShow = () => setShowAddAlumnModal(true);
 
@@ -108,6 +114,8 @@ function AddAlumns({ alumns, setAlumns, openAlumnShow, setAddAlumnLoading }) {
             <NewAlumnForm
                 handleModalShow={handleAlumnQuerySearchModalShow}
                 setAlumnQueryResults={setAlumnQueryResults}
+                setIsLoading={setIsLoading}
+                signal={abortControllerRef.current.signal}
             />
             {/* Alumn Query Search Modal BEGINS*/}
             <Modal
@@ -118,24 +126,31 @@ function AddAlumns({ alumns, setAlumns, openAlumnShow, setAddAlumnLoading }) {
                     <Modal.Title>Query Results</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <div>
-                        <p>
-                            Your query{" "}
-                            <strong>
-                                {alumnQueryResults.esearchresult?.querytranslation}
-                            </strong>{" "}
-                            came back with{" "}
-                            <strong>{alumnQueryResults.esearchresult?.count}</strong> results.
-                        </p>
-                        {alumnQueryResults.esearchresult?.count === "0" ? (
-                            <p>Please try a different query.</p>
-                        ) : (
+                    {isLoading ? (
+                        <div className="d-flex justify-content-center">
+                            <Spinner className="add-alumns-spinner" animation="border" role="loading" />
+                        </div>
+                    ) : (
+                        <div>
                             <p>
-                                Would you like to continue and save this researcher and their
-                                publications?
+                                Your query{" "}
+                                <strong>
+                                    {alumnQueryResults.esearchresult?.querytranslation}
+                                </strong>{" "}
+                                came back with{" "}
+                                <strong>{alumnQueryResults.esearchresult?.count}</strong>{" "}
+                                results.
                             </p>
-                        )}
-                    </div>
+                            {alumnQueryResults.esearchresult?.count === "0" ? (
+                                <p>Please try a different query.</p>
+                            ) : (
+                                <p>
+                                    Would you like to continue and save this researcher and their
+                                    publications?
+                                </p>
+                            )}
+                        </div>
+                    )}
                 </Modal.Body>
                 <Modal.Footer>
                     <Button
@@ -148,7 +163,7 @@ function AddAlumns({ alumns, setAlumns, openAlumnShow, setAddAlumnLoading }) {
                     <Button
                         className="button"
                         type="button"
-                        disabled={alumnQueryResults.esearchresult?.count === "0"}
+                        disabled={alumnQueryResults.esearchresult?.count === "0" || isLoading}
                         onClick={handleContinue}
                     >
                         Continue

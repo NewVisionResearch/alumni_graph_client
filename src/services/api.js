@@ -48,10 +48,11 @@ export const refetchAlumnPublications = (alumnId) => {
     return fetch(`${baseUrl}/alumns/${alumnId}/refetch`, options);
 };
 
-export const fetchAlumnNameQuerySearchResults = (alumnNameQuery) => {
+export const fetchAlumnNameQuerySearchResults = (alumnNameQuery, signal) => {
     const options = {
         method: "GET",
         headers: headersWithToken,
+        signal,
     };
 
     return fetch(`${baseUrl}/alumns/${alumnNameQuery}/search`, options);

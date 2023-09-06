@@ -3,7 +3,12 @@ import { Button, Form, Dropdown, ButtonGroup, Row, Col } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { fetchAlumnNameQuerySearchResults } from "../services/api";
 
-function NewAlumnForm({ handleModalShow, setAlumnQueryResults }) {
+function NewAlumnForm({
+    handleModalShow,
+    setAlumnQueryResults,
+    setIsLoading,
+    signal,
+}) {
     const navigate = useNavigate();
 
     const [alumnName, setAlumnName] = useState("");
@@ -61,19 +66,29 @@ function NewAlumnForm({ handleModalShow, setAlumnQueryResults }) {
     };
 
     const searchAlumn = async (alumnNameQuery) => {
+        handleModalShow();
+        setIsLoading(true);
 
         try {
-            const res = await fetchAlumnNameQuerySearchResults(alumnNameQuery);
+            const res = await fetchAlumnNameQuerySearchResults(
+                alumnNameQuery,
+                signal
+            );
 
             if (!res.ok) throw res;
 
             const alumnNameQueryResults = await res.json();
 
-            handleModalShow(true);
             setAlumnQueryResults(alumnNameQueryResults);
         } catch (err) {
-            console.error(err);
-            navigate("/error");
+            if (err.name === "AbortError") {
+                console.error(err);
+            } else {
+                console.error(err);
+                navigate("/error");
+            }
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -121,11 +136,7 @@ function NewAlumnForm({ handleModalShow, setAlumnQueryResults }) {
                 <Col xs={4} sm={4}>
                     <div className="d-flex flex-column">
                         <Dropdown as={ButtonGroup} className="mt-2 mr-2 mb-1 ml-2">
-                            <Button
-                                className="button"
-                                type="button"
-                                onClick={appendToQuery}
-                            >
+                            <Button className="button" type="button" onClick={appendToQuery}>
                                 {queryBooleanType}
                             </Button>
                             <Dropdown.Toggle
