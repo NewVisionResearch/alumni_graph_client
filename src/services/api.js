@@ -48,6 +48,15 @@ export const refetchAlumnPublications = (alumnId) => {
     return fetch(`${baseUrl}/alumns/${alumnId}/refetch`, options);
 };
 
+export const fetchAlumnNameQuerySearchResults = (alumnNameQuery) => {
+    const options = {
+        method: "GET",
+        headers: headersWithToken,
+    };
+
+    return fetch(`${baseUrl}/alumns/${alumnNameQuery}/search`, options);
+};
+
 export const pollJobStatus = (job_id) => {
     const options = {
         headers: headersWithToken,

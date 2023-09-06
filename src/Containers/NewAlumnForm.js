@@ -1,10 +1,9 @@
 import { useState } from "react";
 import { Button, Form, Dropdown, ButtonGroup, Row, Col } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import { fetchAlumnNameQuerySearchResults } from "../services/api";
 
 function NewAlumnForm({ handleModalShow, setAlumnQueryResults }) {
-    const baseUrl = process.env.REACT_APP_BASE_URL;
-
     const navigate = useNavigate();
 
     const [alumnName, setAlumnName] = useState("");
@@ -61,31 +60,21 @@ function NewAlumnForm({ handleModalShow, setAlumnQueryResults }) {
         }
     };
 
-    const searchAlumn = (alumnNameQuery) => {
-        const token = localStorage.getItem("jwt");
+    const searchAlumn = async (alumnNameQuery) => {
 
-        const options = {
-            method: "GET",
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        };
+        try {
+            const res = await fetchAlumnNameQuerySearchResults(alumnNameQuery);
 
-        fetch(`${baseUrl}/alumns/${alumnNameQuery}/search`, options)
-            .then((res) => {
-                if (!res.ok) {
-                    throw res;
-                }
-                return res.json();
-            })
-            .then((res) => {
-                handleModalShow(true);
-                setAlumnQueryResults(res);
-            })
-            .catch((err) => {
-                console.error(err);
-                navigate("/error");
-            });
+            if (!res.ok) throw res;
+
+            const alumnNameQueryResults = await res.json();
+
+            handleModalShow(true);
+            setAlumnQueryResults(alumnNameQueryResults);
+        } catch (err) {
+            console.error(err);
+            navigate("/error");
+        }
     };
 
     const submitAlumnNameQuery = (e) => {
