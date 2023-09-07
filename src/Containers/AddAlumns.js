@@ -1,4 +1,4 @@
-import { useState, useContext, useRef } from "react";
+import { useState, useContext, useRef, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button, Modal, Row, Col, Form, Spinner } from "react-bootstrap";
 
@@ -22,6 +22,20 @@ function AddAlumns({ alumns, setAlumns, openAlumnShow, setAddAlumnLoading }) {
     const [isLoading, setIsLoading] = useState(false);
 
     const abortControllerRef = useRef(new AbortController());
+
+    const { isResultCountPlural, isResultCountZero, resultCount } =
+        useMemo(() => {
+            const count = alumnQueryResults.esearchresult?.count;
+            return {
+                isResultCountPlural: count !== "1",
+                isResultCountZero: count === "0",
+                resultCount: count,
+            };
+        }, [alumnQueryResults.esearchresult?.count]);
+
+    const queryTranslation = useMemo(() => {
+        return alumnQueryResults.esearchresult?.querytranslation;
+    }, [alumnQueryResults.esearchresult?.querytranslation]);
 
     const navigate = useNavigate();
 
@@ -128,25 +142,25 @@ function AddAlumns({ alumns, setAlumns, openAlumnShow, setAddAlumnLoading }) {
                 <Modal.Body>
                     {isLoading ? (
                         <div className="d-flex justify-content-center">
-                            <Spinner className="add-alumns-spinner" animation="border" role="loading" />
+                            <Spinner
+                                className="add-alumns-spinner"
+                                animation="border"
+                                role="loading"
+                            />
                         </div>
                     ) : (
                         <div>
                             <p>
-                                Your query{" "}
-                                <strong>
-                                    {alumnQueryResults.esearchresult?.querytranslation}
-                                </strong>{" "}
-                                came back with{" "}
-                                <strong>{alumnQueryResults.esearchresult?.count}</strong>{" "}
-                                results.
+                                Your query <strong>{queryTranslation}</strong> came back with{" "}
+                                <strong>{resultCount}</strong>{" "}
+                                {isResultCountPlural ? "results." : "result."}
                             </p>
-                            {alumnQueryResults.esearchresult?.count === "0" ? (
+                            {isResultCountZero ? (
                                 <p>Please try a different query.</p>
                             ) : (
                                 <p>
-                                    Would you like to continue and save this researcher and their
-                                    publications?
+                                    Would you like to continue and save this researcher and their{" "}
+                                    {isResultCountPlural ? "publications?" : "publication?"}
                                 </p>
                             )}
                         </div>
@@ -163,7 +177,7 @@ function AddAlumns({ alumns, setAlumns, openAlumnShow, setAddAlumnLoading }) {
                     <Button
                         className="button"
                         type="button"
-                        disabled={alumnQueryResults.esearchresult?.count === "0" || isLoading}
+                        disabled={isResultCountZero || isLoading}
                         onClick={handleContinue}
                     >
                         Continue
@@ -186,21 +200,11 @@ function AddAlumns({ alumns, setAlumns, openAlumnShow, setAddAlumnLoading }) {
                         <Row>
                             <Col>
                                 <p>
-                                    Query:{" "}
-                                    <strong>
-                                        {JSON.stringify(
-                                            alumnQueryResults.esearchresult?.querytranslation
-                                        )}
-                                    </strong>
+                                    Query: <strong>{JSON.stringify(queryTranslation)}</strong>
                                 </p>
-                            </Col>
-                            <Col>
                                 <p>
-                                    Results:{" "}
-                                    <strong>
-                                        {JSON.stringify(alumnQueryResults.esearchresult?.count)}
-                                    </strong>{" "}
-                                    results.
+                                    Results: <strong>{JSON.stringify(resultCount)}</strong>{" "}
+                                    {isResultCountPlural ? "results." : "result."}
                                 </p>
                             </Col>
                         </Row>
@@ -223,7 +227,7 @@ function AddAlumns({ alumns, setAlumns, openAlumnShow, setAddAlumnLoading }) {
                                 />
                                 <Form.Text className="text-muted">
                                     This is the name that will be displayed in your graph. We
-                                    suggest entering the researchers full name.
+                                    suggest entering the researcher's full name.
                                 </Form.Text>
                                 {duplicateDisplayNameError.error ? (
                                     duplicateDisplayNameError.error.map((val) => (
