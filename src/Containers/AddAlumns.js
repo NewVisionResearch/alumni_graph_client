@@ -20,6 +20,7 @@ function AddAlumns({ alumns, setAlumns, openAlumnShow, setAddAlumnLoading }) {
         {}
     );
     const [isLoading, setIsLoading] = useState(false);
+    const [isSaving, setIsSaving] = useState(false);
 
     const abortControllerRef = useRef(new AbortController());
 
@@ -62,6 +63,9 @@ function AddAlumns({ alumns, setAlumns, openAlumnShow, setAddAlumnLoading }) {
     };
 
     const addAlumn = async () => {
+        setIsSaving(true);
+        setDuplicateDisplayNameError("");
+
         try {
             const alumnObj = {
                 alumn: {
@@ -119,6 +123,8 @@ function AddAlumns({ alumns, setAlumns, openAlumnShow, setAddAlumnLoading }) {
             console.error(errorResponse);
             setDuplicateDisplayNameError(errorResponse);
             setAddAlumnLoading(false);
+        } finally {
+            setIsSaving(false);
         }
     };
 
@@ -244,15 +250,29 @@ function AddAlumns({ alumns, setAlumns, openAlumnShow, setAddAlumnLoading }) {
                             className="cancel-button"
                             type="button"
                             onClick={handleAddAlumnModalClose}
+                            disabled={isSaving}
                         >
                             Cancel
                         </Button>
                         <Button
                             className="button"
-                            disabled={addAlumnDisplayName.length === 0}
+                            disabled={addAlumnDisplayName.length === 0 || isSaving}
                             type="submit"
                         >
-                            Save
+                            {isSaving ? (
+                                <>
+                                    <Spinner
+                                        as="span"
+                                        animation="border"
+                                        size="sm"
+                                        role="status"
+                                        aria-hidden="true"
+                                    />
+                                    {" Saving..."}
+                                </>
+                            ) : (
+                                "Save"
+                            )}
                         </Button>
                     </Modal.Footer>
                 </Form>
