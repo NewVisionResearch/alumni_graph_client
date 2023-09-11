@@ -203,12 +203,14 @@ function AlumnShowContainer({
 
     try {
       await handleDeleteAlumn(alumnId);
-      setShowConfirmDeleteModal(false);
-      showToast({ header: "Success!", body: "The researcher has been deleted." });
-    } catch (error) {
+      showToast({ header: "Delete Success!", body: "The researcher has been deleted." });
+    } catch (err) {
+      const error = await err.json();
       console.error(error);
+      showToast({ header: "Delete Error", body: "Please try again later or contact the administrator." });
     } finally {
       setIsDeleting(false);
+      setShowConfirmDeleteModal(false);
     }
   };
 

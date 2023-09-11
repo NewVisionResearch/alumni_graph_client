@@ -29,7 +29,7 @@ function DashboardContainer() {
       setAlumns((prevAlumns) => prevAlumns.filter((alumn) => alumn.alumn_id !== alumn_id));
       setAlumnShowIdAndName(null);
     } catch (error) {
-      console.error("Network response was not ok");
+      throw error;
     }
   };
 

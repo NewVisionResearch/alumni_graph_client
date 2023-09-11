@@ -1,5 +1,5 @@
 .toast-context {
-    position: absolute;
+    position: fixed;
     min-width: 15rem;
     top: 10px;
     right: 10px;
@@ -8,5 +8,10 @@
 
 .toast-component {
     background-color: green;
+    color: white;
+}
+
+.toast-error-component {
+    background-color: red;
     color: white;
 }

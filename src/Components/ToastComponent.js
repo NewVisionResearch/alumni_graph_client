@@ -5,10 +5,15 @@ import { useState } from "react";
 
 function ToastComponent({ toastData, handleOnClose }) {
     const [show, setShow] = useState(true);
+    let className = "toast-component";
+
+    if (toastData.header.includes("Error")) {
+        className = "toast-error-component";
+    }
 
     return (
         <Toast
-            className="toast-component"
+            className={className}
             animation={true}
             autohide={true}
             delay={5000}
