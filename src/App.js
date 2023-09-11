@@ -18,6 +18,7 @@ import PasswordResetContainer from "./Containers/PasswordResetContainer";
 import PasswordResetRequestContainer from "./Containers/PasswordResetRequestContainer";
 import ErrorPageComponent from "./Components/ErrorPageComponent";
 import { AdminContext } from "./Context/Context";
+import { ToastProvider } from "./Context/ToastContext";
 import Menu from "./Components/Menu";
 import useAdmin from "./hooks/useAdmin";
 
@@ -76,68 +77,70 @@ function App() {
 
   return (
     <AdminContext.Provider value={admin}>
-      <React.Fragment>
-        <div id="App">
-          {admin.email === "" ? (
-            <Menu show={true} />
-          ) : (
-            <NavBarContainer logout={logout} />
-          )}
-          <Routes>
-            <Route
-              path="/"
-              element={<Navigate to="/graph/1" replace={true} />}
-            />
-            <Route
-              path="/graph"
-              element={<Navigate to="/graph/1" replace={true} />}
-            />
-            <Route
-              path="/graph/:labId"
-              element={<GraphContainer aspectRatio={aspectRatio} />}
-            />
-            <Route
-              path="/login"
-              element={
-                <LoginContainer
-                  login={login}
-                  loginError={loginError}
-                  showPasswordResetSuccessfulToast={
-                    showPasswordResetSuccessfulToast
-                  }
-                  setShowPasswordResetSuccessfulToast={
-                    setShowPasswordResetSuccessfulToast
-                  }
-                  clearLoginError={clearLoginError}
-                />
-              }
-            />
-            <Route path="/register" element={<RegisterContainer />} />
-            <Route path="/dashboard" element={<DashboardContainer />} />
-            <Route path="/error" element={<ErrorPageComponent />} />
-            <Route path="/approve/:token" element={<ApproveContainer />} />
-            <Route path="/deny/:token" element={<DenyContainer />} />
-            <Route
-              path="/password-reset-request"
-              element={<PasswordResetRequestContainer />}
-            />
-            <Route
-              path="/password-reset/:token"
-              element={
-                <PasswordResetContainer
-                  setShowPasswordResetSuccessfulToast={
-                    setShowPasswordResetSuccessfulToast
-                  }
-                />
-              }
-            />
-            <Route
-              path="/*"
-              element={<Navigate to="/error" replace={true} />}
-            />
-          </Routes>
-        </div>
-      </React.Fragment>
+      <ToastProvider>
+        <React.Fragment>
+          <div id="App">
+            {admin.email === "" ? (
+              <Menu show={true} />
+            ) : (
+              <NavBarContainer logout={logout} />
+            )}
+            <Routes>
+              <Route
+                path="/"
+                element={<Navigate to="/graph/1" replace={true} />}
+              />
+              <Route
+                path="/graph"
+                element={<Navigate to="/graph/1" replace={true} />}
+              />
+              <Route
+                path="/graph/:labId"
+                element={<GraphContainer aspectRatio={aspectRatio} />}
+              />
+              <Route
+                path="/login"
+                element={
+                  <LoginContainer
+                    login={login}
+                    loginError={loginError}
+                    showPasswordResetSuccessfulToast={
+                      showPasswordResetSuccessfulToast
+                    }
+                    setShowPasswordResetSuccessfulToast={
+                      setShowPasswordResetSuccessfulToast
+                    }
+                    clearLoginError={clearLoginError}
+                  />
+                }
+              />
+              <Route path="/register" element={<RegisterContainer />} />
+              <Route path="/dashboard" element={<DashboardContainer />} />
+              <Route path="/error" element={<ErrorPageComponent />} />
+              <Route path="/approve/:token" element={<ApproveContainer />} />
+              <Route path="/deny/:token" element={<DenyContainer />} />
+              <Route
+                path="/password-reset-request"
+                element={<PasswordResetRequestContainer />}
+              />
+              <Route
+                path="/password-reset/:token"
+                element={
+                  <PasswordResetContainer
+                    setShowPasswordResetSuccessfulToast={
+                      setShowPasswordResetSuccessfulToast
+                    }
+                  />
+                }
+              />
+              <Route
+                path="/*"
+                element={<Navigate to="/error" replace={true} />}
+              />
+            </Routes>
+          </div>
+        </React.Fragment>
+      </ToastProvider>
     </AdminContext.Provider>
   );
 }

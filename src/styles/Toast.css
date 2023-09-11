@@ -1,0 +1,12 @@
+.toast-context {
+    position: absolute;
+    min-width: 15rem;
+    top: 10px;
+    right: 10px;
+    z-index: 1000;
+}
+
+.toast-component {
+    background-color: green;
+    color: white;
+}

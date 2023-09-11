@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Modal, Button } from "react-bootstrap";
+import { Modal, Button, Spinner } from "react-bootstrap";
 
 import AlumnShowComponent from "../Components/AlumnShowComponent";
 import Loading from "../Components/Loading";
@@ -14,12 +14,16 @@ import {
 } from "../services/api";
 
 import "../styles/AlumnShow.css";
+import { useContext } from "react";
+import { ToastContext } from "../Context/ToastContext";
 
 function AlumnShowContainer({
   alumnShowIdAndName,
   handleDeleteAlumn,
   addAlumnLoading,
 }) {
+  const showToast = useContext(ToastContext);
+
   const [alumn, setAlumn] = useState({
     full_name: "",
     search_query: "",
@@ -30,6 +34,7 @@ function AlumnShowContainer({
   const [editingReseracherError, setEditingReseracherError] = useState([]);
   const [showConfirmDeleteModal, setShowConfirmDeleteModal] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const navigate = useNavigate();
 
@@ -193,6 +198,19 @@ function AlumnShowContainer({
     setEditingReseracherError("");
   };
 
+  const handleAlumnDeletion = async (alumnId) => {
+    setIsDeleting(true);
+
+    try {
+      await handleDeleteAlumn(alumnId);
+      showToast({ header: "Success!", body: "The researcher has been deleted." });
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   return (
     <div className="alumn-show">
       {addAlumnLoading ? (
@@ -231,13 +249,28 @@ function AlumnShowContainer({
               <Button
                 className="delete-button"
                 type="button"
-                onClick={() => handleDeleteAlumn(alumnShowIdAndName.alumn_id)}
+                disabled={isDeleting}
+                onClick={() => handleAlumnDeletion(alumnShowIdAndName.alumn_id)}
               >
-                Delete
+                {isDeleting ? (
+                  <>
+                    <Spinner
+                      as="span"
+                      animation="border"
+                      size="sm"
+                      role="status"
+                      aria-hidden="true"
+                    />
+                    {" Deleting..."}
+                  </>
+                ) : (
+                  "Delete"
+                )}
               </Button>
               <Button
                 className="cancel-button"
                 type="button"
+                disabled={isDeleting}
                 onClick={() => setShowConfirmDeleteModal(false)}
               >
                 Cancel
