@@ -203,6 +203,7 @@ function AlumnShowContainer({
 
     try {
       await handleDeleteAlumn(alumnId);
+      setShowConfirmDeleteModal(false);
       showToast({ header: "Success!", body: "The researcher has been deleted." });
     } catch (error) {
       console.error(error);
