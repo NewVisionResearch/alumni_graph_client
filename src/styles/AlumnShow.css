@@ -10,6 +10,6 @@
   margin: 1em;
   max-height: calc(100vh - 310px);
   min-height: 250px;
-  overflow-y: hidden;
-  overflow: scroll;
+  overflow: hidden;
+  overflow-y: scroll;
 }
