@@ -150,7 +150,9 @@ function AlumnShowContainer({
             my_lab_alumn_publications: response.my_lab_alumn_publications,
           });
           setLoading(false);
-        } else if (response.job.status === "failed") {
+        } else if (response.job.status === "pending") {
+          // do nothing, loop
+        } else {
           clearInterval(pollJobStatusInterval);
           throw new Error("Job Failed", response.error);
         }
