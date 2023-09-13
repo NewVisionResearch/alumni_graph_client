@@ -19,6 +19,7 @@ function DashboardContainer() {
     const navigate = useRef(useNavigate());
 
     const openAlumnShow = (alumn_id, full_name) => {
+        setAddAlumnLoading(false);
         setAlumnShowIdAndName({ alumn_id, full_name });
     };
 
