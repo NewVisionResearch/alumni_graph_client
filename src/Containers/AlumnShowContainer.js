@@ -9,6 +9,7 @@ import {
     patchLabAlumnPublication,
     refetchAlumnPublications,
     updateSearchNamesForAlumn,
+    streamJob,
 } from "../services/api";
 
 import "../styles/AlumnShow.css";
@@ -138,8 +139,7 @@ function AlumnShowContainer({
     };
 
     const initializeEventSource = (job_id) => {
-        const baseUrl = process.env.REACT_APP_BASE_URL;
-        const es = new EventSource(`${baseUrl}/jobs/${job_id}/stream`);
+        const es = streamJob(job_id, "fetch");
 
         es.onmessage = (event) => {
             const eventData = JSON.parse(event.data);

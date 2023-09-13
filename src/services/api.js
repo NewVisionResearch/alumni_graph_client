@@ -166,3 +166,7 @@ export const getAdmins = () => {
 
     return fetch(`${baseUrl}/admins/get_admins`, options);
 };
+
+export const streamJob = (job_id, job_type) => {
+    return new EventSource(`${baseUrl}/jobs/${job_id}/stream?type=${job_type}`);
+};

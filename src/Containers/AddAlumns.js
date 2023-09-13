@@ -4,7 +4,7 @@ import { Button, Modal, Row, Col, Form, Spinner } from "react-bootstrap";
 import NewAlumnForm from "./NewAlumnForm";
 import { AdminContext } from "../Context/Context";
 import { ToastContext } from "../Context/ToastContext";
-import { fetchAlumns } from "../services/api";
+import { fetchAlumns, streamJob } from "../services/api";
 
 import "../styles/AddAlumns.css";
 import { useEffect } from "react";
@@ -71,8 +71,7 @@ function AddAlumns({
     };
 
     const initializeEventSource = (job_id) => {
-        const baseUrl = process.env.REACT_APP_BASE_URL;
-        const es = new EventSource(`${baseUrl}/jobs/${job_id}/stream`);
+        const es = streamJob(job_id, "index");
 
         es.onmessage = (event) => {
             const eventData = JSON.parse(event.data);
