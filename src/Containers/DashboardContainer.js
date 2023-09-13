@@ -6,93 +6,102 @@ import { deleteAlumn, fetchAlumnsIndex } from "../services/api";
 import { AdminContext } from "../Context/Context";
 
 function DashboardContainer() {
-  const [alumns, setAlumns] = useState([]);
-  const [alumnShowIdAndName, setAlumnShowIdAndName] = useState(null);
-  const [showInfoModal, setShowInfoModal] = useState(false);
-  const [addAlumnLoading, setAddAlumnLoading] = useState(false);
-  const [isAlumnListLoading, setIsAlumnListLoading] = useState(true);
+    const [alumns, setAlumns] = useState([]);
+    const [alumnShowIdAndName, setAlumnShowIdAndName] = useState(null);
+    const [showInfoModal, setShowInfoModal] = useState(false);
+    const [addAlumnLoading, setAddAlumnLoading] = useState(false);
+    const [isAlumnListLoading, setIsAlumnListLoading] = useState(true);
+    const [progressStatus, setProgressStatus] = useState("");
+    const [progressPercentage, setProgressPercentage] = useState(0);
 
-  const admin = useContext(AdminContext);
+    const admin = useContext(AdminContext);
 
-  const navigate = useRef(useNavigate());
+    const navigate = useRef(useNavigate());
 
-  const openAlumnShow = (alumn_id, full_name) => {
-    setAlumnShowIdAndName({ alumn_id, full_name });
-  };
+    const openAlumnShow = (alumn_id, full_name) => {
+        setAlumnShowIdAndName({ alumn_id, full_name });
+    };
 
-  const handleDeleteAlumn = async (alumn_id) => {
-    try {
-      const res = await deleteAlumn(alumn_id);
+    const handleDeleteAlumn = async (alumn_id) => {
+        try {
+            const res = await deleteAlumn(alumn_id);
 
-      if (!res.ok) throw res;
+            if (!res.ok) throw res;
 
-      setAlumns((prevAlumns) => prevAlumns.filter((alumn) => alumn.alumn_id !== alumn_id));
-      setAlumnShowIdAndName(null);
-    } catch (error) {
-      throw error;
-    }
-  };
+            setAlumns((prevAlumns) =>
+                prevAlumns.filter((alumn) => alumn.alumn_id !== alumn_id)
+            );
+            setAlumnShowIdAndName(null);
+        } catch (error) {
+            throw error;
+        }
+    };
 
-  const handleInfoClick = () => {
-    setShowInfoModal((prev) => !prev);
-  };
+    const handleInfoClick = () => {
+        setShowInfoModal((prev) => !prev);
+    };
 
-  const handleAlumnsChange = useCallback((alumnsLength) => {
-    if (alumnsLength > 0) {
-      setShowInfoModal(false);
-    } else if (alumnsLength === 0 && !isAlumnListLoading) {
-      setShowInfoModal(true);
-    }
-  }, [isAlumnListLoading]);
+    const handleAlumnsChange = useCallback(
+        (alumnsLength) => {
+            if (alumnsLength > 0) {
+                setShowInfoModal(false);
+            } else if (alumnsLength === 0 && !isAlumnListLoading) {
+                setShowInfoModal(true);
+            }
+        },
+        [isAlumnListLoading]
+    );
 
-  const memoizedAlumnFetch = useCallback(async () => {
-    setIsAlumnListLoading(true);
+    const memoizedAlumnFetch = useCallback(async () => {
+        setIsAlumnListLoading(true);
 
-    try {
-      const res = await fetchAlumnsIndex(admin.labId);
+        try {
+            const res = await fetchAlumnsIndex(admin.labId);
 
-      if (!res.ok) {
-        throw res;
-      }
-      const alumnsArray = await res.json();
+            if (!res.ok) {
+                throw res;
+            }
+            const alumnsArray = await res.json();
 
-      return setAlumns([...alumnsArray]);
-    } catch (res) {
-      console.error(res);
-      navigate.current("/error");
-    } finally {
-      setIsAlumnListLoading(false);
-    }
+            return setAlumns([...alumnsArray]);
+        } catch (res) {
+            console.error(res);
+            navigate.current("/error");
+        } finally {
+            setIsAlumnListLoading(false);
+        }
+    }, [admin.labId]);
 
-  }, [admin.labId]);
+    // fetch alumns when alumns or admin changes
+    useEffect(() => {
+        if (admin.labId !== "") {
+            memoizedAlumnFetch();
+        }
+    }, [admin.labId, memoizedAlumnFetch]);
 
-  // fetch alumns when alumns or admin changes
-  useEffect(() => {
-    if (admin.labId !== "") {
-      memoizedAlumnFetch();
-    }
+    useEffect(() => {
+        handleAlumnsChange(alumns.length);
+    }, [alumns.length, handleAlumnsChange]);
 
-  }, [admin.labId, memoizedAlumnFetch]);
-
-  useEffect(() => {
-    handleAlumnsChange(alumns.length);
-  }, [alumns.length, handleAlumnsChange]);
-
-  return (
-    <DashboardComponent
-      showInfoModal={showInfoModal}
-      setShowInfoModal={setShowInfoModal}
-      openAlumnShow={openAlumnShow}
-      handleInfoClick={handleInfoClick}
-      handleDeleteAlumn={handleDeleteAlumn}
-      addAlumnLoading={addAlumnLoading}
-      setAddAlumnLoading={setAddAlumnLoading}
-      alumns={alumns}
-      setAlumns={setAlumns}
-      alumnShowIdAndName={alumnShowIdAndName}
-      isAlumnListLoading={isAlumnListLoading}
-    />
-  );
+    return (
+        <DashboardComponent
+            showInfoModal={showInfoModal}
+            setShowInfoModal={setShowInfoModal}
+            openAlumnShow={openAlumnShow}
+            handleInfoClick={handleInfoClick}
+            handleDeleteAlumn={handleDeleteAlumn}
+            addAlumnLoading={addAlumnLoading}
+            setAddAlumnLoading={setAddAlumnLoading}
+            alumns={alumns}
+            setAlumns={setAlumns}
+            alumnShowIdAndName={alumnShowIdAndName}
+            isAlumnListLoading={isAlumnListLoading}
+            progressStatus={progressStatus}
+            setProgressStatus={setProgressStatus}
+            progressPercentage={progressPercentage}
+            setProgressPercentage={setProgressPercentage}
+        />
+    );
 }
 
 export default DashboardContainer;

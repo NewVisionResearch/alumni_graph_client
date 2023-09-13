@@ -1,38 +1,49 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
+import { ProgressBar } from "react-bootstrap";
 
-function Loading() {
-    const [showLongLoadingMessage, setShowLongLoadingMessage] = useState(false);
-    const [showCoffeeLoadingMessage, setShowCoffeeLoadingMessage] = useState(false);
-    const [showNoReallyLoadingMessage, setShowNoReallyLoadingMessage] = useState(false);
+import "../styles/Loading.css";
 
+function Loading({ progressPercentage = 0, progressStatus = "" }) {
+    const [loadingMessage, setLoadingMessage] = useState("");
+
+    const progressMessages = {
+        queued: "Job added to queue!",
+        retrying: "Temporary hiccup. Job retrying soon.",
+        working: "Job has started!",
+        default: "Loading...",
+    };
 
     useEffect(() => {
-        const longTimeout = setTimeout(() => {
-            setShowLongLoadingMessage(true);
-        }, 5000);
+        const timeouts = [
+            { delay: 5000, message: "This may take awhile..." },
+            { delay: 15000, message: "You should grab some coffee 😅" },
+            { delay: 25000, message: "No really, grab some coffee..." },
+        ].map((item) =>
+            setTimeout(() => setLoadingMessage(item.message), item.delay)
+        );
 
-        const coffeeTimeout = setTimeout(() => {
-            setShowCoffeeLoadingMessage(true);
-        }, 15000);
-
-        const noCoffeeTimeout = setTimeout(() => {
-            setShowNoReallyLoadingMessage(true);
-        }, 25000);
-
-        // Cleanup function to cancel timeouts when the component is unmounted
         return () => {
-            clearTimeout(longTimeout);
-            clearTimeout(coffeeTimeout);
-            clearTimeout(noCoffeeTimeout);
+            timeouts.forEach(clearTimeout);
         };
     }, []);
 
     return (
-        <div className='m-2'>
-            <h2 className="animate">Loading</h2>
-            {showLongLoadingMessage ? <h4 className="non-animate">This may take awhile...</h4> : <></>}
-            {showCoffeeLoadingMessage ? <h4 className="non-animate">You should grab some coffee 😅</h4> : <></>}
-            {showNoReallyLoadingMessage ? <h4 className="non-animate">No really, grab some coffee...</h4> : <></>}
+        <div className="m-2">
+            <h2 className="animate">
+                {progressMessages[progressStatus] || progressMessages.default}
+            </h2>
+
+            {progressStatus !== "" && (
+                <ProgressBar
+                    className="m-2"
+                    now={progressPercentage}
+                    animated
+                />
+            )}
+
+            {loadingMessage && (
+                <h4 className="non-animate">{loadingMessage}</h4>
+            )}
         </div>
     );
 }

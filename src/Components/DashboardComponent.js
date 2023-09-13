@@ -19,58 +19,72 @@ function DashboardComponent({
     setAlumns,
     alumnShowIdAndName,
     isAlumnListLoading,
+    progressStatus,
+    setProgressStatus,
+    progressPercentage,
+    setProgressPercentage,
 }) {
     return (
         <div className="dashboard">
             {showInfoModal ? (
                 <Card className="info-card">
-                    <Card.Header className="text-center">Instructions</Card.Header>
+                    <Card.Header className="text-center">
+                        Instructions
+                    </Card.Header>
                     <Card.Body>
                         <Card.Title className="text-center">
                             Follow these steps to enter an investigator’s name
                             <br />
-                            (the name will populate so long as the research has published an
-                            article and it is on PubMed).
+                            (the name will populate so long as the research has
+                            published an article and it is on PubMed).
                         </Card.Title>
                         <div className="text-left" style={{ padding: 10 }}>
                             <ol>
                                 <li>
-                                    Enter the full name of the investigator you are searching for
-                                    in the input field. Make sure to use the name displayed in the
-                                    publication you are referencing, typically the first and last
-                                    name.
+                                    Enter the full name of the investigator you
+                                    are searching for in the input field. Make
+                                    sure to use the name displayed in the
+                                    publication you are referencing, typically
+                                    the first and last name.
                                 </li>
                                 <li>
-                                    Click on the "Submit" button to start the search process. If
-                                    the system finds the name you entered, it will display
-                                    publications associated with that investigator.
+                                    Click on the "Submit" button to start the
+                                    search process. If the system finds the name
+                                    you entered, it will display publications
+                                    associated with that investigator.
                                 </li>
                                 <li>
-                                    You can customize your search by clicking on the "Edit
-                                    Investigator" button. This will allow you to change the search
-                                    names, which should be comma-separated. You can also click on
-                                    the "Delete Investigator" button to remove them from your
-                                    search.
+                                    You can customize your search by clicking on
+                                    the "Edit Investigator" button. This will
+                                    allow you to change the search names, which
+                                    should be comma-separated. You can also
+                                    click on the "Delete Investigator" button to
+                                    remove them from your search.
                                 </li>
                                 <li>
-                                    If you do not want a particular publication to be associated
-                                    with the investigator in the graph, you can click on the
-                                    checkbox next to it. If you want to remove a publication from
-                                    the investigator altogether, you can click on the "Remove"
+                                    If you do not want a particular publication
+                                    to be associated with the investigator in
+                                    the graph, you can click on the checkbox
+                                    next to it. If you want to remove a
+                                    publication from the investigator
+                                    altogether, you can click on the "Remove"
                                     button next to it.
                                 </li>
                                 <li>
-                                    Any edits you make to the search names or publications will be
-                                    saved only if you click on the "Update Publications" button.
+                                    Any edits you make to the search names or
+                                    publications will be saved only if you click
+                                    on the "Update Publications" button.
                                 </li>
                                 <li>
-                                    If the system does not find any publications associated with
-                                    the investigator, you can refine your search by editing the
-                                    search names and trying again.
+                                    If the system does not find any publications
+                                    associated with the investigator, you can
+                                    refine your search by editing the search
+                                    names and trying again.
                                 </li>
                                 <li>
-                                    If you want to fetch new publications for the investigator,
-                                    you can click on the "Fetch New Publications" button.
+                                    If you want to fetch new publications for
+                                    the investigator, you can click on the
+                                    "Fetch New Publications" button.
                                 </li>
                             </ol>
                         </div>
@@ -101,6 +115,10 @@ function DashboardComponent({
                                         setAlumns={setAlumns}
                                         openAlumnShow={openAlumnShow}
                                         setAddAlumnLoading={setAddAlumnLoading}
+                                        setProgressStatus={setProgressStatus}
+                                        setProgressPercentage={
+                                            setProgressPercentage
+                                        }
                                     />
                                 </Col>
                             </Row>
@@ -122,6 +140,10 @@ function DashboardComponent({
                             alumnShowIdAndName={alumnShowIdAndName}
                             handleDeleteAlumn={handleDeleteAlumn}
                             addAlumnLoading={addAlumnLoading}
+                            progressStatus={progressStatus}
+                            setProgressStatus={setProgressStatus}
+                            progressPercentage={progressPercentage}
+                            setProgressPercentage={setProgressPercentage}
                         />
                     </Col>
                 </Row>

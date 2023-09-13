@@ -20,6 +20,8 @@ function AlumnShowComponent({
     editingReseracherError,
     idObj,
     closeForm,
+    progressStatus,
+    progressPercentage,
 }) {
     return (
         <div className="col">
@@ -34,7 +36,8 @@ function AlumnShowComponent({
             ) : (
                 <>
                     <p className="m-2">
-                        Search Query: {loading ? "Loading..." : alumn.search_query}
+                        Search Query:{" "}
+                        {loading ? "Loading..." : alumn.search_query}
                     </p>
                     <Button
                         className="button"
@@ -54,10 +57,17 @@ function AlumnShowComponent({
                     </Button>
                     <p className="m-2">
                         Publications (
-                        {loading ? "Loading..." : filterValidPublications(alumn).length}):
+                        {loading
+                            ? "Loading..."
+                            : filterValidPublications(alumn).length}
+                        ):
                     </p>
                     {loading ? (
-                        <Loading key={alumn.full_name} />
+                        <Loading
+                            key={alumn.full_name}
+                            progressPercentage={progressPercentage}
+                            progressStatus={progressStatus}
+                        />
                     ) : (
                         <ul className="alumn-show-list">
                             {sortByTwoFns(
@@ -70,7 +80,9 @@ function AlumnShowComponent({
                                     alumnName={alumn.search_query}
                                     alumn_publication={alumn_pub}
                                     updateIdArray={updateIdArray}
-                                    invalidatePublication={invalidatePublication}
+                                    invalidatePublication={
+                                        invalidatePublication
+                                    }
                                 />
                             ))}
                         </ul>
@@ -80,7 +92,9 @@ function AlumnShowComponent({
                         type="button"
                         size="lg"
                         onClick={updateDatabase}
-                        disabled={Object.keys(idObj).length === 0 ? true : false}
+                        disabled={
+                            Object.keys(idObj).length === 0 ? true : false
+                        }
                     >
                         Update Publications
                     </Button>

@@ -96,14 +96,6 @@ export const patchLabAlumnPublication = (bodyObj) => {
     return fetch(`${baseUrl}/lab_alumn_publications`, options);
 };
 
-export const pollJobStatus = (job_id) => {
-    const options = {
-        headers: headersWithToken,
-    };
-
-    return fetch(`${baseUrl}/jobs/${job_id}`, options);
-};
-
 export const getProfile = (token, signal) => {
     const options = {
         method: "GET",

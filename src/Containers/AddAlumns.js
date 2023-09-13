@@ -1,15 +1,24 @@
 import { useState, useContext, useRef, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
 import { Button, Modal, Row, Col, Form, Spinner } from "react-bootstrap";
 
 import NewAlumnForm from "./NewAlumnForm";
 import { AdminContext } from "../Context/Context";
-import { fetchAlumns, pollJobStatus } from "../services/api";
+import { ToastContext } from "../Context/ToastContext";
+import { fetchAlumns } from "../services/api";
 
 import "../styles/AddAlumns.css";
+import { useEffect } from "react";
 
-function AddAlumns({ alumns, setAlumns, openAlumnShow, setAddAlumnLoading }) {
+function AddAlumns({
+    alumns,
+    setAlumns,
+    openAlumnShow,
+    setAddAlumnLoading,
+    setProgressStatus,
+    setProgressPercentage,
+}) {
     const admin = useContext(AdminContext);
+    const showToast = useContext(ToastContext);
 
     const [showAlumnQuerySearchModal, setShowAlumnQuerySearchModal] =
         useState(false);
@@ -21,6 +30,7 @@ function AddAlumns({ alumns, setAlumns, openAlumnShow, setAddAlumnLoading }) {
     );
     const [isLoading, setIsLoading] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
+    const [eventSource, setEventSource] = useState(null);
 
     const abortControllerRef = useRef(new AbortController());
 
@@ -37,8 +47,6 @@ function AddAlumns({ alumns, setAlumns, openAlumnShow, setAddAlumnLoading }) {
     const queryTranslation = useMemo(() => {
         return alumnQueryResults.esearchresult?.querytranslation;
     }, [alumnQueryResults.esearchresult?.querytranslation]);
-
-    const navigate = useNavigate();
 
     const handleAlumnQuerySearchModalShow = () =>
         setShowAlumnQuerySearchModal(true);
@@ -62,6 +70,69 @@ function AddAlumns({ alumns, setAlumns, openAlumnShow, setAddAlumnLoading }) {
         handleAddAlumnModalShow();
     };
 
+    const initializeEventSource = (job_id) => {
+        const baseUrl = process.env.REACT_APP_BASE_URL;
+        const es = new EventSource(`${baseUrl}/jobs/${job_id}/stream`);
+
+        es.onmessage = (event) => {
+            const eventData = JSON.parse(event.data);
+            const jobData = JSON.parse(eventData.message);
+            const jobStatus = jobData.job.status;
+
+            switch (jobStatus) {
+                case "complete":
+                    const newArray = [
+                        ...alumns,
+                        {
+                            alumn_id: jobData.details.alumn_id,
+                            full_name: jobData.details.full_name,
+                            search_query: jobData.details.search_query,
+                            my_lab_alumn_publications:
+                                jobData.details.my_lab_alumn_publications,
+                        },
+                    ];
+
+                    setProgressStatus("");
+                    setProgressPercentage(0);
+
+                    setAddAlumnLoading(false);
+                    setAlumns(newArray);
+                    openAlumnShow(
+                        jobData.details.alumn_id,
+                        jobData.details.full_name
+                    );
+                    break;
+
+                case "working":
+                    setProgressStatus(jobStatus);
+                    setProgressPercentage(jobData.job.percent);
+                    break;
+
+                case "queued":
+                case "retrying":
+                    setProgressStatus(jobStatus);
+                    setProgressPercentage(0);
+                    break;
+
+                default:
+                    throw new Error(
+                        jobData.job.message || "Unknown error occurred"
+                    );
+            }
+
+            if (jobData.job.status === "complete") {
+                es.close();
+            }
+        };
+
+        es.onerror = (error) => {
+            console.error("EventSource failed:", error);
+            es.close();
+        };
+
+        setEventSource(es);
+    };
+
     const addAlumn = async () => {
         setIsSaving(true);
         setDuplicateDisplayNameError("");
@@ -71,7 +142,8 @@ function AddAlumns({ alumns, setAlumns, openAlumnShow, setAddAlumnLoading }) {
                 alumn: {
                     display_name: addAlumnDisplayName.toLowerCase(),
                     lab_id: admin.labId,
-                    search_query: alumnQueryResults.esearchresult.querytranslation,
+                    search_query:
+                        alumnQueryResults.esearchresult.querytranslation,
                 },
             };
 
@@ -85,50 +157,28 @@ function AddAlumns({ alumns, setAlumns, openAlumnShow, setAddAlumnLoading }) {
             handleAddAlumnModalClose();
             setAddAlumnLoading(true);
 
-            const pollJobStatusInterval = setInterval(async () => {
-                try {
-                    const jobRes = await pollJobStatus(job_id);
-
-                    if (!jobRes.ok) throw new Error("Job status request failed");
-
-                    const jobData = await jobRes.json();
-
-                    if (jobData.job.status === "completed") {
-                        const newArray = [
-                            ...alumns,
-                            {
-                                alumn_id: jobData.alumn_id,
-                                full_name: jobData.full_name,
-                                search_query: jobData.search_query,
-                                my_lab_alumn_publications: jobData.my_lab_alumn_publications,
-                            },
-                        ];
-
-                        setAddAlumnLoading(false);
-                        clearInterval(pollJobStatusInterval);
-                        setAlumns(newArray);
-                        openAlumnShow(jobData.alumn_id, jobData.full_name);
-                    } else if (jobData.job.status === "pending") {
-                        // do nothing, loop
-                    } else {
-                        throw jobData.error;
-                    }
-                } catch (error) {
-                    setAddAlumnLoading(false);
-                    clearInterval(pollJobStatusInterval);
-                    console.error("Job failed:", error);
-                    navigate("/error");
-                }
-            }, 5000);
+            initializeEventSource(job_id);
         } catch (error) {
             let errorResponse = await error.json();
             console.error(errorResponse);
             setDuplicateDisplayNameError(errorResponse);
             setAddAlumnLoading(false);
+            showToast({
+                header: "Add Researcher Error",
+                body: "Please check again later",
+            });
         } finally {
             setIsSaving(false);
         }
     };
+
+    useEffect(() => {
+        return () => {
+            if (eventSource) {
+                eventSource.close();
+            }
+        };
+    }, [eventSource]);
 
     return (
         <div className="add-alumns">
@@ -159,16 +209,19 @@ function AddAlumns({ alumns, setAlumns, openAlumnShow, setAddAlumnLoading }) {
                     ) : (
                         <div>
                             <p>
-                                Your query <strong>{queryTranslation}</strong> came back with{" "}
-                                <strong>{resultCount}</strong>{" "}
+                                Your query <strong>{queryTranslation}</strong>{" "}
+                                came back with <strong>{resultCount}</strong>{" "}
                                 {isResultCountPlural ? "results." : "result."}
                             </p>
                             {isResultCountZero ? (
                                 <p>Please try a different query.</p>
                             ) : (
                                 <p>
-                                    Would you like to continue and save this researcher and their{" "}
-                                    {isResultCountPlural ? "publications?" : "publication?"}
+                                    Would you like to continue and save this
+                                    researcher and their{" "}
+                                    {isResultCountPlural
+                                        ? "publications?"
+                                        : "publication?"}
                                 </p>
                             )}
                         </div>
@@ -208,11 +261,19 @@ function AddAlumns({ alumns, setAlumns, openAlumnShow, setAddAlumnLoading }) {
                         <Row>
                             <Col>
                                 <p>
-                                    Query: <strong>{JSON.stringify(queryTranslation)}</strong>
+                                    Query:{" "}
+                                    <strong>
+                                        {JSON.stringify(queryTranslation)}
+                                    </strong>
                                 </p>
                                 <p>
-                                    Results: <strong>{JSON.stringify(resultCount)}</strong>{" "}
-                                    {isResultCountPlural ? "results." : "result."}
+                                    Results:{" "}
+                                    <strong>
+                                        {JSON.stringify(resultCount)}
+                                    </strong>{" "}
+                                    {isResultCountPlural
+                                        ? "results."
+                                        : "result."}
                                 </p>
                             </Col>
                         </Row>
@@ -234,13 +295,18 @@ function AddAlumns({ alumns, setAlumns, openAlumnShow, setAddAlumnLoading }) {
                                     }
                                 />
                                 <Form.Text className="text-muted">
-                                    This is the name that will be displayed in your graph. We
-                                    suggest entering the researcher's full name.
+                                    This is the name that will be displayed in
+                                    your graph. We suggest entering the
+                                    researcher's full name.
                                 </Form.Text>
                                 {duplicateDisplayNameError.error ? (
-                                    duplicateDisplayNameError.error.map((val) => (
-                                        <Form.Text className="text-danger">{val}</Form.Text>
-                                    ))
+                                    duplicateDisplayNameError.error.map(
+                                        (val) => (
+                                            <Form.Text className="text-danger">
+                                                {val}
+                                            </Form.Text>
+                                        )
+                                    )
                                 ) : (
                                     <></>
                                 )}
@@ -258,7 +324,9 @@ function AddAlumns({ alumns, setAlumns, openAlumnShow, setAddAlumnLoading }) {
                         </Button>
                         <Button
                             className="button"
-                            disabled={addAlumnDisplayName.length === 0 || isSaving}
+                            disabled={
+                                addAlumnDisplayName.length === 0 || isSaving
+                            }
                             type="submit"
                         >
                             {isSaving ? (
