@@ -193,7 +193,7 @@ function AddAlumns({
                 show={showAlumnQuerySearchModal}
                 onHide={handleAlumnQuerySearchModalClose}
             >
-                <Modal.Header closeButton>
+                <Modal.Header>
                     <Modal.Title>Query Results</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
@@ -253,7 +253,7 @@ function AddAlumns({
                         addAlumn();
                     }}
                 >
-                    <Modal.Header closeButton>
+                    <Modal.Header>
                         <Modal.Title>Add Researcher</Modal.Title>
                     </Modal.Header>
                     <Modal.Body className="border-bottom">

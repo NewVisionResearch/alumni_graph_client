@@ -301,7 +301,7 @@ function AlumnShowContainer({
                         show={showConfirmDeleteModal}
                         onHide={() => setShowConfirmDeleteModal(false)}
                     >
-                        <Modal.Header closeButton>
+                        <Modal.Header>
                             <Modal.Title>
                                 Delete {alumnShowIdAndName.full_name}
                             </Modal.Title>
