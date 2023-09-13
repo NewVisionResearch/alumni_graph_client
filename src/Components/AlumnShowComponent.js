@@ -20,8 +20,7 @@ function AlumnShowComponent({
     editingReseracherError,
     idObj,
     closeForm,
-    progressStatus,
-    progressPercentage,
+    progressMap,
 }) {
     return (
         <div className="col">
@@ -65,8 +64,7 @@ function AlumnShowComponent({
                     {loading ? (
                         <Loading
                             key={alumn.full_name}
-                            progressPercentage={progressPercentage}
-                            progressStatus={progressStatus}
+                            progressMapData={progressMap.get(alumn.full_name)}
                         />
                     ) : (
                         <ul className="alumn-show-list">

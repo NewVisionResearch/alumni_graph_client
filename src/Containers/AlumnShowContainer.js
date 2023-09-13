@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { Modal, Button, Spinner } from "react-bootstrap";
 
 import AlumnShowComponent from "../Components/AlumnShowComponent";
-import Loading from "../Components/Loading";
 import {
     fetchAlumnById,
     patchLabPublication,
@@ -19,11 +18,8 @@ import { ToastContext } from "../Context/ToastContext";
 function AlumnShowContainer({
     alumnShowIdAndName,
     handleDeleteAlumn,
-    addAlumnLoading,
-    progressStatus,
-    setProgressStatus,
-    progressPercentage,
-    setProgressPercentage,
+    progressMap,
+    setProgressMap,
 }) {
     const showToast = useContext(ToastContext);
 
@@ -38,12 +34,19 @@ function AlumnShowContainer({
     const [showConfirmDeleteModal, setShowConfirmDeleteModal] = useState(false);
     const [loading, setLoading] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
-    const [eventSource, setEventSource] = useState(null);
+    const [eventSourceMap, setEventSourceMap] = useState(new Map());
+
+    let doesProgressMapContainAlumn = false;
+
+    if (alumnShowIdAndName) {
+        doesProgressMapContainAlumn = progressMap.has(
+            alumnShowIdAndName.full_name
+        );
+    }
 
     useEffect(() => {
         if (alumnShowIdAndName) {
             setLoading(true);
-
             setAlumn(
                 (prev) =>
                     (prev = {
@@ -52,41 +55,44 @@ function AlumnShowContainer({
                     })
             );
 
-            const controller = new AbortController();
-            const signal = controller.signal;
+            if (!doesProgressMapContainAlumn) {
+                const controller = new AbortController();
+                const signal = controller.signal;
 
-            fetchAlumnById(alumnShowIdAndName.alumn_id, signal)
-                .then((res) => {
-                    if (!res.ok) throw res;
+                fetchAlumnById(alumnShowIdAndName.alumn_id, signal)
+                    .then((res) => {
+                        if (!res.ok) throw res;
 
-                    return res.json();
-                })
-                .then((alumnObj) => {
-                    setAlumn(alumnObj);
-                    setLoading(false);
-                })
-                .catch((err) => {
-                    if (err.name !== "AbortError") {
-                        console.error(err);
+                        return res.json();
+                    })
+                    .then((alumnObj) => {
+                        setAlumn(alumnObj);
                         setLoading(false);
-                    }
-                });
+                    })
+                    .catch((err) => {
+                        if (err.name !== "AbortError") {
+                            console.error(err);
+                            setLoading(false);
+                        }
+                    });
 
-            setEditSearchNames(false);
+                setEditSearchNames(false);
 
-            return () => {
-                controller.abort();
-            };
+                return () => {
+                    controller.abort();
+                };
+            }
         }
-    }, [alumnShowIdAndName]);
+    }, [alumnShowIdAndName, doesProgressMapContainAlumn]);
 
     useEffect(() => {
         return () => {
-            if (eventSource) {
-                eventSource.close();
-            }
+            eventSourceMap.forEach((connection, key) => {
+                connection.close();
+            });
         };
-    }, [eventSource]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const invalidatePublication = async (labPublicationId) => {
         let bodyObj = {
@@ -141,6 +147,12 @@ function AlumnShowContainer({
     const initializeEventSource = (job_id) => {
         const es = streamJob(job_id, "fetch");
 
+        setEventSourceMap((prevMap) => {
+            const newMap = new Map(prevMap);
+            newMap.set(job_id, es);
+            return newMap;
+        });
+
         es.onmessage = (event) => {
             const eventData = JSON.parse(event.data);
             const jobData = JSON.parse(eventData.message);
@@ -148,8 +160,11 @@ function AlumnShowContainer({
 
             switch (jobStatus) {
                 case "complete":
-                    setProgressStatus("");
-                    setProgressPercentage(0);
+                    setProgressMap((prevMap) => {
+                        const newMap = new Map(prevMap);
+                        newMap.delete(alumn.full_name);
+                        return newMap;
+                    });
 
                     setAlumn({
                         alumn_id: jobData.details.alumn_id,
@@ -163,14 +178,26 @@ function AlumnShowContainer({
                     break;
 
                 case "working":
-                    setProgressStatus(jobStatus);
-                    setProgressPercentage(jobData.job.percent);
+                    setProgressMap((prevMap) => {
+                        const newMap = new Map(prevMap);
+                        newMap.set(alumn.full_name, {
+                            status: jobStatus,
+                            percentage: jobData.job.percent,
+                        });
+                        return newMap;
+                    });
                     break;
 
                 case "queued":
                 case "retrying":
-                    setProgressStatus(jobStatus);
-                    setProgressPercentage(0);
+                    setProgressMap((prevMap) => {
+                        const newMap = new Map(prevMap);
+                        newMap.set(alumn.full_name, {
+                            status: jobStatus,
+                            percentage: 0,
+                        });
+                        return newMap;
+                    });
                     break;
 
                 default:
@@ -183,6 +210,11 @@ function AlumnShowContainer({
 
             if (jobData.job.status === "complete") {
                 es.close();
+                setEventSourceMap((prevMap) => {
+                    const newMap = new Map(prevMap);
+                    newMap.delete(job_id);
+                    return newMap;
+                });
             }
         };
 
@@ -191,7 +223,11 @@ function AlumnShowContainer({
             es.close();
         };
 
-        setEventSource(es);
+        setEventSourceMap((prevMap) => {
+            const newMap = new Map(prevMap);
+            newMap.delete(job_id);
+            return newMap;
+        });
     };
 
     const refetchPublications = async () => {
@@ -204,6 +240,11 @@ function AlumnShowContainer({
             setLoading(true);
 
             const { job_id } = await res.json();
+            setProgressMap((prevMap) => {
+                const newMap = new Map(prevMap);
+                newMap.set(alumnShowIdAndName.full_name, {});
+                return newMap;
+            });
 
             initializeEventSource(job_id);
         } catch (err) {
@@ -272,12 +313,7 @@ function AlumnShowContainer({
 
     return (
         <div className="alumn-show">
-            {addAlumnLoading ? (
-                <Loading
-                    progressPercentage={progressPercentage}
-                    progressStatus={progressStatus}
-                />
-            ) : alumnShowIdAndName ? (
+            {alumnShowIdAndName ? (
                 <>
                     <AlumnShowComponent
                         alumn={alumn}
@@ -293,8 +329,7 @@ function AlumnShowContainer({
                         editingReseracherError={editingReseracherError}
                         idObj={idObj}
                         closeForm={closeForm}
-                        progressStatus={progressStatus}
-                        progressPercentage={progressPercentage}
+                        progressMap={progressMap}
                     />
 
                     <Modal

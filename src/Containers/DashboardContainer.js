@@ -9,17 +9,14 @@ function DashboardContainer() {
     const [alumns, setAlumns] = useState([]);
     const [alumnShowIdAndName, setAlumnShowIdAndName] = useState(null);
     const [showInfoModal, setShowInfoModal] = useState(false);
-    const [addAlumnLoading, setAddAlumnLoading] = useState(false);
     const [isAlumnListLoading, setIsAlumnListLoading] = useState(true);
-    const [progressStatus, setProgressStatus] = useState("");
-    const [progressPercentage, setProgressPercentage] = useState(0);
+    const [progressMap, setProgressMap] = useState(new Map());
 
     const admin = useContext(AdminContext);
 
     const navigate = useRef(useNavigate());
 
     const openAlumnShow = (alumn_id, full_name) => {
-        setAddAlumnLoading(false);
         setAlumnShowIdAndName({ alumn_id, full_name });
     };
 
@@ -91,16 +88,12 @@ function DashboardContainer() {
             openAlumnShow={openAlumnShow}
             handleInfoClick={handleInfoClick}
             handleDeleteAlumn={handleDeleteAlumn}
-            addAlumnLoading={addAlumnLoading}
-            setAddAlumnLoading={setAddAlumnLoading}
             alumns={alumns}
             setAlumns={setAlumns}
             alumnShowIdAndName={alumnShowIdAndName}
             isAlumnListLoading={isAlumnListLoading}
-            progressStatus={progressStatus}
-            setProgressStatus={setProgressStatus}
-            progressPercentage={progressPercentage}
-            setProgressPercentage={setProgressPercentage}
+            progressMap={progressMap}
+            setProgressMap={setProgressMap}
         />
     );
 }

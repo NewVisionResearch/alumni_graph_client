@@ -3,7 +3,7 @@ import { ProgressBar } from "react-bootstrap";
 
 import "../styles/Loading.css";
 
-function Loading({ progressPercentage = 0, progressStatus = "" }) {
+function Loading({ progressMapData = { status: "", percentage: 0 } }) {
     const [loadingMessage, setLoadingMessage] = useState("");
 
     const progressMessages = {
@@ -16,8 +16,11 @@ function Loading({ progressPercentage = 0, progressStatus = "" }) {
     useEffect(() => {
         const timeouts = [
             { delay: 5000, message: "This may take awhile..." },
-            { delay: 15000, message: "You should grab some coffee 😅" },
-            { delay: 25000, message: "No really, grab some coffee..." },
+            { delay: 15000, message: "Thank you for being patient 🙏" },
+            {
+                delay: 25000,
+                message: "Still with us? We appreciate your patience! 😄",
+            },
         ].map((item) =>
             setTimeout(() => setLoadingMessage(item.message), item.delay)
         );
@@ -30,13 +33,14 @@ function Loading({ progressPercentage = 0, progressStatus = "" }) {
     return (
         <div className="m-2">
             <h2 className="animate">
-                {progressMessages[progressStatus] || progressMessages.default}
+                {progressMessages[progressMapData.status] ||
+                    progressMessages.default}
             </h2>
 
-            {progressStatus !== "" && (
+            {progressMapData.status !== "" && (
                 <ProgressBar
                     className="m-2"
-                    now={progressPercentage}
+                    now={progressMapData.percentage}
                     animated
                 />
             )}

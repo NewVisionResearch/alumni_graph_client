@@ -13,16 +13,12 @@ function DashboardComponent({
     openAlumnShow,
     handleInfoClick,
     handleDeleteAlumn,
-    addAlumnLoading,
-    setAddAlumnLoading,
     alumns,
     setAlumns,
     alumnShowIdAndName,
     isAlumnListLoading,
-    progressStatus,
-    setProgressStatus,
-    progressPercentage,
-    setProgressPercentage,
+    progressMap,
+    setProgressMap,
 }) {
     return (
         <div className="dashboard">
@@ -114,11 +110,7 @@ function DashboardComponent({
                                         alumns={alumns}
                                         setAlumns={setAlumns}
                                         openAlumnShow={openAlumnShow}
-                                        setAddAlumnLoading={setAddAlumnLoading}
-                                        setProgressStatus={setProgressStatus}
-                                        setProgressPercentage={
-                                            setProgressPercentage
-                                        }
+                                        setProgressMap={setProgressMap}
                                     />
                                 </Col>
                             </Row>
@@ -139,11 +131,8 @@ function DashboardComponent({
                         <AlumnShowContainer
                             alumnShowIdAndName={alumnShowIdAndName}
                             handleDeleteAlumn={handleDeleteAlumn}
-                            addAlumnLoading={addAlumnLoading}
-                            progressStatus={progressStatus}
-                            setProgressStatus={setProgressStatus}
-                            progressPercentage={progressPercentage}
-                            setProgressPercentage={setProgressPercentage}
+                            progressMap={progressMap}
+                            setProgressMap={setProgressMap}
                         />
                     </Col>
                 </Row>

@@ -1,4 +1,4 @@
-import { useState, useContext, useRef, useMemo } from "react";
+import { useState, useContext, useRef, useMemo, useEffect } from "react";
 import { Button, Modal, Row, Col, Form, Spinner } from "react-bootstrap";
 
 import NewAlumnForm from "./NewAlumnForm";
@@ -7,16 +7,8 @@ import { ToastContext } from "../Context/ToastContext";
 import { fetchAlumns, streamJob } from "../services/api";
 
 import "../styles/AddAlumns.css";
-import { useEffect } from "react";
 
-function AddAlumns({
-    alumns,
-    setAlumns,
-    openAlumnShow,
-    setAddAlumnLoading,
-    setProgressStatus,
-    setProgressPercentage,
-}) {
+function AddAlumns({ alumns, setAlumns, openAlumnShow, setProgressMap }) {
     const admin = useContext(AdminContext);
     const showToast = useContext(ToastContext);
 
@@ -30,7 +22,7 @@ function AddAlumns({
     );
     const [isLoading, setIsLoading] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
-    const [eventSource, setEventSource] = useState(null);
+    const [eventSourceMap, setEventSourceMap] = useState(new Map());
 
     const abortControllerRef = useRef(new AbortController());
 
@@ -70,8 +62,14 @@ function AddAlumns({
         handleAddAlumnModalShow();
     };
 
-    const initializeEventSource = (job_id) => {
+    const initializeEventSource = (job_id, full_name) => {
         const es = streamJob(job_id, "index");
+
+        setEventSourceMap((prevMap) => {
+            const newMap = new Map(prevMap);
+            newMap.set(job_id, es);
+            return newMap;
+        });
 
         es.onmessage = (event) => {
             const eventData = JSON.parse(event.data);
@@ -80,37 +78,35 @@ function AddAlumns({
 
             switch (jobStatus) {
                 case "complete":
-                    const newArray = [
-                        ...alumns,
-                        {
-                            alumn_id: jobData.details.alumn_id,
-                            full_name: jobData.details.full_name,
-                            search_query: jobData.details.search_query,
-                            my_lab_alumn_publications:
-                                jobData.details.my_lab_alumn_publications,
-                        },
-                    ];
+                    setProgressMap((prevMap) => {
+                        const newMap = new Map(prevMap);
+                        newMap.delete(full_name);
+                        return newMap;
+                    });
 
-                    setProgressStatus("");
-                    setProgressPercentage(0);
-
-                    setAddAlumnLoading(false);
-                    setAlumns(newArray);
-                    openAlumnShow(
-                        jobData.details.alumn_id,
-                        jobData.details.full_name
-                    );
                     break;
 
                 case "working":
-                    setProgressStatus(jobStatus);
-                    setProgressPercentage(jobData.job.percent);
+                    setProgressMap((prevMap) => {
+                        const newMap = new Map(prevMap);
+                        newMap.set(full_name, {
+                            status: jobStatus,
+                            percentage: jobData.job.percent,
+                        });
+                        return newMap;
+                    });
                     break;
 
                 case "queued":
                 case "retrying":
-                    setProgressStatus(jobStatus);
-                    setProgressPercentage(0);
+                    setProgressMap((prevMap) => {
+                        const newMap = new Map(prevMap);
+                        newMap.set(full_name, {
+                            status: jobStatus,
+                            percentage: 0,
+                        });
+                        return newMap;
+                    });
                     break;
 
                 default:
@@ -121,15 +117,23 @@ function AddAlumns({
 
             if (jobData.job.status === "complete") {
                 es.close();
+                setEventSourceMap((prevMap) => {
+                    const newMap = new Map(prevMap);
+                    newMap.delete(job_id);
+                    return newMap;
+                });
             }
         };
 
         es.onerror = (error) => {
             console.error("EventSource failed:", error);
             es.close();
+            setEventSourceMap((prevMap) => {
+                const newMap = new Map(prevMap);
+                newMap.delete(job_id);
+                return newMap;
+            });
         };
-
-        setEventSource(es);
     };
 
     const addAlumn = async () => {
@@ -151,17 +155,33 @@ function AddAlumns({
             if (!res.ok) throw res;
 
             const alumnsResponse = await res.json();
-            const { job_id } = alumnsResponse;
 
+            const { job_id, alumn_id, full_name, search_query } =
+                alumnsResponse;
+
+            const newArray = [
+                ...alumns,
+                {
+                    alumn_id: alumn_id,
+                    full_name: full_name,
+                    search_query: search_query,
+                },
+            ];
+
+            setAlumns(newArray);
+            setProgressMap((prevMap) => {
+                const newMap = new Map(prevMap);
+                newMap.set(full_name, {});
+                return newMap;
+            });
+            openAlumnShow(alumn_id, full_name);
             handleAddAlumnModalClose();
-            setAddAlumnLoading(true);
 
-            initializeEventSource(job_id);
+            initializeEventSource(job_id, full_name);
         } catch (error) {
             let errorResponse = await error.json();
             console.error(errorResponse);
             setDuplicateDisplayNameError(errorResponse);
-            setAddAlumnLoading(false);
             showToast({
                 header: "Add Researcher Error",
                 body: "Please check again later",
@@ -173,11 +193,12 @@ function AddAlumns({
 
     useEffect(() => {
         return () => {
-            if (eventSource) {
-                eventSource.close();
-            }
+            eventSourceMap.forEach((connection, key) => {
+                connection.close();
+            });
         };
-    }, [eventSource]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     return (
         <div className="add-alumns">
