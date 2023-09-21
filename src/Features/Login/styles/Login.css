@@ -1,0 +1,27 @@
+.login {
+    margin: 3em 2em 2em 2em;
+    background: var(--custom-grey);
+    border: solid 2px var(--custom-teal);
+}
+
+.login-toast {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: green;
+    z-index: 1000;
+}
+
+.link {
+    color: var(--custom-purple) !important;
+}
+
+.link:hover {
+    color: var(--custom-teal) !important;
+    text-decoration: none !important;
+}
+
+.link:focus {
+    box-shadow: none !important;
+    text-decoration: underline !important;
+}

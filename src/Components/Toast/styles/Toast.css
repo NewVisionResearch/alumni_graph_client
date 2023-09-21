@@ -1,0 +1,9 @@
+.toast-component {
+    background-color: green;
+    color: white;
+}
+
+.toast-error-component {
+    background-color: red;
+    color: white;
+}

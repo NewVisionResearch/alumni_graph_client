@@ -1,5 +1,4 @@
-// hooks/useAdmin.js
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 
 import * as authService from "../services/authService";
@@ -19,12 +18,12 @@ export default function useAdmin() {
 
         if (token) {
             getProfile(token, signal)
-                .then(res => {
+                .then((res) => {
                     if (!res.ok) throw res;
                     return res.json();
                 })
-                .then(adminData => setAdmin(adminData))
-                .catch(err => console.error(err));
+                .then((adminData) => setAdmin(adminData))
+                .catch((err) => console.error(err));
         }
 
         return () => {
@@ -63,6 +62,6 @@ export default function useAdmin() {
         login,
         logout,
         loginError,
-        clearLoginError
+        clearLoginError,
     };
 }

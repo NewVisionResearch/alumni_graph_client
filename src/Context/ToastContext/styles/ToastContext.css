@@ -1,0 +1,7 @@
+.toast-context {
+    position: fixed;
+    min-width: 15rem;
+    top: 10px;
+    right: 10px;
+    z-index: 1000;
+}
