@@ -1,15 +1,22 @@
-import { useState } from 'react';
-import { Button, InputGroup } from 'react-bootstrap';
-import FullCitation from './FullCitation';
+import { useState } from "react";
+import { Button, InputGroup } from "react-bootstrap";
+import FullCitation from "./FullCitation";
 
-function PublicationDisplayCheck({ alumnName, alumn_publication, updateIdArray, invalidatePublication }) {
-
-    const { lab_alumn_publication_id, display, publication, coauthors } = alumn_publication;
+function PublicationDisplayCheck({
+    alumnName,
+    alumn_publication,
+    updateIdArray,
+    invalidatePublication,
+}) {
+    const { alumn_publication_id, display, publication, coauthors } =
+        alumn_publication;
     const [displayed, setDisplayed] = useState(display);
+
     return (
         <div
             className="d-flex align-items-center justify-content-between mb-5 p-3 border border-secondary"
-            key={`${lab_alumn_publication_id}_${alumnName}`}>
+            key={`${alumn_publication_id}_${alumnName}`}
+        >
             <InputGroup.Checkbox
                 className="button"
                 aria-label="Checkbox for following citation"
@@ -17,22 +24,23 @@ function PublicationDisplayCheck({ alumnName, alumn_publication, updateIdArray, 
                 checked={displayed}
                 onChange={() => {
                     setDisplayed(!displayed);
-                    updateIdArray(lab_alumn_publication_id, !displayed);
-                }} />
+                    updateIdArray(alumn_publication_id, !displayed);
+                }}
+            />
             <FullCitation
                 alumnName={alumnName}
                 publication={publication}
-                coauthors={coauthors} />
+                coauthors={coauthors}
+            />
             <Button
                 className="delete-button ml-1"
                 size="sm"
-                onClick={() => invalidatePublication(publication.lab_publication_id)}
+                onClick={() => invalidatePublication(alumn_publication_id)}
             >
-                Remove
+                Delete
             </Button>
         </div>
     );
-
 }
 
 export default PublicationDisplayCheck;

@@ -7,7 +7,7 @@ function GraphAlumnDetailsModalContainer({ alumnId, closeModal }) {
     const [alumn, setAlumn] = useState({
         full_name: "",
         search_query: "",
-        my_lab_alumn_publications: [],
+        my_alumn_publications: [],
     });
     const [isLoading, setIsLoading] = useState(false);
 
@@ -17,7 +17,7 @@ function GraphAlumnDetailsModalContainer({ alumnId, closeModal }) {
         setAlumn({
             full_name: "",
             search_query: "",
-            my_lab_alumn_publications: [],
+            my_alumn_publications: [],
         });
 
         const controller = new AbortController();

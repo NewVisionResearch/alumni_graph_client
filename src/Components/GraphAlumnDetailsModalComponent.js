@@ -3,7 +3,6 @@ import { byDate, byCoAuthors, sortByTwoFns } from "../services/sorts";
 import AccordionCitation from "../Containers/AccordionCitation";
 
 function GraphAlumnDetailsModalComponent({ alumn }) {
-
     return (
         <>
             <h3
@@ -17,21 +16,23 @@ function GraphAlumnDetailsModalComponent({ alumn }) {
                 {alumn.full_name}
             </h3>
             <Accordion>
-                {sortByTwoFns(byDate, byCoAuthors, alumn.my_lab_alumn_publications).map(
-                    (alumn_pub, idx) => {
-                        const { publication, coauthors } = alumn_pub;
+                {sortByTwoFns(
+                    byDate,
+                    byCoAuthors,
+                    alumn.my_alumn_publications
+                ).map((alumn_pub, idx) => {
+                    const { publication, coauthors } = alumn_pub;
 
-                        return (
-                            <AccordionCitation
-                                key={`${alumn_pub}_${idx}`}
-                                listNum={idx}
-                                alumnName={alumn.search_query}
-                                publication={publication}
-                                coauthors={coauthors}
-                            />
-                        );
-                    }
-                )}
+                    return (
+                        <AccordionCitation
+                            key={`${alumn_pub}_${idx}`}
+                            listNum={idx}
+                            alumnName={alumn.search_query}
+                            publication={publication}
+                            coauthors={coauthors}
+                        />
+                    );
+                })}
             </Accordion>
         </>
     );

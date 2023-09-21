@@ -74,7 +74,7 @@ function AlumnShowComponent({
                                 filterValidPublications(alumn)
                             ).map((alumn_pub, idx) => (
                                 <PublicationDisplayCheck
-                                    key={`${alumn_pub.lab_alumn_publication_id}_${idx}`}
+                                    key={`${alumn_pub.alumn_publication_id}_${idx}`}
                                     alumnName={alumn.search_query}
                                     alumn_publication={alumn_pub}
                                     updateIdArray={updateIdArray}

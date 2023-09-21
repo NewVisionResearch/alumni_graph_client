@@ -4,8 +4,8 @@ import { Modal, Button, Spinner } from "react-bootstrap";
 import AlumnShowComponent from "../Components/AlumnShowComponent";
 import {
     fetchAlumnById,
-    patchLabPublication,
-    patchLabAlumnPublication,
+    deleteAlumnPublication,
+    patchAlumnPublication,
     refetchAlumnPublications,
     updateSearchNamesForAlumn,
     streamJob,
@@ -26,7 +26,7 @@ function AlumnShowContainer({
     const [alumn, setAlumn] = useState({
         full_name: "",
         search_query: "",
-        my_lab_alumn_publications: [],
+        my_alumn_publications: [],
     });
     const [idObj, setIdObj] = useState({});
     const [editSearchNames, setEditSearchNames] = useState(false);
@@ -94,23 +94,17 @@ function AlumnShowContainer({
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    const invalidatePublication = async (labPublicationId) => {
-        let bodyObj = {
-            lab_publication: {
-                display: false,
-            },
-        };
-
+    const invalidatePublication = async (alumn_publication_id) => {
         try {
-            const res = await patchLabPublication(labPublicationId, bodyObj);
+            const res = await deleteAlumnPublication(alumn_publication_id);
             if (!res.ok) throw res;
 
             const publicationId = await res.json();
-            let newArray = alumn.my_lab_alumn_publications.filter(
+            let newArray = alumn.my_alumn_publications.filter(
                 (ap) => ap.publication.id !== publicationId
             );
 
-            setAlumn({ ...alumn, my_lab_alumn_publications: newArray });
+            setAlumn({ ...alumn, my_alumn_publications: newArray });
         } catch (err) {
             console.error(err);
         }
@@ -125,7 +119,7 @@ function AlumnShowContainer({
     const updateDatabase = async () => {
         for (const id in idObj) {
             let bodyObj = {
-                lab_alumn_publication: {
+                alumn_publication: {
                     alumn_id: alumnShowIdAndName.alumn_id,
                     alumn_publication_id: id,
                     display: idObj[id],
@@ -133,7 +127,7 @@ function AlumnShowContainer({
             };
 
             try {
-                const res = await patchLabAlumnPublication(bodyObj);
+                const res = await patchAlumnPublication(bodyObj, id);
 
                 if (!res.ok) throw res;
 
@@ -170,8 +164,8 @@ function AlumnShowContainer({
                         alumn_id: jobData.details.alumn_id,
                         full_name: jobData.details.full_name,
                         search_query: jobData.details.search_query,
-                        my_lab_alumn_publications:
-                            jobData.details.my_lab_alumn_publications,
+                        my_alumn_publications:
+                            jobData.details.my_alumn_publications,
                     });
 
                     setLoading(false);

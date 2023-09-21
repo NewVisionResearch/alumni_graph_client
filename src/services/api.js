@@ -76,24 +76,29 @@ export const fetchAlumnNameQuerySearchResults = (alumnNameQuery, signal) => {
     return fetch(`${baseUrl}/alumns/${alumnNameQuery}/search`, options);
 };
 
-export const patchLabPublication = (labPublicationId, bodyObj) => {
+export const deleteAlumnPublication = (alumn_publication_id) => {
     const options = {
-        method: "PATCH",
+        method: "DELETE",
         headers: headersWithToken,
-        body: JSON.stringify(bodyObj),
     };
 
-    return fetch(`${baseUrl}/lab_publications/${labPublicationId}`, options);
+    return fetch(
+        `${baseUrl}/alumn_publications/${alumn_publication_id}`,
+        options
+    );
 };
 
-export const patchLabAlumnPublication = (bodyObj) => {
+export const patchAlumnPublication = (bodyObj, alumn_publication_id) => {
     const options = {
         method: "PATCH",
         headers: headersWithToken,
         body: JSON.stringify(bodyObj),
     };
 
-    return fetch(`${baseUrl}/lab_alumn_publications`, options);
+    return fetch(
+        `${baseUrl}/alumn_publications/${alumn_publication_id}`,
+        options
+    );
 };
 
 export const getProfile = (token, signal) => {
