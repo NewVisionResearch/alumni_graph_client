@@ -95,14 +95,16 @@ function NewAlumnForm({
         }
     };
 
-    const submitAlumnNameQuery = (e) => {
+    const submitAlumnNameQuery = () => {
         const addInput = document.getElementById("addInput");
         const queryInput = document.getElementById("queryInput");
 
         addInput.setCustomValidity("");
 
         if (alumnNameQuery !== undefined && alumnNameQuery !== "") {
-            searchAlumn(alumnNameQuery);
+            searchAlumn(
+                encodeURIComponent(alumnNameQuery.replace(/\./g, "%2E"))
+            );
             setAlumnName("");
             queryInput.setCustomValidity("");
         } else {
