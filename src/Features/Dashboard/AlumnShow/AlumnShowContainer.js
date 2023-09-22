@@ -11,7 +11,7 @@ function AlumnShowContainer({
     editSearchNames,
     setEditSearchNames,
     handleRemoveAlumn,
-    invalidatePublication,
+    handleDeletePublication,
     updateIdArray,
     loading,
     updateDatabase,
@@ -78,8 +78,8 @@ function AlumnShowContainer({
                                     alumnName={alumn.search_query}
                                     alumn_publication={alumn_pub}
                                     updateIdArray={updateIdArray}
-                                    invalidatePublication={
-                                        invalidatePublication
+                                    handleDeletePublication={
+                                        handleDeletePublication
                                     }
                                 />
                             ))}

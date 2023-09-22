@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useRef } from "react";
 
 import AlumnShowContainer from "./AlumnShowContainer";
 import { ToastContext } from "../../../Context/ToastContext/ToastContext";
@@ -30,10 +30,19 @@ function AlumnShowController({
     const [idObj, setIdObj] = useState({});
     const [editSearchNames, setEditSearchNames] = useState(false);
     const [editingReseracherError, setEditingReseracherError] = useState([]);
-    const [showConfirmDeleteModal, setShowConfirmDeleteModal] = useState(false);
+    const [showConfirmDeleteAlumnModal, setShowConfirmDeleteAlumnModal] =
+        useState(false);
+    const [
+        showConfirmDeletePublicationModal,
+        setShowConfirmDeletePublicationModal,
+    ] = useState(false);
+
     const [loading, setLoading] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
+    const [isDeletingPublication, setIsDeletingPublication] = useState(false);
     const [eventSourceMap, setEventSourceMap] = useState(new Map());
+
+    const publicationToDelete = useRef(null);
 
     let doesProgressMapContainAlumn = false;
 
@@ -93,19 +102,43 @@ function AlumnShowController({
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    const invalidatePublication = async (alumn_publication_id) => {
+    const handleDeletePublication = (alumn_publication_id) => {
+        publicationToDelete.current = alumn_publication_id;
+        setShowConfirmDeletePublicationModal(true);
+    };
+
+    const deletePublication = async () => {
+        setIsDeletingPublication(true);
+
         try {
-            const res = await deleteAlumnPublication(alumn_publication_id);
+            const res = await deleteAlumnPublication(
+                publicationToDelete.current
+            );
+
             if (!res.ok) throw res;
 
-            const publicationId = await res.json();
+            showToast({
+                header: "Delete Success!",
+                body: "The publication has been deleted.",
+            });
+
+            const { publication_id } = await res.json();
+
             let newArray = alumn.my_alumn_publications.filter(
-                (ap) => ap.publication.id !== publicationId
+                (ap) => ap.publication.id !== publication_id
             );
 
             setAlumn({ ...alumn, my_alumn_publications: newArray });
         } catch (err) {
             console.error(err);
+            showToast({
+                header: "Delete Error",
+                body: "Please try again later or contact the administrator.",
+            });
+        } finally {
+            setIsDeletingPublication(false);
+            setShowConfirmDeletePublicationModal(false);
+            publicationToDelete.current = null;
         }
     };
 
@@ -274,12 +307,7 @@ function AlumnShowController({
     };
 
     const handleRemoveAlumn = () => {
-        setShowConfirmDeleteModal(true);
-    };
-
-    const closeForm = () => {
-        setEditSearchNames(false);
-        setEditingReseracherError("");
+        setShowConfirmDeleteAlumnModal(true);
     };
 
     const handleAlumnDeletion = async (alumnId) => {
@@ -300,8 +328,13 @@ function AlumnShowController({
             });
         } finally {
             setIsDeleting(false);
-            setShowConfirmDeleteModal(false);
+            setShowConfirmDeleteAlumnModal(false);
         }
+    };
+
+    const closeForm = () => {
+        setEditSearchNames(false);
+        setEditingReseracherError("");
     };
 
     return (
@@ -313,7 +346,7 @@ function AlumnShowController({
                         editSearchNames={editSearchNames}
                         setEditSearchNames={setEditSearchNames}
                         handleRemoveAlumn={handleRemoveAlumn}
-                        invalidatePublication={invalidatePublication}
+                        handleDeletePublication={handleDeletePublication}
                         updateIdArray={updateIdArray}
                         loading={loading}
                         updateDatabase={updateDatabase}
@@ -326,7 +359,7 @@ function AlumnShowController({
                     />
 
                     <ConfirmationModal
-                        show={showConfirmDeleteModal}
+                        show={showConfirmDeleteAlumnModal}
                         title={`Delete ${alumnShowIdAndName.full_name}`}
                         body="Are you sure you want to delete this researcher? This action cannot be undone, and you would need to re-add the researcher if necessary."
                         confirmText="Delete"
@@ -335,7 +368,21 @@ function AlumnShowController({
                         onConfirm={() =>
                             handleAlumnDeletion(alumnShowIdAndName.alumn_id)
                         }
-                        onCancel={() => setShowConfirmDeleteModal(false)}
+                        onCancel={() => setShowConfirmDeleteAlumnModal(false)}
+                    />
+
+                    <ConfirmationModal
+                        show={showConfirmDeletePublicationModal}
+                        title="Delete Publication"
+                        body="Are you sure you want to delete this publication? This action cannot be undone, and you would need to refetch the publication if necessary."
+                        confirmText="Delete"
+                        disableCancel={isDeletingPublication}
+                        isConfirming={isDeletingPublication}
+                        onConfirm={() => deletePublication()}
+                        onCancel={() => {
+                            setShowConfirmDeletePublicationModal(false);
+                            publicationToDelete.current = null;
+                        }}
                     />
                 </>
             ) : (

@@ -6,7 +6,7 @@ function PublicationDisplayCheck({
     alumnName,
     alumn_publication,
     updateIdArray,
-    invalidatePublication,
+    handleDeletePublication,
 }) {
     const { alumn_publication_id, display, publication, coauthors } =
         alumn_publication;
@@ -35,7 +35,7 @@ function PublicationDisplayCheck({
             <Button
                 className="delete-button ml-1"
                 size="sm"
-                onClick={() => invalidatePublication(alumn_publication_id)}
+                onClick={() => handleDeletePublication(alumn_publication_id)}
             >
                 Delete
             </Button>
