@@ -1,7 +1,8 @@
 import { useState, useEffect, useContext } from "react";
-import { Modal, Button, Spinner } from "react-bootstrap";
 
 import AlumnShowContainer from "./AlumnShowContainer";
+import { ToastContext } from "../../../Context/ToastContext/ToastContext";
+import ConfirmationModal from "../../../Components/Modal/ConfirmationModal/ConfirmationModal";
 import {
     fetchAlumnById,
     deleteAlumnPublication,
@@ -10,7 +11,6 @@ import {
     updateSearchNamesForAlumn,
     streamJob,
 } from "../../../services/api";
-import { ToastContext } from "../../../Context/ToastContext/ToastContext";
 
 import "./styles/AlumnShow.css";
 
@@ -325,56 +325,18 @@ function AlumnShowController({
                         progressMap={progressMap}
                     />
 
-                    <Modal
+                    <ConfirmationModal
                         show={showConfirmDeleteModal}
-                        onHide={() => setShowConfirmDeleteModal(false)}
-                    >
-                        <Modal.Header>
-                            <Modal.Title>
-                                Delete {alumnShowIdAndName.full_name}
-                            </Modal.Title>
-                        </Modal.Header>
-                        <Modal.Body>
-                            Are you sure you want to delete this researcher?
-                            This action cannot be undone, and you would need to
-                            re-add the researcher if necessary.
-                        </Modal.Body>
-                        <Modal.Footer className="mr-auto">
-                            <Button
-                                className="delete-button"
-                                type="button"
-                                disabled={isDeleting}
-                                onClick={() =>
-                                    handleAlumnDeletion(
-                                        alumnShowIdAndName.alumn_id
-                                    )
-                                }
-                            >
-                                {isDeleting ? (
-                                    <>
-                                        <Spinner
-                                            as="span"
-                                            animation="border"
-                                            size="sm"
-                                            role="status"
-                                            aria-hidden="true"
-                                        />
-                                        {" Deleting..."}
-                                    </>
-                                ) : (
-                                    "Delete"
-                                )}
-                            </Button>
-                            <Button
-                                className="cancel-button"
-                                type="button"
-                                disabled={isDeleting}
-                                onClick={() => setShowConfirmDeleteModal(false)}
-                            >
-                                Cancel
-                            </Button>
-                        </Modal.Footer>
-                    </Modal>
+                        title={`Delete ${alumnShowIdAndName.full_name}`}
+                        body="Are you sure you want to delete this researcher? This action cannot be undone, and you would need to re-add the researcher if necessary."
+                        confirmText="Delete"
+                        disableCancel={isDeleting}
+                        isConfirming={isDeleting}
+                        onConfirm={() =>
+                            handleAlumnDeletion(alumnShowIdAndName.alumn_id)
+                        }
+                        onCancel={() => setShowConfirmDeleteModal(false)}
+                    />
                 </>
             ) : (
                 <h1 className="text-center m-2">

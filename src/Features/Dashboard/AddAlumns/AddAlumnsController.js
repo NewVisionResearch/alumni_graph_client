@@ -1,7 +1,8 @@
 import { useState, useContext, useRef, useMemo, useEffect } from "react";
-import { Button, Modal, Row, Col, Form, Spinner } from "react-bootstrap";
+import { Row, Col, Form, Spinner, Container } from "react-bootstrap";
 
 import NewAlumnForm from "./NewAlumnForm/NewAlumnForm";
+import ConfirmationModal from "../../../Components/Modal/ConfirmationModal/ConfirmationModal";
 import { AdminContext } from "../../../Context/AdminContext/AdminContext";
 import { ToastContext } from "../../../Context/ToastContext/ToastContext";
 import { fetchAlumns, streamJob } from "../../../services/api";
@@ -215,15 +216,11 @@ function AddAlumnsController({
                 signal={abortControllerRef.current.signal}
             />
             {/* Alumn Query Search Modal BEGINS*/}
-            <Modal
+            <ConfirmationModal
                 show={showAlumnQuerySearchModal}
-                onHide={handleAlumnQuerySearchModalClose}
-            >
-                <Modal.Header>
-                    <Modal.Title>Query Results</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    {isLoading ? (
+                title="Query Results"
+                body={
+                    isLoading ? (
                         <div className="d-flex justify-content-center">
                             <Spinner
                                 className="add-alumns-spinner"
@@ -250,128 +247,83 @@ function AddAlumnsController({
                                 </p>
                             )}
                         </div>
-                    )}
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button
-                        className="cancel-button"
-                        type="button"
-                        onClick={handleAlumnQuerySearchModalClose}
-                    >
-                        Cancel
-                    </Button>
-                    <Button
-                        className="button"
-                        type="button"
-                        disabled={isResultCountZero || isLoading}
-                        onClick={handleContinue}
-                    >
-                        Continue
-                    </Button>
-                </Modal.Footer>
-            </Modal>
+                    )
+                }
+                confirmText="Continue"
+                onConfirm={handleContinue}
+                onCancel={handleAlumnQuerySearchModalClose}
+                disableConfirm={isResultCountZero || isLoading}
+            />
             {/* Alumn Query Search Modal ENDS*/}
             {/* Add Alumn Modal BEGINS*/}
-            <Modal show={showAddAlumnModal} onHide={handleAddAlumnModalClose}>
-                <Form
-                    onSubmit={(e) => {
-                        e.preventDefault();
-                        addAlumn();
-                    }}
-                >
-                    <Modal.Header>
-                        <Modal.Title>Add Researcher</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body className="border-bottom">
-                        <Row>
-                            <Col>
-                                <p>
-                                    Query:{" "}
-                                    <strong>
-                                        {JSON.stringify(queryTranslation)}
-                                    </strong>
-                                </p>
-                                <p>
-                                    Results:{" "}
-                                    <strong>
-                                        {JSON.stringify(resultCount)}
-                                    </strong>{" "}
-                                    {isResultCountPlural
-                                        ? "results."
-                                        : "result."}
-                                </p>
-                            </Col>
-                        </Row>
-                    </Modal.Body>
-                    <Modal.Body>
-                        <Form.Group as={Row} controlId="formDisplayName">
-                            <Form.Label column sm={4}>
-                                Display Name:
-                            </Form.Label>
-                            <Col sm={8}>
-                                <Form.Control
-                                    type="text"
-                                    placeholder="Enter display name"
-                                    name="displayName"
-                                    required
-                                    value={addAlumnDisplayName}
-                                    onChange={({ target: { name, value } }) =>
-                                        setAddAlumnDisplayName(value)
-                                    }
-                                />
-                                <Form.Text className="text-muted">
-                                    This is the name that will be displayed in
-                                    your graph. We suggest entering the
-                                    researcher's full name.
-                                </Form.Text>
-                                {duplicateDisplayNameError.error ? (
-                                    duplicateDisplayNameError.error.map(
-                                        (val) => (
-                                            <Form.Text className="text-danger">
-                                                {val}
-                                            </Form.Text>
-                                        )
-                                    )
-                                ) : (
-                                    <></>
-                                )}
-                            </Col>
-                        </Form.Group>
-                    </Modal.Body>
-                    <Modal.Footer>
-                        <Button
-                            className="cancel-button"
-                            type="button"
-                            onClick={handleAddAlumnModalClose}
-                            disabled={isSaving}
-                        >
-                            Cancel
-                        </Button>
-                        <Button
-                            className="button"
-                            disabled={
-                                addAlumnDisplayName.length === 0 || isSaving
-                            }
-                            type="submit"
-                        >
-                            {isSaving ? (
-                                <>
-                                    <Spinner
-                                        as="span"
-                                        animation="border"
-                                        size="sm"
-                                        role="status"
-                                        aria-hidden="true"
+            <Form>
+                <ConfirmationModal
+                    show={showAddAlumnModal}
+                    title="Add Researcher"
+                    body={
+                        <Container className="p-0">
+                            <Row>
+                                <Col>
+                                    <p>
+                                        Query:{" "}
+                                        <strong>
+                                            {JSON.stringify(queryTranslation)}
+                                        </strong>
+                                    </p>
+                                    <p>
+                                        Results:{" "}
+                                        <strong>
+                                            {JSON.stringify(resultCount)}
+                                        </strong>{" "}
+                                        {isResultCountPlural
+                                            ? "results."
+                                            : "result."}
+                                    </p>
+                                </Col>
+                            </Row>
+                            <Form.Group as={Row} controlId="formDisplayName">
+                                <Form.Label column sm={4}>
+                                    Display Name:
+                                </Form.Label>
+                                <Col sm={8}>
+                                    <Form.Control
+                                        type="text"
+                                        placeholder="Enter display name"
+                                        name="displayName"
+                                        required
+                                        value={addAlumnDisplayName}
+                                        onChange={({
+                                            target: { name, value },
+                                        }) => setAddAlumnDisplayName(value)}
                                     />
-                                    {" Saving..."}
-                                </>
-                            ) : (
-                                "Save"
-                            )}
-                        </Button>
-                    </Modal.Footer>
-                </Form>
-            </Modal>
+                                    <Form.Text className="text-muted">
+                                        This is the name that will be displayed
+                                        in your graph. We suggest entering the
+                                        researcher's full name.
+                                    </Form.Text>
+                                    {duplicateDisplayNameError.error ? (
+                                        duplicateDisplayNameError.error.map(
+                                            (val) => (
+                                                <Form.Text className="text-danger">
+                                                    {val}
+                                                </Form.Text>
+                                            )
+                                        )
+                                    ) : (
+                                        <></>
+                                    )}
+                                </Col>
+                            </Form.Group>
+                        </Container>
+                    }
+                    confirmText="Save"
+                    onConfirm={addAlumn}
+                    onCancel={handleAddAlumnModalClose}
+                    disableCancel={isSaving}
+                    disableConfirm={addAlumnDisplayName.length === 0}
+                    isConfirming={isSaving}
+                />
+            </Form>
             {/* Add Alumn Modal ENDS*/}
         </div>
     );
