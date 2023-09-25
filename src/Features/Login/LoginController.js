@@ -9,6 +9,7 @@ function LoginController({
     showPasswordResetSuccessfulToast,
     setShowPasswordResetSuccessfulToast,
     clearLoginError,
+    isLoggingIn,
 }) {
     let navigate = useNavigate();
     const location = useLocation();
@@ -43,6 +44,7 @@ function LoginController({
                 setShowPasswordResetSuccessfulToast
             }
             clearLoginError={clearLoginError}
+            isLoggingIn={isLoggingIn}
         />
     );
 }

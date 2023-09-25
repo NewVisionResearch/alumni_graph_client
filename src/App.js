@@ -33,7 +33,8 @@ function App() {
 
     const navigate = useRef(useNavigate());
     const { pathname } = useLocation();
-    const { admin, login, logout, loginError, clearLoginError } = useAdmin();
+    const { admin, login, logout, loginError, clearLoginError, isLoggingIn } =
+        useAdmin();
 
     const [aspectRatio, setAspectRatio] = useState(
         (window.innerHeight * window.innerWidth) / 1000000
@@ -119,6 +120,7 @@ function App() {
                                             setShowPasswordResetSuccessfulToast
                                         }
                                         clearLoginError={clearLoginError}
+                                        isLoggingIn={isLoggingIn}
                                     />
                                 }
                             />

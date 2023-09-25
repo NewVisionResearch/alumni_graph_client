@@ -9,6 +9,7 @@ export default function useAdmin() {
 
     const [admin, setAdmin] = useState({ email: "", labId: "" });
     const [loginError, setLoginError] = useState(null);
+    const [isLoggingIn, setIsLoggingIn] = useState(false);
 
     useEffect(() => {
         const controller = new AbortController();
@@ -36,6 +37,8 @@ export default function useAdmin() {
     }, []);
 
     const login = async (adminInfo) => {
+        setIsLoggingIn(true);
+
         try {
             const res = await authService.login(adminInfo);
 
@@ -47,7 +50,9 @@ export default function useAdmin() {
             navigate("/dashboard");
         } catch (err) {
             const { error } = await err.json();
-            setLoginError(error); // Assuming error is in a readable format
+            setLoginError(error);
+        } finally {
+            setIsLoggingIn(false);
         }
     };
 
@@ -63,5 +68,6 @@ export default function useAdmin() {
         logout,
         loginError,
         clearLoginError,
+        isLoggingIn,
     };
 }

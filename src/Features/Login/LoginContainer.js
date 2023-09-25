@@ -8,6 +8,7 @@ import {
     Col,
     ButtonToolbar,
     ButtonGroup,
+    Spinner,
 } from "react-bootstrap";
 import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
 
@@ -24,6 +25,7 @@ function LoginContainer({
     showPasswordResetSuccessfulToast,
     setShowPasswordResetSuccessfulToast,
     clearLoginError,
+    isLoggingIn,
 }) {
     return (
         <div>
@@ -94,7 +96,20 @@ function LoginContainer({
                             <ButtonToolbar className="m-2 justify-content-between">
                                 <ButtonGroup>
                                     <Button className="button" type="submit">
-                                        Login
+                                        {isLoggingIn ? (
+                                            <>
+                                                <Spinner
+                                                    as="span"
+                                                    animation="border"
+                                                    size="sm"
+                                                    role="status"
+                                                    aria-hidden="true"
+                                                />
+                                                {" Logging In..."}
+                                            </>
+                                        ) : (
+                                            "Login"
+                                        )}
                                     </Button>
                                 </ButtonGroup>
                                 <ButtonGroup>
