@@ -15,8 +15,11 @@ function RegisterController() {
     });
     const [showRegisterToast, setShowRegisterToast] = useState(false);
     const [registerError, setRegisterError] = useState("");
+    const [isRegistering, setIsRegistering] = useState(false);
 
     const handleRegister = async (labInfo) => {
+        setIsRegistering(true);
+
         try {
             const res = await authService.register(labInfo);
 
@@ -42,6 +45,8 @@ function RegisterController() {
             setLab((prev) => ({ ...prev, email: "" }));
             setRegisterError(err);
             console.error(err);
+        } finally {
+            setIsRegistering(false);
         }
     };
 
@@ -52,6 +57,7 @@ function RegisterController() {
                 setLab={setLab}
                 handleRegister={handleRegister}
                 registerError={registerError}
+                isRegistering={isRegistering}
             />
 
             <Toast

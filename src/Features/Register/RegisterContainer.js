@@ -1,4 +1,4 @@
-import { Form, Button, Container, Row, Col } from "react-bootstrap";
+import { Form, Button, Container, Row, Col, Spinner } from "react-bootstrap";
 import PhoneInput from "react-phone-number-input";
 
 import CustomPhoneInput from "./CustomPhoneInput/CustomPhoneInput";
@@ -6,7 +6,13 @@ import CustomPhoneInput from "./CustomPhoneInput/CustomPhoneInput";
 import "./styles/Register.css";
 import "react-phone-number-input/style.css";
 
-function RegisterContainer({ lab, setLab, handleRegister, registerError }) {
+function RegisterContainer({
+    lab,
+    setLab,
+    handleRegister,
+    registerError,
+    isRegistering,
+}) {
     return (
         <Container>
             <Row className="justify-content-md-center">
@@ -134,7 +140,20 @@ function RegisterContainer({ lab, setLab, handleRegister, registerError }) {
                         </Form.Text>
 
                         <Button className="button m-2" type="submit">
-                            Submit
+                            {isRegistering ? (
+                                <>
+                                    <Spinner
+                                        as="span"
+                                        animation="border"
+                                        size="sm"
+                                        role="status"
+                                        aria-hidden="true"
+                                    />
+                                    {" Submitting..."}
+                                </>
+                            ) : (
+                                "Submit"
+                            )}
                         </Button>
                     </Form>
                 </Col>
