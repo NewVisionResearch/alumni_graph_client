@@ -1,9 +1,12 @@
 const baseUrl = process.env.REACT_APP_BASE_URL;
 
-const headersWithToken = {
-    "content-type": "application/json",
-    Accept: "application/json",
-    Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+const getHeadersWithToken = () => {
+    const token = localStorage.getItem("jwt");
+    return {
+        "content-type": "application/json",
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+    };
 };
 
 const headersWithoutToken = {
@@ -22,7 +25,7 @@ export const fetchAlumnById = (alumnId, signal) => {
 export const fetchAlumns = (alumnObj) => {
     const options = {
         method: "POST",
-        headers: headersWithToken,
+        headers: getHeadersWithToken(),
         body: JSON.stringify(alumnObj),
     };
 
@@ -32,7 +35,7 @@ export const fetchAlumns = (alumnObj) => {
 export const fetchAlumnsIndex = (labId) => {
     const options = {
         method: "GET",
-        headers: headersWithToken,
+        headers: getHeadersWithToken(),
     };
 
     return fetch(`${baseUrl}/alumns/${labId}/index`, options);
@@ -41,7 +44,7 @@ export const fetchAlumnsIndex = (labId) => {
 export const deleteAlumn = (alumn_id) => {
     const options = {
         method: "DELETE",
-        headers: headersWithToken,
+        headers: getHeadersWithToken(),
     };
 
     return fetch(`${baseUrl}/alumns/${alumn_id}`, options);
@@ -50,7 +53,7 @@ export const deleteAlumn = (alumn_id) => {
 export const updateSearchNamesForAlumn = (alumnId, bodyObj) => {
     const options = {
         method: "PATCH",
-        headers: headersWithToken,
+        headers: getHeadersWithToken(),
         body: JSON.stringify(bodyObj),
     };
 
@@ -60,7 +63,7 @@ export const updateSearchNamesForAlumn = (alumnId, bodyObj) => {
 export const refetchAlumnPublications = (alumnId) => {
     const options = {
         method: "GET",
-        headers: headersWithToken,
+        headers: getHeadersWithToken(),
     };
 
     return fetch(`${baseUrl}/alumns/${alumnId}/refetch`, options);
@@ -69,7 +72,7 @@ export const refetchAlumnPublications = (alumnId) => {
 export const fetchAlumnNameQuerySearchResults = (alumnNameQuery, signal) => {
     const options = {
         method: "GET",
-        headers: headersWithToken,
+        headers: getHeadersWithToken(),
         signal,
     };
 
@@ -79,7 +82,7 @@ export const fetchAlumnNameQuerySearchResults = (alumnNameQuery, signal) => {
 export const deleteAlumnPublication = (alumn_publication_id) => {
     const options = {
         method: "DELETE",
-        headers: headersWithToken,
+        headers: getHeadersWithToken(),
     };
 
     return fetch(
@@ -91,7 +94,7 @@ export const deleteAlumnPublication = (alumn_publication_id) => {
 export const patchAlumnPublication = (bodyObj, alumn_publication_id) => {
     const options = {
         method: "PATCH",
-        headers: headersWithToken,
+        headers: getHeadersWithToken(),
         body: JSON.stringify(bodyObj),
     };
 
@@ -156,7 +159,7 @@ export const denyRequest = (token, signal) => {
 export const getAdminStatus = (signal) => {
     const options = {
         method: "GET",
-        headers: headersWithToken,
+        headers: getHeadersWithToken(),
         signal,
     };
 
@@ -166,7 +169,7 @@ export const getAdminStatus = (signal) => {
 export const getAdmins = () => {
     const options = {
         method: "GET",
-        headers: headersWithToken,
+        headers: getHeadersWithToken(),
     };
 
     return fetch(`${baseUrl}/admins/get_admins`, options);
