@@ -1,6 +1,8 @@
 import { Form, Button, Container, Row, Col } from "react-bootstrap";
 import PhoneInput from "react-phone-number-input";
 
+import CustomPhoneInput from "./CustomPhoneInput/CustomPhoneInput";
+
 import "./styles/Register.css";
 import "react-phone-number-input/style.css";
 
@@ -88,6 +90,7 @@ function RegisterContainer({ lab, setLab, handleRegister, registerError }) {
                                     onChange={(value) =>
                                         setLab({ ...lab, phoneNumber: value })
                                     }
+                                    inputComponent={CustomPhoneInput}
                                 />
                             </Col>
                         </Form.Group>
