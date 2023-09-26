@@ -3,14 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 
 import LoginContainer from "./LoginContainer";
 
-function LoginController({
-    login,
-    loginError,
-    showPasswordResetSuccessfulToast,
-    setShowPasswordResetSuccessfulToast,
-    clearLoginError,
-    isLoggingIn,
-}) {
+function LoginController({ login, loginError, clearLoginError, isLoggingIn }) {
     let navigate = useNavigate();
     const location = useLocation();
 
@@ -39,10 +32,6 @@ function LoginController({
             handleLogin={handleLogin}
             handleResetPasswordClick={handleResetPasswordClick}
             loginError={loginError}
-            showPasswordResetSuccessfulToast={showPasswordResetSuccessfulToast}
-            setShowPasswordResetSuccessfulToast={
-                setShowPasswordResetSuccessfulToast
-            }
             clearLoginError={clearLoginError}
             isLoggingIn={isLoggingIn}
         />

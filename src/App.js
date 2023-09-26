@@ -39,10 +39,6 @@ function App() {
     const [aspectRatio, setAspectRatio] = useState(
         (window.innerHeight * window.innerWidth) / 1000000
     );
-    const [
-        showPasswordResetSuccessfulToast,
-        setShowPasswordResetSuccessfulToast,
-    ] = useState(false);
 
     useEffect(() => {
         const handleResize = () => {
@@ -113,12 +109,6 @@ function App() {
                                     <LoginController
                                         login={login}
                                         loginError={loginError}
-                                        showPasswordResetSuccessfulToast={
-                                            showPasswordResetSuccessfulToast
-                                        }
-                                        setShowPasswordResetSuccessfulToast={
-                                            setShowPasswordResetSuccessfulToast
-                                        }
                                         clearLoginError={clearLoginError}
                                         isLoggingIn={isLoggingIn}
                                     />
@@ -150,13 +140,7 @@ function App() {
                             />
                             <Route
                                 path="/password-reset/:token"
-                                element={
-                                    <PasswordResetController
-                                        setShowPasswordResetSuccessfulToast={
-                                            setShowPasswordResetSuccessfulToast
-                                        }
-                                    />
-                                }
+                                element={<PasswordResetController />}
                             />
                             <Route
                                 path="/*"

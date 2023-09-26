@@ -2,17 +2,13 @@ import { useContext, useEffect, useState } from "react";
 import { AdminContext } from "../../Context/AdminContext/AdminContext";
 import NavBarContainer from "./NavBarContainer";
 import { getAdminStatus, getAdmins } from "../../services/api";
+import { ToastContext } from "../../Context/ToastContext/ToastContext";
 
 function NavBarController({ logout }) {
     const admin = useContext(AdminContext);
+    const showToast = useContext(ToastContext);
 
     const [isSysAdmin, setIsSysAdmin] = useState(false);
-    const [showGetAdminsQueryErrorToast, setShowGetAdminsQueryErrorToast] =
-        useState(false);
-    const [
-        showGetAdminsQuerySuccessfulToast,
-        setShowGetAdminsQuerySuccessfulToast,
-    ] = useState(false);
 
     useEffect(() => {
         const controller = new AbortController();
@@ -45,12 +41,16 @@ function NavBarController({ logout }) {
             try {
                 const response = await getAdmins();
 
-                setShowGetAdminsQueryErrorToast(false);
-
                 if (response.ok) {
-                    setShowGetAdminsQuerySuccessfulToast(true);
+                    showToast({
+                        header: "Export Success!",
+                        body: "The export has been sent to your email!",
+                    });
                 } else {
-                    setShowGetAdminsQueryErrorToast(true);
+                    showToast({
+                        header: "Export Error",
+                        body: "There has been an error.",
+                    });
                 }
             } catch (error) {
                 console.error("Error:", error);
@@ -64,14 +64,6 @@ function NavBarController({ logout }) {
         <NavBarContainer
             isSysAdmin={isSysAdmin}
             labId={admin.labId}
-            showGetAdminsQueryErrorToast={showGetAdminsQueryErrorToast}
-            showGetAdminsQuerySuccessfulToast={
-                showGetAdminsQuerySuccessfulToast
-            }
-            setShowGetAdminsQueryErrorToast={setShowGetAdminsQueryErrorToast}
-            setShowGetAdminsQuerySuccessfulToast={
-                setShowGetAdminsQuerySuccessfulToast
-            }
             handleGetAdminsClick={handleGetAdminsClick}
             logout={logout}
         />

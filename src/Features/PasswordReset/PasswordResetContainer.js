@@ -14,6 +14,7 @@ function PasswordResetContainer({
     setViewConfirmPassword,
     setIsInvalid,
     handleSubmitClick,
+    passwordResetErrors,
 }) {
     return (
         <Container>
@@ -104,6 +105,15 @@ function PasswordResetContainer({
                                 </InputGroup.Append>
                             </InputGroup>
                         </Form.Group>
+                        {passwordResetErrors ? (
+                            passwordResetErrors.map((val) => (
+                                <Form.Text className="text-danger m-1">
+                                    {val}
+                                </Form.Text>
+                            ))
+                        ) : (
+                            <></>
+                        )}
                         <Button
                             disabled={isInvalid}
                             className="button m-2"

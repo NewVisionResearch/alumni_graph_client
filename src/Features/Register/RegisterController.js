@@ -1,10 +1,12 @@
-import React, { useState } from "react";
-import { Toast } from "react-bootstrap";
+import React, { useContext, useState } from "react";
 
 import RegisterContainer from "./RegisterContainer";
+import { ToastContext } from "../../Context/ToastContext/ToastContext";
 import * as authService from "../../services/authService";
 
 function RegisterController() {
+    const showToast = useContext(ToastContext);
+
     const [lab, setLab] = useState({
         email: "",
         name: "",
@@ -13,12 +15,12 @@ function RegisterController() {
         howToUse: "",
         labUrl: "",
     });
-    const [showRegisterToast, setShowRegisterToast] = useState(false);
     const [registerError, setRegisterError] = useState("");
     const [isRegistering, setIsRegistering] = useState(false);
 
     const handleRegister = async (labInfo) => {
         setIsRegistering(true);
+        setRegisterError("");
 
         try {
             const res = await authService.register(labInfo);
@@ -27,7 +29,6 @@ function RegisterController() {
 
             const request = await res.json();
 
-            setRegisterError("");
             // Resetting lab info after successful registration:
             setLab({
                 email: "",
@@ -37,7 +38,11 @@ function RegisterController() {
                 howToUse: "",
                 labUrl: "",
             });
-            setShowRegisterToast(true);
+
+            showToast({
+                header: "Success!",
+                body: "Your request has been submitted!",
+            });
 
             console.log("Request: ", request);
         } catch (error) {
@@ -51,30 +56,13 @@ function RegisterController() {
     };
 
     return (
-        <div>
-            <RegisterContainer
-                lab={lab}
-                setLab={setLab}
-                handleRegister={handleRegister}
-                registerError={registerError}
-                isRegistering={isRegistering}
-            />
-
-            <Toast
-                className="register-toast"
-                animation={true}
-                show={showRegisterToast}
-                onClose={() => setShowRegisterToast(false)}
-            >
-                <Toast.Header>
-                    <strong className="mr-auto">Success!</strong>
-                    <small>now</small>
-                </Toast.Header>
-                <Toast.Body>
-                    Your request has been successfully submitted!
-                </Toast.Body>
-            </Toast>
-        </div>
+        <RegisterContainer
+            lab={lab}
+            setLab={setLab}
+            handleRegister={handleRegister}
+            registerError={registerError}
+            isRegistering={isRegistering}
+        />
     );
 }
 

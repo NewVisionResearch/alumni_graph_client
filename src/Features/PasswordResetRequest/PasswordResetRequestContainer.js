@@ -1,6 +1,11 @@
 import { Button, Col, Container, Form, InputGroup, Row } from "react-bootstrap";
 
-function PasswordResetRequestContainer({ email, setEmail, handleSubmitClick }) {
+function PasswordResetRequestContainer({
+    email,
+    setEmail,
+    handleSubmitClick,
+    passwordResetRequestError,
+}) {
     return (
         <Container>
             <Row className="justify-content-md-center">
@@ -27,6 +32,9 @@ function PasswordResetRequestContainer({ email, setEmail, handleSubmitClick }) {
                                 />
                             </InputGroup>
                         </Form.Group>
+                        <Form.Text className="text-danger">
+                            {passwordResetRequestError}
+                        </Form.Text>
                         <Button className="button m-2" type="submit">
                             Submit
                         </Button>
