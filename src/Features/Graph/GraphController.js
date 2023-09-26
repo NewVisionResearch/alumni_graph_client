@@ -10,7 +10,7 @@ import { AdminContext } from "../../Context/AdminContext/AdminContext";
 import { decideZoomOnClick } from "../../services/zoom";
 import { fetchGraphPublications } from "../../services/api";
 
-function GraphController({ aspectRatio }) {
+function GraphController({ aspectRatio, impactMode }) {
     const admin = useContext(AdminContext);
     const { labId } = useParams();
 
@@ -248,14 +248,14 @@ function GraphController({ aspectRatio }) {
             className="d-flex justify-content-center"
             style={{
                 height:
-                    admin.email === ""
+                    admin.email === "" || impactMode
                         ? window.innerHeight
                         : window.innerHeight - 104,
                 width: "100%",
                 position: "relative",
             }}
         >
-            <GraphContainer />
+            <GraphContainer impactMode={impactMode} />
             {alumnId !== null && (
                 <GraphAlumnDetailsModalController
                     alumnId={alumnId}

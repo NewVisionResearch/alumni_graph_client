@@ -1,8 +1,12 @@
-function GraphContainer() {
+function GraphContainer({ impactMode }) {
     return (
         <div
             id="graph"
-            style={{ border: "3px solid", width: "100%", height: "100%" }}
+            style={{
+                border: impactMode ? "3px solid" : "none",
+                width: "100%",
+                height: "100%",
+            }}
         ></div>
     );
 }
