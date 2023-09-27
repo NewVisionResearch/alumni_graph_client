@@ -19,7 +19,7 @@ function AlumnsListContainer({
                 <Row>
                     <Col>
                         <h1 className="text-center m-2">Your Researchers</h1>
-                        <Form inline className="alumns-list-search">
+                        <Form inline="true" className="alumns-list-search">
                             <Form.Label>Search Researcher: </Form.Label>
                             <Form.Control
                                 id="alumns-list-search"

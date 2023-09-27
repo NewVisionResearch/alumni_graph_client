@@ -54,20 +54,18 @@ function PasswordResetContainer({
                                         setPassword(value)
                                     }
                                 />
-                                <InputGroup.Append>
-                                    <Button
-                                        variant="secondary"
-                                        onClick={() =>
-                                            setViewPassword(!viewPassword)
-                                        }
-                                    >
-                                        {viewPassword ? (
-                                            <AiFillEyeInvisible />
-                                        ) : (
-                                            <AiFillEye />
-                                        )}
-                                    </Button>
-                                </InputGroup.Append>
+                                <Button
+                                    variant="secondary"
+                                    onClick={() =>
+                                        setViewPassword(!viewPassword)
+                                    }
+                                >
+                                    {viewPassword ? (
+                                        <AiFillEyeInvisible />
+                                    ) : (
+                                        <AiFillEye />
+                                    )}
+                                </Button>
                             </InputGroup>
                         </Form.Group>
                         <Form.Group>
@@ -87,33 +85,31 @@ function PasswordResetContainer({
                                         setConfirmPassword(value)
                                     }
                                 />
-                                <InputGroup.Append>
-                                    <Button
-                                        variant="secondary"
-                                        onClick={() =>
-                                            setViewConfirmPassword(
-                                                !viewConfirmPassword
-                                            )
-                                        }
-                                    >
-                                        {viewConfirmPassword ? (
-                                            <AiFillEyeInvisible />
-                                        ) : (
-                                            <AiFillEye />
-                                        )}
-                                    </Button>
-                                </InputGroup.Append>
+                                <Button
+                                    variant="secondary"
+                                    onClick={() =>
+                                        setViewConfirmPassword(
+                                            !viewConfirmPassword
+                                        )
+                                    }
+                                >
+                                    {viewConfirmPassword ? (
+                                        <AiFillEyeInvisible />
+                                    ) : (
+                                        <AiFillEye />
+                                    )}
+                                </Button>
                             </InputGroup>
+                            {passwordResetErrors ? (
+                                passwordResetErrors.map((val) => (
+                                    <Form.Text className="text-danger m-1">
+                                        {val}
+                                    </Form.Text>
+                                ))
+                            ) : (
+                                <></>
+                            )}
                         </Form.Group>
-                        {passwordResetErrors ? (
-                            passwordResetErrors.map((val) => (
-                                <Form.Text className="text-danger m-1">
-                                    {val}
-                                </Form.Text>
-                            ))
-                        ) : (
-                            <></>
-                        )}
                         <Button
                             disabled={isInvalid}
                             className="button m-2"

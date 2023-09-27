@@ -1,4 +1,4 @@
-import { Accordion } from "react-bootstrap";
+import Accordion from "react-bootstrap/Accordion";
 
 import AccordionCitation from "./AccordionCitation/AccordionCitation";
 import { byDate, byCoAuthors, sortByTwoFns } from "../../../services/sorts";
@@ -25,13 +25,18 @@ function GraphAlumnDetailsModalContainer({ alumn }) {
                     const { publication, coauthors } = alumn_pub;
 
                     return (
-                        <AccordionCitation
-                            key={`${alumn_pub}_${idx}`}
-                            listNum={idx}
-                            alumnName={alumn.search_query}
-                            publication={publication}
-                            coauthors={coauthors}
-                        />
+                        <Accordion.Item
+                            eventKey={`item_eventKey_${alumn_pub}_${idx}`}
+                            key={`item_key_${alumn_pub}_${idx}`}
+                        >
+                            <AccordionCitation
+                                key={`citation_key_${alumn_pub}_${idx}`}
+                                listNum={idx}
+                                alumnName={alumn.search_query}
+                                publication={publication}
+                                coauthors={coauthors}
+                            />
+                        </Accordion.Item>
                     );
                 })}
             </Accordion>

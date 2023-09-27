@@ -1,14 +1,12 @@
-import {
-    Button,
-    Form,
-    InputGroup,
-    Container,
-    Row,
-    Col,
-    ButtonToolbar,
-    ButtonGroup,
-    Spinner,
-} from "react-bootstrap";
+import Button from "react-bootstrap/Button";
+import Form from "react-bootstrap/Form";
+import InputGroup from "react-bootstrap/InputGroup";
+import Container from "react-bootstrap/Container";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
+import ButtonToolbar from "react-bootstrap/ButtonToolbar";
+import ButtonGroup from "react-bootstrap/ButtonGroup";
+import Spinner from "react-bootstrap/Spinner";
 import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
 
 import "./styles/Login.css";
@@ -66,20 +64,19 @@ function LoginContainer({
                                         });
                                     }}
                                 />
-                                <InputGroup.Append>
-                                    <Button
-                                        variant="secondary"
-                                        onClick={() =>
-                                            setViewPassword(!viewPassword)
-                                        }
-                                    >
-                                        {viewPassword ? (
-                                            <AiFillEyeInvisible />
-                                        ) : (
-                                            <AiFillEye />
-                                        )}
-                                    </Button>
-                                </InputGroup.Append>
+                                <Button
+                                    variant="secondary"
+                                    type="button"
+                                    onClick={() =>
+                                        setViewPassword(!viewPassword)
+                                    }
+                                >
+                                    {viewPassword ? (
+                                        <AiFillEyeInvisible />
+                                    ) : (
+                                        <AiFillEye />
+                                    )}
+                                </Button>
                             </InputGroup>
                             <Form.Text className="text-danger">
                                 {loginError}
