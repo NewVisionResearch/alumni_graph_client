@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { ProgressBar } from "react-bootstrap";
+import ProgressBar from "react-bootstrap/ProgressBar";
 
 import "./styles/Loading.css";
 

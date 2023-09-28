@@ -14,6 +14,7 @@
 
 .link {
     color: var(--custom-purple) !important;
+    text-decoration: none !important;
 }
 
 .link:hover {

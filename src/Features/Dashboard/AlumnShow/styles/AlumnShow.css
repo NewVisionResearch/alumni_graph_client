@@ -1,15 +1,14 @@
 .alumn-show {
-  background: var(--custom-grey);
-  margin: 1em 0 0 0;
-  border: solid 2px var(--custom-teal);
-  height: calc(100vh - 31px);
-  min-height: 500px;
+    background: var(--custom-grey);
+    margin: 1em 0 1em 0;
+    border: solid 2px var(--custom-teal);
+    height: calc(100vh - 32px);
+    min-height: 500px;
+    display: flex;
+    flex-direction: column;
 }
 
 .alumn-show-list {
-  margin: 1em;
-  max-height: calc(100vh - 310px);
-  min-height: 250px;
-  overflow: hidden;
-  overflow-y: scroll;
+    margin: 1em;
+    overflow-y: scroll;
 }

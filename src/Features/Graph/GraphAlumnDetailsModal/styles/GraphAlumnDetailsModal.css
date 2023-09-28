@@ -1,0 +1,49 @@
+.graph-alumn-details-modal {
+    top: 0px;
+    right: 0px;
+    width: 50%;
+    height: 50%;
+    position: absolute;
+    z-index: 1000;
+    background: white;
+    box-shadow: -7px 10px 20px rgb(31, 31, 31);
+    overflow-y: scroll;
+    margin: 1em 1em 0 0;
+    border-radius: 10px;
+}
+
+.graph-alumn-details-modal-close-button {
+    float: right;
+    margin: 0.5em;
+}
+
+.graph-alumn-details-modal-header {
+    font-size: 2rem;
+    text-align: center;
+    color: var(--custom-teal);
+    margin-top: 0.5rem;
+}
+
+@media only screen and (max-width: 425px) {
+    .graph-alumn-details-modal {
+        left: 0px;
+        width: 85%;
+        height: 40%;
+        transform: translate(10%, 140%);
+    }
+}
+
+@media only screen and (max-height: 425px) {
+    .graph-alumn-details-modal {
+        height: 75%;
+    }
+}
+
+@media only screen and (max-width: 825px) {
+    .graph-alumn-details-modal-header {
+        font-size: 1.5rem;
+    }
+    .graph-alumn-details-modal-close-button {
+        padding: 0;
+    }
+}

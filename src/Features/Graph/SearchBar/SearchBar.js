@@ -1,5 +1,7 @@
 import { useState } from "react";
-import { InputGroup, Form, ListGroup } from "react-bootstrap";
+import InputGroup from "react-bootstrap/InputGroup";
+import Form from "react-bootstrap/Form";
+import ListGroup from "react-bootstrap/ListGroup";
 
 import { decideZoomOnClick } from "../../../services/zoom";
 
@@ -51,7 +53,6 @@ export default function SearchBar({ graph, nodes, setAlumnId }) {
         <div className="search-bar" style={{ width: inputWidth }}>
             <InputGroup>
                 <Form.Control
-                    id="alumn-search"
                     type="text"
                     value={searchTerm}
                     placeholder="Search..."

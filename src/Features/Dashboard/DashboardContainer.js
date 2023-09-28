@@ -1,4 +1,9 @@
-import { Button, Card, Container, Row, Col } from "react-bootstrap";
+import Button from "react-bootstrap/Button";
+import Card from "react-bootstrap/Card";
+import Container from "react-bootstrap/Container";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
+
 import { AiFillInfoCircle } from "react-icons/ai";
 
 import AlumnShowController from "./AlumnShow/AlumnShowController";

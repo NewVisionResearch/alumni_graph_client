@@ -1,5 +1,7 @@
 import React from "react";
-import { Modal, Button, Spinner } from "react-bootstrap";
+import Modal from "react-bootstrap/Modal";
+import Button from "react-bootstrap/Button";
+import Spinner from "react-bootstrap/Spinner";
 
 function ConfirmationModal({
     show,

@@ -1,4 +1,9 @@
-import { Button, Col, Container, Form, InputGroup, Row } from "react-bootstrap";
+import Button from "react-bootstrap/Button";
+import Col from "react-bootstrap/Col";
+import Container from "react-bootstrap/Container";
+import Form from "react-bootstrap/Form";
+import InputGroup from "react-bootstrap/InputGroup";
+import Row from "react-bootstrap/Row";
 
 function PasswordResetRequestContainer({
     email,
@@ -10,14 +15,14 @@ function PasswordResetRequestContainer({
         <Container>
             <Row className="justify-content-md-center">
                 <Col className="password-reset-request" lg={6}>
-                    <h1 className="text-center m-1">Password Reset Request</h1>
+                    <h1 className="custom-h1">Password Reset Request</h1>
                     <Form
                         onSubmit={(e) => {
                             e.preventDefault();
                             handleSubmitClick();
                         }}
                     >
-                        <Form.Group>
+                        <Form.Group className="custom-form-group">
                             <Form.Label>Email: </Form.Label>
                             <InputGroup>
                                 <Form.Control

@@ -69,7 +69,7 @@ function FullCitation({ alumnName, publication, coauthors }) {
     };
 
     return (
-        <div className="publication-list ml-4">
+        <div className="publication-list mx-4">
             <p>
                 {highlightAlumns(authors)}.{" "}
                 {

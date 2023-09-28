@@ -1,3 +1,5 @@
-export const filterValidPublications = (alumn) => {
-    return alumn.my_alumn_publications.filter((ap) => ap.display === true);
+export const filterValidPublications = (my_alumn_publications) => {
+    return my_alumn_publications.filter(
+        (my_alumn_publications) => my_alumn_publications.display === true
+    );
 };

@@ -1,4 +1,9 @@
-import { Form, Button, Container, Row, Col, Spinner } from "react-bootstrap";
+import Spinner from "react-bootstrap/Spinner";
+import Button from "react-bootstrap/Button";
+import Col from "react-bootstrap/Col";
+import Container from "react-bootstrap/Container";
+import Form from "react-bootstrap/Form";
+import Row from "react-bootstrap/Row";
 import PhoneInput from "react-phone-number-input";
 
 import CustomPhoneInput from "./CustomPhoneInput/CustomPhoneInput";
@@ -17,7 +22,7 @@ function RegisterContainer({
         <Container>
             <Row className="justify-content-md-center">
                 <Col className="register" lg={6}>
-                    <h1 className="text-center m-1">Register</h1>
+                    <h1 className="custom-h1">Register</h1>
                     <h5 className="text-center m-3">
                         Thank you for your interest in using this program,
                         <br />
@@ -31,7 +36,7 @@ function RegisterContainer({
                             handleRegister(lab);
                         }}
                     >
-                        <Form.Group as={Row}>
+                        <Form.Group as={Row} className="custom-form-group">
                             <Form.Label column sm={4}>
                                 Email:{" "}
                             </Form.Label>
@@ -48,7 +53,7 @@ function RegisterContainer({
                                 />
                             </Col>
                         </Form.Group>
-                        <Form.Group as={Row}>
+                        <Form.Group as={Row} className="custom-form-group">
                             <Form.Label column sm={4}>
                                 Name:{" "}
                             </Form.Label>
@@ -65,7 +70,7 @@ function RegisterContainer({
                                 />
                             </Col>
                         </Form.Group>
-                        <Form.Group as={Row}>
+                        <Form.Group as={Row} className="custom-form-group">
                             <Form.Label column sm={4}>
                                 Lab/Institution Name:{" "}
                             </Form.Label>
@@ -82,7 +87,7 @@ function RegisterContainer({
                                 />
                             </Col>
                         </Form.Group>
-                        <Form.Group as={Row}>
+                        <Form.Group as={Row} className="custom-form-group">
                             <Form.Label column sm={4}>
                                 Phone Number:{" "}
                             </Form.Label>
@@ -100,7 +105,7 @@ function RegisterContainer({
                                 />
                             </Col>
                         </Form.Group>
-                        <Form.Group as={Row}>
+                        <Form.Group as={Row} className="custom-form-group">
                             <Form.Label column sm={4}>
                                 Lab Url:{" "}
                             </Form.Label>
@@ -117,7 +122,7 @@ function RegisterContainer({
                                 />
                             </Col>
                         </Form.Group>
-                        <Form.Group as={Row}>
+                        <Form.Group as={Row} className="custom-form-group">
                             <Form.Label column sm={4}>
                                 How do you plan on using this tool?{" "}
                             </Form.Label>

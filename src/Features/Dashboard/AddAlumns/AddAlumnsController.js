@@ -1,5 +1,9 @@
 import { useState, useContext, useRef, useMemo, useEffect } from "react";
-import { Row, Col, Form, Spinner, Container } from "react-bootstrap";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
+import Form from "react-bootstrap/Form";
+import Spinner from "react-bootstrap/Spinner";
+import Container from "react-bootstrap/Container";
 
 import NewAlumnForm from "./NewAlumnForm/NewAlumnForm";
 import ConfirmationModal from "../../../Components/Modal/ConfirmationModal/ConfirmationModal";

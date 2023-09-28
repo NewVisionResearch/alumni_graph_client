@@ -1,0 +1,15 @@
+.approve {
+    margin: 3em 2em 2em 2em;
+    background: var(--custom-grey);
+    border: solid 2px var(--custom-teal);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.approve-spinner {
+    margin: 1rem;
+    align-items: center;
+    border-color: var(--custom-teal);
+    border-right-color: transparent;
+}

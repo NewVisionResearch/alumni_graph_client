@@ -1,44 +1,48 @@
-import { Navbar, Nav } from "react-bootstrap";
+import Navbar from "react-bootstrap/Navbar";
+import Nav from "react-bootstrap/Nav";
+import Container from "react-bootstrap/Container";
 
 import "./styles/NavBar.css";
 
 function NavBarContainer({ isSysAdmin, labId, handleGetAdminsClick, logout }) {
     return (
-        <Navbar expand="sm">
-            <Navbar.Brand href="https://newvisionresearch.org">
-                <img
-                    src="../NVR1-TC.png"
-                    width="106"
-                    height="76"
-                    className="d-inline-block align-top"
-                    alt="New Vision Research Logo"
-                />
-            </Navbar.Brand>
-            <Navbar.Toggle aria-controls="basic-navbar-nav" />
-            <Navbar.Collapse id="basic-navbar-nav">
-                <Nav>
-                    <Nav.Link href={`/graph/${labId}`}>Graph</Nav.Link>
-                    <Nav.Link href="/dashboard">Dashboard</Nav.Link>
-                    {isSysAdmin && (
+        <Navbar expand="md">
+            <Container fluid>
+                <Navbar.Brand href="https://newvisionresearch.org">
+                    <img
+                        src="../NVR1-TC.png"
+                        width="101"
+                        height="76"
+                        className="d-inline-block align-top"
+                        alt="New Vision Research Logo"
+                    />
+                </Navbar.Brand>
+                <Navbar.Toggle aria-controls="basic-navbar-nav" />
+                <Navbar.Collapse>
+                    <Nav>
+                        <Nav.Link href={`/graph/${labId}`}>Graph</Nav.Link>
+                        <Nav.Link href="/dashboard">Dashboard</Nav.Link>
+                        {isSysAdmin && (
+                            <Nav.Link
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    handleGetAdminsClick();
+                                }}
+                            >
+                                Export Admins
+                            </Nav.Link>
+                        )}
                         <Nav.Link
                             onClick={(e) => {
                                 e.preventDefault();
-                                handleGetAdminsClick();
+                                logout();
                             }}
                         >
-                            Export Admins
+                            Logout
                         </Nav.Link>
-                    )}
-                    <Nav.Link
-                        onClick={(e) => {
-                            e.preventDefault();
-                            logout();
-                        }}
-                    >
-                        Logout
-                    </Nav.Link>
-                </Nav>
-            </Navbar.Collapse>
+                    </Nav>
+                </Navbar.Collapse>
+            </Container>
         </Navbar>
     );
 }

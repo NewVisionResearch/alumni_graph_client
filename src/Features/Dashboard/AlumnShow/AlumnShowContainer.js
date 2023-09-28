@@ -1,10 +1,11 @@
-import { Button } from "react-bootstrap";
+import Button from "react-bootstrap/Button";
+import ButtonToolbar from "react-bootstrap/ButtonToolbar";
+import ListGroup from "react-bootstrap/ListGroup";
 
 import EditAlumnForm from "./EditAlumnForm/EditAlumnForm";
 import PublicationDisplayCheck from "./PublicationDisplayCheck/PublicationDisplayCheck";
 import Loading from "../../../Components/Loading/Loading";
 import { byDate, byCoAuthors, sortByTwoFns } from "../../../services/sorts";
-import { filterValidPublications } from "../../../services/filters";
 
 function AlumnShowContainer({
     alumn,
@@ -23,7 +24,7 @@ function AlumnShowContainer({
     progressMap,
 }) {
     return (
-        <div className="col">
+        <>
             <h1 className="text-center m-2">{alumn.full_name}</h1>
             {editSearchNames ? (
                 <EditAlumnForm
@@ -38,27 +39,29 @@ function AlumnShowContainer({
                         Search Query:{" "}
                         {loading ? "Loading..." : alumn.search_query}
                     </p>
-                    <Button
-                        className="button"
-                        size="lg"
-                        type="button"
-                        onClick={() => setEditSearchNames(true)}
-                    >
-                        Edit Researcher
-                    </Button>
-                    <Button
-                        className="delete-button m-1"
-                        size="lg"
-                        type="button"
-                        onClick={() => handleRemoveAlumn()}
-                    >
-                        Delete Researcher
-                    </Button>
+                    <ButtonToolbar>
+                        <Button
+                            className="button my-2 ms-2"
+                            size="md"
+                            type="button"
+                            onClick={() => setEditSearchNames(true)}
+                        >
+                            Edit Researcher
+                        </Button>
+                        <Button
+                            className="delete-button my-2 ms-2"
+                            size="md"
+                            type="button"
+                            onClick={() => handleRemoveAlumn()}
+                        >
+                            Delete Researcher
+                        </Button>
+                    </ButtonToolbar>
                     <p className="m-2">
                         Publications (
                         {loading
                             ? "Loading..."
-                            : filterValidPublications(alumn).length}
+                            : alumn.my_alumn_publications.length}
                         ):
                     </p>
                     {loading ? (
@@ -67,46 +70,54 @@ function AlumnShowContainer({
                             progressMapData={progressMap.get(alumn.full_name)}
                         />
                     ) : (
-                        <ul className="alumn-show-list">
+                        <ListGroup as="ul" className="alumn-show-list">
                             {sortByTwoFns(
                                 byDate,
                                 byCoAuthors,
-                                filterValidPublications(alumn)
+                                alumn.my_alumn_publications
                             ).map((alumn_pub, idx) => (
-                                <PublicationDisplayCheck
+                                <ListGroup.Item
                                     key={`${alumn_pub.alumn_publication_id}_${idx}`}
-                                    alumnName={alumn.search_query}
-                                    alumn_publication={alumn_pub}
-                                    updateIdArray={updateIdArray}
-                                    handleDeletePublication={
-                                        handleDeletePublication
-                                    }
-                                />
+                                    as="li"
+                                    className="mb-2"
+                                >
+                                    <></>
+                                    <PublicationDisplayCheck
+                                        alumnName={alumn.search_query}
+                                        alumn_publication={alumn_pub}
+                                        updateIdArray={updateIdArray}
+                                        handleDeletePublication={
+                                            handleDeletePublication
+                                        }
+                                    />
+                                </ListGroup.Item>
                             ))}
-                        </ul>
+                        </ListGroup>
                     )}
-                    <Button
-                        className="button m-1"
-                        type="button"
-                        size="lg"
-                        onClick={updateDatabase}
-                        disabled={
-                            Object.keys(idObj).length === 0 ? true : false
-                        }
-                    >
-                        Update Publications
-                    </Button>
-                    <Button
-                        className="button m-1"
-                        type="button"
-                        size="lg"
-                        onClick={refetchPublications}
-                    >
-                        Fetch New Publications
-                    </Button>
+                    <ButtonToolbar>
+                        <Button
+                            className="button my-2 ms-2"
+                            type="button"
+                            size="md"
+                            onClick={updateDatabase}
+                            disabled={
+                                Object.keys(idObj).length === 0 ? true : false
+                            }
+                        >
+                            Update Publications
+                        </Button>
+                        <Button
+                            className="button my-2 ms-2"
+                            type="button"
+                            size="md"
+                            onClick={refetchPublications}
+                        >
+                            Fetch New Publications
+                        </Button>
+                    </ButtonToolbar>
                 </>
             )}
-        </div>
+        </>
     );
 }
 

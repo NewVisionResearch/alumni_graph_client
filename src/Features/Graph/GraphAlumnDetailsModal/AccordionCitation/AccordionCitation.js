@@ -2,6 +2,8 @@ import Accordion from "react-bootstrap/Accordion";
 
 import dashToDate from "../../../../services/conversions";
 
+import "./styles/AccordionCitation.css";
+
 function AccordionCitation({ listNum, alumnName, publication, coauthors }) {
     const {
         authors,
@@ -72,14 +74,9 @@ function AccordionCitation({ listNum, alumnName, publication, coauthors }) {
 
     return (
         <>
-            <Accordion.Header className="d-flex accordion-title" variant="link">
-                <div style={{ color: "rgb(73, 50, 165)" }}>{listNum + 1}.</div>
-                <div
-                    className="ml-3 text-left"
-                    style={{ color: "rgb(73, 50, 165)" }}
-                >
-                    {title}
-                </div>
+            <Accordion.Header className="accordion-citation-header">
+                <div>{listNum + 1}.</div>
+                <div className="ms-3">{title}</div>
             </Accordion.Header>
             <Accordion.Body>
                 {

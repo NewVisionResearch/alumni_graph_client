@@ -26,14 +26,14 @@ function LoginContainer({
         <Container>
             <Row className="justify-content-md-center">
                 <Col className="login" lg={5}>
-                    <h1 className="text-center m-1">Login</h1>
+                    <h1 className="custom-h1">Login</h1>
                     <Form
                         onSubmit={(e) => {
                             e.preventDefault();
                             handleLogin(admin);
                         }}
                     >
-                        <Form.Group>
+                        <Form.Group className="custom-form-group">
                             <Form.Label>Email: </Form.Label>
                             <Form.Control
                                 type="email"
@@ -47,7 +47,8 @@ function LoginContainer({
                                 }}
                             />
                         </Form.Group>
-                        <Form.Group>
+
+                        <Form.Group className="custom-form-group">
                             <Form.Label>Password: </Form.Label>
                             <InputGroup>
                                 <Form.Control

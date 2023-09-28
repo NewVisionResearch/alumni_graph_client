@@ -1,8 +1,11 @@
 import { useState, useEffect } from "react";
+import CloseButton from "react-bootstrap/CloseButton";
 
 import GraphAlumnDetailsModalContainer from "./GraphAlumnDetailsModalContainer";
 import Loading from "../../../Components/Loading/Loading";
 import { fetchAlumnById } from "../../../services/api";
+
+import "./styles/GraphAlumnDetailsModal.css";
 
 function GraphAlumnDetailsModalController({ alumnId, closeModal }) {
     const [alumn, setAlumn] = useState({
@@ -46,42 +49,15 @@ function GraphAlumnDetailsModalController({ alumnId, closeModal }) {
     }, [alumnId]);
 
     return (
-        <div
-            id="alumn-graph-show"
-            className="mt-3 mr-3 rounded d-flex-column justify-content-center align-items-center"
-            style={{
-                position: "absolute",
-                zIndex: 1000,
-                background: "rgb(255, 255, 255)",
-                boxShadow: "-7px 10px 20px rgb(31, 31, 31)",
-                overflowY: "scroll",
-            }}
-        >
-            <button
-                type="button"
-                className="close text-danger"
-                aria-label="Close"
-                style={{
-                    position: "sticky",
-                    top: 7,
-                    right: 7,
-                    width: "5%",
-                    zIndex: 1000,
-                    border: "none",
-                    borderRadius: "25px",
-                    background: "rgba(211,211,211 ,0.55 )",
-                }}
+        <div className="graph-alumn-details-modal">
+            <CloseButton
+                className="graph-alumn-details-modal-close-button"
                 onClick={closeModal}
-            >
-                <span aria-hidden="true">&times;</span>
-            </button>
+            />
             {isLoading ? (
                 <Loading />
             ) : (
-                <GraphAlumnDetailsModalContainer
-                    alumn={alumn}
-                    closeModal={closeModal}
-                />
+                <GraphAlumnDetailsModalContainer alumn={alumn} />
             )}
         </div>
     );

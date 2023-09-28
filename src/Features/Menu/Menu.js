@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { Dropdown } from "react-bootstrap";
+import Dropdown from "react-bootstrap/Dropdown";
 import { useNavigate } from "react-router-dom";
 
 import { AdminContext } from "../../Context/AdminContext/AdminContext";

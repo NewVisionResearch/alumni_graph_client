@@ -1,15 +1,37 @@
-.nav-bar-error-toast {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background-color: red;
-    z-index: 1000;
+.navbar {
+    min-height: 104px;
+    background-color: var(--custom-grey);
+    border-bottom: 1px solid var(--custom-teal);
 }
 
-.nav-bar-success-toast {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background-color: green;
-    z-index: 1000;
+.navbar-nav {
+    margin-left: auto !important;
+    align-items: flex-end !important;
+}
+
+.navbar-toggler {
+    color: var(--custom-purple) !important;
+    border-color: var(--custom-purple) !important;
+}
+
+.navbar-toggler:hover {
+    color: var(--custom-teal) !important;
+    border-color: var(--custom-teal-border) !important;
+}
+
+.navbar-toggler:active {
+    box-shadow: 0 0 0 0.2rem var(--custom-teal-shadow) !important;
+}
+
+.nav-link {
+    color: var(--custom-purple) !important;
+    font-size: 1.2em;
+}
+
+.nav-link:hover {
+    color: var(--custom-teal) !important;
+}
+
+.nav-link:active {
+    text-decoration: underline;
 }

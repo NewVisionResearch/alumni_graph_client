@@ -1,6 +1,9 @@
 import { useState } from "react";
-import { Button, Form, Dropdown, ButtonGroup, Row, Col } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import Button from "react-bootstrap/Button";
+import Form from "react-bootstrap/Form";
+import Dropdown from "react-bootstrap/Dropdown";
+import InputGroup from "react-bootstrap/InputGroup";
 
 import { fetchAlumnNameQuerySearchResults } from "../../../../services/api";
 
@@ -114,88 +117,71 @@ function NewAlumnForm({
 
     return (
         <Form
-            id="searchForm"
             onSubmit={(e) => {
                 e.preventDefault();
             }}
+            className="m-2"
         >
-            <Row className="flex-nowrap">
-                <Col xs={8} sm={8}>
-                    <Form.Control
-                        id="addInput"
-                        className="m-2"
-                        type="text"
-                        value={alumnName}
-                        placeholder="Enter an author's name"
-                        onChange={(e) => handleInputOnChange(e, setAlumnName)}
+            <InputGroup className="mb-2">
+                <Form.Control
+                    id="addInput"
+                    type="text"
+                    value={alumnName}
+                    placeholder="Enter an author's name"
+                    onChange={(e) => handleInputOnChange(e, setAlumnName)}
+                />
+                <Dropdown>
+                    <Button
+                        className="button"
+                        style={{ width: "59px" }}
+                        type="button"
+                        onClick={appendToQuery}
+                    >
+                        {queryBooleanType}
+                    </Button>
+                    <Dropdown.Toggle
+                        className="button"
+                        title="Boolean Selector"
+                        split
+                        id="dropdown-split-basic"
+                        disabled={queryBooleanType === "Add" ? true : false}
                     />
-                    <Form.Control
-                        id="queryInput"
-                        className="m-2"
-                        type="text"
-                        value={alumnNameQuery}
-                        placeholder="Enter or edit query for author's name"
-                        onChange={(e) =>
-                            handleInputOnChange(e, setAlumnNameQuery)
-                        }
-                    />
-                </Col>
-                <Col xs={4} sm={4}>
-                    <div className="d-flex flex-column">
-                        <Dropdown
-                            as={ButtonGroup}
-                            className="mt-2 mr-2 mb-1 ml-2"
+                    <Dropdown.Menu>
+                        <Dropdown.Item
+                            onClick={() => handleQueryBooleanTypeChange("AND")}
                         >
-                            <Button
-                                className="button"
-                                type="button"
-                                onClick={appendToQuery}
-                            >
-                                {queryBooleanType}
-                            </Button>
-                            <Dropdown.Toggle
-                                className="button"
-                                title="Boolean Selector"
-                                split
-                                id="dropdown-split-basic"
-                                disabled={
-                                    queryBooleanType === "Add" ? true : false
-                                }
-                            />
-                            <Dropdown.Menu>
-                                <Dropdown.Item
-                                    onClick={() =>
-                                        handleQueryBooleanTypeChange("AND")
-                                    }
-                                >
-                                    Add with AND
-                                </Dropdown.Item>
-                                <Dropdown.Item
-                                    onClick={() =>
-                                        handleQueryBooleanTypeChange("OR")
-                                    }
-                                >
-                                    Add with OR
-                                </Dropdown.Item>
-                                <Dropdown.Item
-                                    onClick={() =>
-                                        handleQueryBooleanTypeChange("NOT")
-                                    }
-                                >
-                                    Add with NOT
-                                </Dropdown.Item>
-                            </Dropdown.Menu>
-                        </Dropdown>
-                        <Button
-                            className="button mx-2 mt-1"
-                            type="submit"
-                            onClick={submitAlumnNameQuery}
+                            Add with AND
+                        </Dropdown.Item>
+                        <Dropdown.Item
+                            onClick={() => handleQueryBooleanTypeChange("OR")}
                         >
-                            Search
-                        </Button>
-                    </div>
-                </Col>
-            </Row>
+                            Add with OR
+                        </Dropdown.Item>
+                        <Dropdown.Item
+                            onClick={() => handleQueryBooleanTypeChange("NOT")}
+                        >
+                            Add with NOT
+                        </Dropdown.Item>
+                    </Dropdown.Menu>
+                </Dropdown>
+            </InputGroup>
+            <InputGroup>
+                <Form.Control
+                    id="queryInput"
+                    type="text"
+                    value={alumnNameQuery}
+                    placeholder="Edit or enter query"
+                    onChange={(e) => handleInputOnChange(e, setAlumnNameQuery)}
+                />
+                <Button
+                    className="button"
+                    style={{ width: "86.5px" }}
+                    type="submit"
+                    onClick={submitAlumnNameQuery}
+                >
+                    Search
+                </Button>
+            </InputGroup>
         </Form>
     );
 }

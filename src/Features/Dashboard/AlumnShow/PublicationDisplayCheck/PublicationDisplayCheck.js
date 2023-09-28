@@ -1,5 +1,7 @@
 import { useState } from "react";
-import { Button, InputGroup } from "react-bootstrap";
+import Button from "react-bootstrap/Button";
+import FormCheck from "react-bootstrap/FormCheck";
+
 import FullCitation from "./FullCitation/FullCitation";
 
 function PublicationDisplayCheck({
@@ -13,27 +15,24 @@ function PublicationDisplayCheck({
     const [displayed, setDisplayed] = useState(display);
 
     return (
-        <div
-            className="d-flex align-items-center justify-content-between mb-5 p-3 border border-secondary"
-            key={`${alumn_publication_id}_${alumnName}`}
-        >
-            <InputGroup.Checkbox
-                className="button"
+        <div className="d-flex align-items-center">
+            <FormCheck
+                type="checkbox"
                 aria-label="Checkbox for following citation"
-                size="md"
                 checked={displayed}
                 onChange={() => {
                     setDisplayed(!displayed);
                     updateIdArray(alumn_publication_id, !displayed);
                 }}
             />
+
             <FullCitation
                 alumnName={alumnName}
                 publication={publication}
                 coauthors={coauthors}
             />
             <Button
-                className="delete-button ml-1"
+                className="delete-button"
                 size="sm"
                 onClick={() => handleDeletePublication(alumn_publication_id)}
             >

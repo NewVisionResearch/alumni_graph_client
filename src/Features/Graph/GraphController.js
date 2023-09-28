@@ -1,6 +1,7 @@
 import { useState, useEffect, useContext } from "react";
-import { Image, Nav } from "react-bootstrap";
 import { Link, useParams } from "react-router-dom";
+import Image from "react-bootstrap/Image";
+import Nav from "react-bootstrap/Nav";
 import ForceGraph from "force-graph";
 
 import GraphAlumnDetailsModalController from "./GraphAlumnDetailsModal/GraphAlumnDetailsModalController";

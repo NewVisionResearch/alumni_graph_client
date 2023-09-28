@@ -1,0 +1,24 @@
+.accordion-button {
+    color: var(--custom-purple) !important;
+}
+
+.accordion-button:hover {
+    color: var(--custom-teal) !important;
+}
+
+.accordion-button:focus {
+    border: none !important;
+    box-shadow: none !important;
+}
+
+.accordion-button:not(.collapsed) {
+    background-color: white !important;
+    border: solid 2px var(--custom-teal) !important;
+    box-shadow: 0 0 5px var(--custom-teal-shadow) !important;
+}
+
+@media only screen and (max-width: 425px) {
+    .accordion-button {
+        font-size: 0.75rem;
+    }
+}

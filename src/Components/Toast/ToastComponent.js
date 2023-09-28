@@ -1,4 +1,4 @@
-import { Toast } from "react-bootstrap";
+import Toast from "react-bootstrap/Toast";
 
 import "./styles/Toast.css";
 import { useState } from "react";
