@@ -4,12 +4,14 @@ import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
 import Row from "react-bootstrap/Row";
+import Spinner from "react-bootstrap/Spinner";
 
 function PasswordResetRequestContainer({
     email,
     setEmail,
     handleSubmitClick,
     passwordResetRequestError,
+    isSubmittingPasswordResetRequest,
 }) {
     return (
         <Container>
@@ -36,12 +38,29 @@ function PasswordResetRequestContainer({
                                     }
                                 />
                             </InputGroup>
+                            <Form.Text className="text-danger">
+                                {passwordResetRequestError}
+                            </Form.Text>
                         </Form.Group>
-                        <Form.Text className="text-danger">
-                            {passwordResetRequestError}
-                        </Form.Text>
-                        <Button className="button m-2" type="submit">
-                            Submit
+                        <Button
+                            className="button m-2 mt-0"
+                            type="submit"
+                            disabled={isSubmittingPasswordResetRequest}
+                        >
+                            {isSubmittingPasswordResetRequest ? (
+                                <>
+                                    <Spinner
+                                        as="span"
+                                        animation="border"
+                                        size="sm"
+                                        role="status"
+                                        aria-hidden="true"
+                                    />
+                                    {" Submitting..."}
+                                </>
+                            ) : (
+                                "Submit"
+                            )}
                         </Button>
                     </Form>
                 </Col>

@@ -20,10 +20,14 @@ function PasswordResetController() {
     const [viewConfirmPassword, setViewConfirmPassword] = useState(false);
     const [passwordResetErrors, setPasswordResetErrors] = useState([]);
     const [isInvalid, setIsInvalid] = useState(false);
+    const [isSubmittingPasswordReset, setIsSubmittingPasswordReset] =
+        useState(false);
 
-    const handleSubmitClick = () => {
+    const handleSubmitClick = async () => {
         if (password === confirmPassword) {
+            setIsSubmittingPasswordReset(true);
             setIsInvalid(false);
+            setPasswordResetErrors([]);
 
             let passwordObj = {
                 password_reset: {
@@ -31,30 +35,25 @@ function PasswordResetController() {
                 },
             };
 
-            passwordReset(token, passwordObj)
-                .then((res) => {
-                    setPasswordResetErrors([]);
-                    if (!res.ok) {
-                        throw res;
-                    }
-                    return res.json();
-                })
-                .then((request) => {
-                    setPassword("");
-                    setConfirmPassword("");
-                    showToast({
-                        header: "Password Reset Success!",
-                        body: "Your password has been reset.",
-                    });
-                    navigate("/login");
-                })
-                .catch((err) => {
-                    return err.json().then((errorResponse) => {
-                        console.error(errorResponse);
+            try {
+                const res = await passwordReset(token, passwordObj);
 
-                        setPasswordResetErrors(errorResponse.errors);
-                    });
+                if (!res.ok) throw res;
+
+                setPassword("");
+                setConfirmPassword("");
+                showToast({
+                    header: "Password Reset Success!",
+                    body: "Your password has been reset.",
                 });
+                navigate("/login");
+            } catch (err) {
+                const errorResponse = await err.json();
+
+                setPasswordResetErrors(errorResponse.errors);
+            } finally {
+                setIsSubmittingPasswordReset(false);
+            }
         } else {
             setIsInvalid(true);
         }
@@ -74,6 +73,7 @@ function PasswordResetController() {
             setIsInvalid={setIsInvalid}
             handleSubmitClick={handleSubmitClick}
             passwordResetErrors={passwordResetErrors}
+            isSubmittingPasswordReset={isSubmittingPasswordReset}
         />
     );
 }

@@ -4,6 +4,8 @@ import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
 import Row from "react-bootstrap/Row";
+import Spinner from "react-bootstrap/Spinner";
+
 import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
 
 import PasswordChecklist from "react-password-checklist";
@@ -21,6 +23,7 @@ function PasswordResetContainer({
     setIsInvalid,
     handleSubmitClick,
     passwordResetErrors,
+    isSubmittingPasswordReset,
 }) {
     return (
         <Container>
@@ -117,11 +120,24 @@ function PasswordResetContainer({
                             )}
                         </Form.Group>
                         <Button
-                            disabled={isInvalid}
+                            disabled={isInvalid || isSubmittingPasswordReset}
                             className="button m-2"
                             type="submit"
                         >
-                            Submit
+                            {isSubmittingPasswordReset ? (
+                                <>
+                                    <Spinner
+                                        as="span"
+                                        animation="border"
+                                        size="sm"
+                                        role="status"
+                                        aria-hidden="true"
+                                    />
+                                    {" Submitting..."}
+                                </>
+                            ) : (
+                                "Submit"
+                            )}
                         </Button>
                     </Form>
                 </Col>

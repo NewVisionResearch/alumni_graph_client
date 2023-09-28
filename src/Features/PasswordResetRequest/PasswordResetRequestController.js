@@ -13,6 +13,10 @@ function PasswordResetRequestController() {
     const [email, setEmail] = useState("");
     const [passwordResetRequestError, setPasswordResetRequestError] =
         useState("");
+    const [
+        isSubmittingPasswordResetRequest,
+        setIsSubmittingPasswordResetRequest,
+    ] = useState(false);
 
     const handleSubmitClick = async () => {
         let emailObj = {
@@ -21,6 +25,7 @@ function PasswordResetRequestController() {
             },
         };
 
+        setIsSubmittingPasswordResetRequest(true);
         setPasswordResetRequestError("");
 
         try {
@@ -37,6 +42,8 @@ function PasswordResetRequestController() {
             const error = await err.json();
 
             setPasswordResetRequestError(error.text);
+        } finally {
+            setIsSubmittingPasswordResetRequest(false);
         }
     };
 
@@ -46,6 +53,7 @@ function PasswordResetRequestController() {
             setEmail={setEmail}
             handleSubmitClick={handleSubmitClick}
             passwordResetRequestError={passwordResetRequestError}
+            isSubmittingPasswordResetRequest={isSubmittingPasswordResetRequest}
         />
     );
 }
