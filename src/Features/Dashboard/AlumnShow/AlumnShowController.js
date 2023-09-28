@@ -36,11 +36,11 @@ function AlumnShowController({
         showConfirmDeletePublicationModal,
         setShowConfirmDeletePublicationModal,
     ] = useState(false);
-
     const [loading, setLoading] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
     const [isDeletingPublication, setIsDeletingPublication] = useState(false);
     const [eventSourceMap, setEventSourceMap] = useState(new Map());
+    const [isSavingAlumnEdit, setIsSavingAlumnEdit] = useState(false);
 
     const publicationToDelete = useRef(null);
 
@@ -279,6 +279,8 @@ function AlumnShowController({
     };
 
     const updateSearchNames = async (alumnInfo) => {
+        setIsSavingAlumnEdit(true);
+
         let bodyObj = {
             alumn: {
                 ...alumnInfo,
@@ -300,9 +302,15 @@ function AlumnShowController({
 
             setAlumn(alumnObj);
             setEditSearchNames(false);
+            showToast({
+                header: "Save Success!",
+                body: "The researcher has been edited.",
+            });
         } catch (err) {
             const error = await err.json();
             setEditingReseracherError(error.error);
+        } finally {
+            setIsSavingAlumnEdit(false);
         }
     };
 
@@ -356,6 +364,7 @@ function AlumnShowController({
                         idObj={idObj}
                         closeForm={closeForm}
                         progressMap={progressMap}
+                        isSavingAlumnEdit={isSavingAlumnEdit}
                     />
 
                     <ConfirmationModal

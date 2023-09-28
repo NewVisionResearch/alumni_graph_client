@@ -22,16 +22,18 @@ function AlumnShowContainer({
     idObj,
     closeForm,
     progressMap,
+    isSavingAlumnEdit,
 }) {
     return (
         <>
-            <h1 className="text-center m-2">{alumn.full_name}</h1>
+            <h1 className="custom-h1">{alumn.full_name}</h1>
             {editSearchNames ? (
                 <EditAlumnForm
                     submitInput={updateSearchNames}
                     propsValue={[alumn.full_name, alumn.search_query]}
                     closeForm={closeForm}
                     editingReseracherError={editingReseracherError}
+                    isSavingAlumnEdit={isSavingAlumnEdit}
                 />
             ) : (
                 <>
