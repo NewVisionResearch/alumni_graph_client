@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import {
     Navigate,
     Route,
@@ -35,22 +35,6 @@ function App() {
     const { admin, login, logout, loginError, clearLoginError, isLoggingIn } =
         useAdmin();
 
-    const [aspectRatio, setAspectRatio] = useState(
-        (window.innerHeight * window.innerWidth) / 1000000
-    );
-
-    useEffect(() => {
-        const handleResize = () => {
-            setAspectRatio((window.innerHeight * window.innerWidth) / 10000);
-        };
-
-        window.addEventListener("resize", handleResize);
-
-        return () => {
-            window.removeEventListener("resize", handleResize);
-        };
-    }, []);
-
     const token = localStorage.getItem("jwt");
 
     useEffect(() => {
@@ -86,12 +70,7 @@ function App() {
 
                             <Route
                                 path="/impact/:labId"
-                                element={
-                                    <GraphController
-                                        aspectRatio={aspectRatio}
-                                        impactMode={true}
-                                    />
-                                }
+                                element={<GraphController impactMode={true} />}
                             />
 
                             <Route
@@ -120,10 +99,7 @@ function App() {
                                 <Route
                                     path="/graph/:labId"
                                     element={
-                                        <GraphController
-                                            aspectRatio={aspectRatio}
-                                            impactMode={false}
-                                        />
+                                        <GraphController impactMode={false} />
                                     }
                                 />
                                 <Route

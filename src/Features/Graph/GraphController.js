@@ -11,23 +11,39 @@ import { AdminContext } from "../../Context/AdminContext/AdminContext";
 import { decideZoomOnClick } from "../../services/zoom";
 import { fetchGraphPublications } from "../../services/api";
 
-function GraphController({ aspectRatio, impactMode }) {
+function GraphController({ impactMode }) {
     const admin = useContext(AdminContext);
     const { labId } = useParams();
 
-    const [stateGraph, setStateGraph] = useState({ create: () => {} });
+    const [graphInstance, setGraphInstance] = useState(null);
     const [publications, setPublications] = useState([]);
     const [alumnId, setAlumnId] = useState(null);
     const [gData, setGData] = useState({ nodes: [], links: [] });
 
-    useEffect(() => {
-        const elem = document.getElementById("graph");
+    const headerMode = admin.email !== "";
 
-        if (elem) {
-            const Graph = ForceGraph()(elem);
-            setStateGraph({ create: Graph });
+    useEffect(() => {
+        const graphElement = document.getElementById("graph");
+        if (graphElement) {
+            const graph = ForceGraph()(graphElement);
+            setGraphInstance((prev) => (prev = graph));
         }
     }, []);
+
+    useEffect(() => {
+        const handleResize = () => {
+            const graphElement = document.getElementById("graph");
+            if (graphInstance) {
+                graphInstance
+                    .width(graphElement.clientWidth)
+                    .height(graphElement.clientHeight);
+            }
+        };
+
+        window.addEventListener("resize", handleResize);
+
+        return () => window.removeEventListener("resize", handleResize);
+    }, [graphInstance]);
 
     useEffect(() => {
         const controller = new AbortController();
@@ -118,12 +134,12 @@ function GraphController({ aspectRatio, impactMode }) {
     useEffect(() => {
         let len = gData.nodes.length;
         if (len) {
-            const elem = document.getElementById("graph");
-            let graphWidth = elem.clientWidth;
-            let graphHeight = elem.clientHeight;
+            const graphElement = document.getElementById("graph");
+            let graphWidth = graphElement.clientWidth;
+            let graphHeight = graphElement.clientHeight;
 
-            stateGraph.create &&
-                stateGraph.create
+            graphInstance &&
+                graphInstance
                     .graphData(gData)
                     .nodeCanvasObject((node, ctx, globalScale) => {
                         const label = node.id.trim();
@@ -186,16 +202,19 @@ function GraphController({ aspectRatio, impactMode }) {
                     .width(graphWidth)
                     .height(graphHeight)
                     .onNodeHover(
-                        (node) => (elem.style.cursor = node ? "pointer" : null)
+                        (node) =>
+                            (graphElement.style.cursor = node
+                                ? "pointer"
+                                : null)
                     )
                     .onNodeClick((node) => {
                         let windowWidth = window.innerWidth;
                         if (windowWidth < 540) {
                             if (
-                                stateGraph.create.zoom &&
-                                stateGraph.create.zoom() > 1.25
+                                graphInstance.zoom &&
+                                graphInstance.zoom() > 1.25
                             ) {
-                                stateGraph.create.centerAt(
+                                graphInstance.centerAt(
                                     window.innerWidth <= 425
                                         ? node.x
                                         : node.x + 75,
@@ -204,20 +223,17 @@ function GraphController({ aspectRatio, impactMode }) {
                                         : node.y,
                                     1000
                                 );
-                                stateGraph.create.zoom(
-                                    decideZoomOnClick(),
-                                    1000
-                                );
+                                graphInstance.zoom(decideZoomOnClick(), 1000);
                                 setAlumnId(node.alumn_id);
                             }
                             return;
                         }
-                        stateGraph.create.centerAt(
+                        graphInstance.centerAt(
                             window.innerWidth <= 425 ? node.x : node.x + 75,
                             window.innerWidth <= 425 ? node.y + 25 : node.y,
                             1000
                         );
-                        stateGraph.create.zoom(decideZoomOnClick(), 1000);
+                        graphInstance.zoom(decideZoomOnClick(), 1000);
                         setAlumnId(node.alumn_id);
                     })
                     .onNodeDragEnd((node) => {
@@ -229,34 +245,31 @@ function GraphController({ aspectRatio, impactMode }) {
                     .onDagError(() => {});
             // .centerAt(750, 0, 1000)
 
-            if (stateGraph.create) {
-                stateGraph.create.d3Force("charge").strength(-7500);
-                stateGraph.create.d3Force("center").x(0).y(-40); //.strength(0.05)
+            if (graphInstance) {
+                graphInstance.d3Force("charge").strength(-7500);
+                graphInstance.d3Force("center").x(0).y(-40); //.strength(0.05)
                 // stateGraph.d3Force('link')
-                stateGraph.create.d3Force("gravity");
+                graphInstance.d3Force("gravity");
             }
         }
-    }, [aspectRatio, gData, stateGraph.create]);
+    }, [gData, graphInstance]);
 
     const closeModal = () => {
         setAlumnId(null);
-        stateGraph.create.centerAt(0, -40, 1000);
-        stateGraph.create.zoom(0.55, 1000);
+        graphInstance.centerAt(0, -40, 1000);
+        graphInstance.zoom(0.55, 1000);
     };
 
     return (
         <div
-            className="d-flex justify-content-center"
             style={{
+                width: "100vw",
                 height:
-                    admin.email === "" || impactMode
-                        ? window.innerHeight
-                        : window.innerHeight - 104,
-                width: "100%",
+                    headerMode && !impactMode ? "calc(100vh - 104px)" : "100vh",
                 position: "relative",
             }}
         >
-            <GraphContainer impactMode={impactMode} />
+            <GraphContainer headerMode={headerMode} impactMode={impactMode} />
             {alumnId !== null && (
                 <GraphAlumnDetailsModalController
                     alumnId={alumnId}
@@ -264,29 +277,28 @@ function GraphController({ aspectRatio, impactMode }) {
                 />
             )}
             <SearchBar
-                graph={stateGraph.create}
+                graph={graphInstance}
                 nodes={gData.nodes}
                 setAlumnId={setAlumnId}
             />
             <Nav.Item
                 className="nav-item"
                 style={{
-                    padding: "0.5rem 0",
-                    width: "5rem",
-                    display: admin.email === "" ? "block" : "none",
+                    position: "absolute",
+                    right: 25,
+                    bottom: 25,
+                    display:
+                        admin.email === "" || impactMode ? "block" : "none",
                 }}
             >
                 <Link reloadDocument to={"https://newvisionresearch.org"}>
                     <Image
                         style={{
-                            position: "absolute",
-                            right: 50,
-                            bottom: 50,
                             width: "5rem",
                             zIndex: 1000,
                         }}
                         src="../NVR1-TC.png"
-                        rounded
+                        fluid
                     />
                 </Link>
             </Nav.Item>

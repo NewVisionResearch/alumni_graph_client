@@ -1,11 +1,13 @@
-function GraphContainer({ impactMode }) {
+function GraphContainer({ headerMode, impactMode }) {
     return (
         <div
             id="graph"
             style={{
                 border: impactMode ? "3px solid" : "none",
-                width: "100%",
-                height: "100%",
+                width: "100vw",
+                height:
+                    headerMode && !impactMode ? "calc(100vh - 104px)" : "100vh",
+                boxSizing: "border-box",
             }}
         ></div>
     );
