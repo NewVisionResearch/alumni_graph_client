@@ -28,7 +28,7 @@ function AlumnShowController({
         my_alumn_publications: [],
     });
     const [idObj, setIdObj] = useState({});
-    const [editSearchNames, setEditSearchNames] = useState(false);
+    const [showEditAlumnForm, setShowEditAlumnForm] = useState(false);
     const [editingReseracherError, setEditingReseracherError] = useState([]);
     const [showConfirmDeleteAlumnModal, setShowConfirmDeleteAlumnModal] =
         useState(false);
@@ -84,7 +84,7 @@ function AlumnShowController({
                         }
                     });
 
-                setEditSearchNames(false);
+                setShowEditAlumnForm(false);
 
                 return () => {
                     controller.abort();
@@ -101,6 +101,10 @@ function AlumnShowController({
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+
+    const handleShowEditAlumnForm = () => {
+        setShowEditAlumnForm(true);
+    };
 
     const handleDeletePublication = (alumn_publication_id) => {
         publicationToDelete.current = alumn_publication_id;
@@ -301,7 +305,7 @@ function AlumnShowController({
             const alumnObj = await res.json();
 
             setAlumn(alumnObj);
-            setEditSearchNames(false);
+            setShowEditAlumnForm(false);
             showToast({
                 header: "Save Success!",
                 body: "The researcher has been edited.",
@@ -341,7 +345,7 @@ function AlumnShowController({
     };
 
     const closeForm = () => {
-        setEditSearchNames(false);
+        setShowEditAlumnForm(false);
         setEditingReseracherError("");
     };
 
@@ -351,8 +355,8 @@ function AlumnShowController({
                 <>
                     <AlumnShowContainer
                         alumn={alumn}
-                        editSearchNames={editSearchNames}
-                        setEditSearchNames={setEditSearchNames}
+                        showEditAlumnForm={showEditAlumnForm}
+                        handleShowEditAlumnForm={handleShowEditAlumnForm}
                         handleRemoveAlumn={handleRemoveAlumn}
                         handleDeletePublication={handleDeletePublication}
                         updateIdArray={updateIdArray}

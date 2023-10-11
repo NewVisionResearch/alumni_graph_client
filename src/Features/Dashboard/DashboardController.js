@@ -1,24 +1,31 @@
-import { useCallback, useState, useEffect, useContext, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useCallback, useState, useEffect, useContext } from "react";
+import { useTour } from "@reactour/tour";
 
 import DashboardContainer from "./DashboardContainer";
 import { deleteAlumn, fetchAlumnsIndex } from "../../services/api";
 import { AdminContext } from "../../Context/AdminContext/AdminContext";
+import {
+    ADD_RESEARCHER_INITIAL_STEPS,
+    ALUMN_SHOW_STEPS,
+    ALUMNS_LIST_STEPS,
+} from "../../Constants/TourSteps";
 
 function DashboardController() {
     const [alumns, setAlumns] = useState([]);
     const [alumnShowIdAndName, setAlumnShowIdAndName] = useState(null);
-    const [showInfoModal, setShowInfoModal] = useState(false);
     const [isAlumnListLoading, setIsAlumnListLoading] = useState(true);
     const [progressMap, setProgressMap] = useState(new Map());
 
+    const {
+        isOpen: isTourOpen,
+        steps: tourSteps,
+        setIsOpen: setIsTourOpen,
+        setCurrentStep: setCurrentTourStep,
+        setSteps: setTourSteps,
+        setDisabledActions: setTourDisabledActions,
+    } = useTour();
+
     const admin = useContext(AdminContext);
-
-    const navigate = useRef(useNavigate());
-
-    const openAlumnShow = (alumn_id, full_name) => {
-        setAlumnShowIdAndName({ alumn_id, full_name });
-    };
 
     const handleDeleteAlumn = async (alumn_id) => {
         try {
@@ -35,19 +42,81 @@ function DashboardController() {
         }
     };
 
-    const handleInfoClick = () => {
-        setShowInfoModal((prev) => !prev);
+    const handleTourClick = () => {
+        setIsTourOpen((prev) => !prev);
+    };
+
+    const handleAlumnShowAndTourSteps = (alumn_id, full_name) => {
+        setAlumnShowIdAndName({ alumn_id, full_name });
+        handleChangeSteps(
+            (prevSteps) => {
+                if (tourSteps.some((step) => step.selector === ".alumn-show")) {
+                    return prevSteps;
+                }
+                return [
+                    ...ADD_RESEARCHER_INITIAL_STEPS,
+                    ...ALUMN_SHOW_STEPS,
+                    ...ALUMNS_LIST_STEPS,
+                ];
+            },
+            4,
+            false,
+            false
+        );
+    };
+
+    const handleChangeSteps = (
+        newStepsOrFunction,
+        stepNumber,
+        isDisabled,
+        bypass = false
+    ) => {
+        if (isTourOpen || bypass) {
+            if (typeof newStepsOrFunction === "function") {
+                setTourSteps((prevSteps) => newStepsOrFunction(prevSteps));
+            } else {
+                setTourSteps(newStepsOrFunction);
+            }
+
+            if (stepNumber !== -1) {
+                setCurrentTourStep(stepNumber);
+            }
+            setTourDisabledActions(isDisabled);
+        }
     };
 
     const handleAlumnsChange = useCallback(
         (alumnsLength) => {
-            if (alumnsLength > 0) {
-                setShowInfoModal(false);
-            } else if (alumnsLength === 0 && !isAlumnListLoading) {
-                setShowInfoModal(true);
+            if (alumnsLength === 0 && !isAlumnListLoading) {
+                setIsTourOpen(true);
+                setCurrentTourStep(0);
+            } else if (alumnsLength > 0) {
+                if (
+                    tourSteps[0].selector !==
+                        '[data-tour="query-results-modal"]' &&
+                    tourSteps[0].selector !==
+                        '[data-tour="add-researcher-modal"]'
+                ) {
+                    handleChangeSteps(
+                        (prevSteps) => {
+                            if (
+                                prevSteps[prevSteps.length - 1].selector ===
+                                ".alumns-list"
+                            ) {
+                                return prevSteps;
+                            }
+
+                            return [...prevSteps, ...ALUMNS_LIST_STEPS];
+                        },
+                        -1,
+                        false,
+                        true
+                    );
+                }
             }
         },
-        [isAlumnListLoading]
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [isAlumnListLoading, tourSteps]
     );
 
     const memoizedAlumnFetch = useCallback(async () => {
@@ -64,7 +133,6 @@ function DashboardController() {
             return setAlumns([...alumnsArray]);
         } catch (res) {
             console.error(res);
-            navigate.current("/error");
         } finally {
             setIsAlumnListLoading(false);
         }
@@ -83,10 +151,9 @@ function DashboardController() {
 
     return (
         <DashboardContainer
-            showInfoModal={showInfoModal}
-            setShowInfoModal={setShowInfoModal}
-            openAlumnShow={openAlumnShow}
-            handleInfoClick={handleInfoClick}
+            handleAlumnShowAndTourSteps={handleAlumnShowAndTourSteps}
+            handleTourClick={handleTourClick}
+            handleChangeSteps={handleChangeSteps}
             handleDeleteAlumn={handleDeleteAlumn}
             alumns={alumns}
             setAlumns={setAlumns}

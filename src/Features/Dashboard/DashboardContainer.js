@@ -1,5 +1,4 @@
 import Button from "react-bootstrap/Button";
-import Card from "react-bootstrap/Card";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -13,10 +12,9 @@ import AlumnsListController from "./AlumnsList/AlumnsListController";
 import "./styles/Dashboard.css";
 
 function DashboardContainer({
-    showInfoModal,
-    setShowInfoModal,
-    openAlumnShow,
-    handleInfoClick,
+    handleAlumnShowAndTourSteps,
+    handleTourClick,
+    handleChangeSteps,
     handleDeleteAlumn,
     alumns,
     setAlumns,
@@ -27,83 +25,10 @@ function DashboardContainer({
 }) {
     return (
         <div className="dashboard">
-            {showInfoModal ? (
-                <Card className="info-card">
-                    <Card.Header className="text-center">
-                        Instructions
-                    </Card.Header>
-                    <Card.Body>
-                        <Card.Title className="text-center">
-                            Follow these steps to enter an investigator’s name
-                            <br />
-                            (the name will populate so long as the research has
-                            published an article and it is on PubMed).
-                        </Card.Title>
-                        <div className="text-left" style={{ padding: 10 }}>
-                            <ol>
-                                <li>
-                                    Enter the full name of the investigator you
-                                    are searching for in the input field. Make
-                                    sure to use the name displayed in the
-                                    publication you are referencing, typically
-                                    the first and last name.
-                                </li>
-                                <li>
-                                    Click on the "Submit" button to start the
-                                    search process. If the system finds the name
-                                    you entered, it will display publications
-                                    associated with that investigator.
-                                </li>
-                                <li>
-                                    You can customize your search by clicking on
-                                    the "Edit Investigator" button. This will
-                                    allow you to change the search names, which
-                                    should be comma-separated. You can also
-                                    click on the "Delete Investigator" button to
-                                    remove them from your search.
-                                </li>
-                                <li>
-                                    If you do not want a particular publication
-                                    to be associated with the investigator in
-                                    the graph, you can click on the checkbox
-                                    next to it. If you want to remove a
-                                    publication from the investigator
-                                    altogether, you can click on the "Remove"
-                                    button next to it.
-                                </li>
-                                <li>
-                                    Any edits you make to the search names or
-                                    publications will be saved only if you click
-                                    on the "Update Publications" button.
-                                </li>
-                                <li>
-                                    If the system does not find any publications
-                                    associated with the investigator, you can
-                                    refine your search by editing the search
-                                    names and trying again.
-                                </li>
-                                <li>
-                                    If you want to fetch new publications for
-                                    the investigator, you can click on the
-                                    "Fetch New Publications" button.
-                                </li>
-                            </ol>
-                        </div>
-                        <Button
-                            className="button"
-                            type="button"
-                            onClick={() => setShowInfoModal(false)}
-                        >
-                            Hide
-                        </Button>
-                    </Card.Body>
-                    <Card.Footer className="text-muted text-center">
-                        New Vision Research
-                    </Card.Footer>
-                </Card>
-            ) : (
-                <></>
-            )}
+            <div
+                data-tour="dashboard-tour"
+                className="position-absolute top-50 start-50 translate-middle"
+            ></div>
             <Container fluid>
                 <Row className="justify-content-md-center">
                     <Col md={5}>
@@ -114,8 +39,11 @@ function DashboardContainer({
                                     <AddAlumnsController
                                         alumns={alumns}
                                         setAlumns={setAlumns}
-                                        openAlumnShow={openAlumnShow}
+                                        handleAlumnShowAndTourSteps={
+                                            handleAlumnShowAndTourSteps
+                                        }
                                         setProgressMap={setProgressMap}
+                                        handleChangeSteps={handleChangeSteps}
                                     />
                                 </Col>
                             </Row>
@@ -124,7 +52,9 @@ function DashboardContainer({
                                     {/* Content for the second row in the left column */}
                                     <AlumnsListController
                                         alumns={alumns}
-                                        openAlumnShow={openAlumnShow}
+                                        handleAlumnShowAndTourSteps={
+                                            handleAlumnShowAndTourSteps
+                                        }
                                         isAlumnListLoading={isAlumnListLoading}
                                     />
                                 </Col>
@@ -145,7 +75,7 @@ function DashboardContainer({
             <Button
                 className="button info-button"
                 type="button"
-                onClick={handleInfoClick}
+                onClick={handleTourClick}
             >
                 <AiFillInfoCircle size={"2em"} />
             </Button>

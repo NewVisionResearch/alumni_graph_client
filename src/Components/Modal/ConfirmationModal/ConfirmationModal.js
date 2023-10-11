@@ -4,6 +4,7 @@ import Button from "react-bootstrap/Button";
 import Spinner from "react-bootstrap/Spinner";
 
 function ConfirmationModal({
+    dataTour = "",
     show,
     title,
     body,
@@ -16,7 +17,7 @@ function ConfirmationModal({
     isConfirming = false,
 }) {
     return (
-        <Modal show={show} onHide={onCancel}>
+        <Modal show={show} onHide={onCancel} data-tour={`${dataTour}`}>
             <Modal.Header>
                 <Modal.Title>{title}</Modal.Title>
             </Modal.Header>

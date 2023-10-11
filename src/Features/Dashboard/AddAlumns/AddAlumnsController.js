@@ -4,24 +4,35 @@ import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
 import Spinner from "react-bootstrap/Spinner";
 import Container from "react-bootstrap/Container";
+import { useTour } from "@reactour/tour";
+
+import { AdminContext } from "../../../Context/AdminContext/AdminContext";
+import { ToastContext } from "../../../Context/ToastContext/ToastContext";
 
 import NewAlumnForm from "./NewAlumnForm/NewAlumnForm";
 import ConfirmationModal from "../../../Components/Modal/ConfirmationModal/ConfirmationModal";
-import { AdminContext } from "../../../Context/AdminContext/AdminContext";
-import { ToastContext } from "../../../Context/ToastContext/ToastContext";
-import { fetchAlumns, streamJob } from "../../../services/api";
+
+import {
+    ADD_RESEARCHER_INITIAL_STEPS,
+    ADD_RESEARCHER_MODAL_STEPS,
+    QUERY_RESULTS_MODAL_STEPS,
+} from "../../../Constants/TourSteps";
+
+import {
+    fetchAlumns,
+    streamJob,
+    fetchAlumnNameQuerySearchResults,
+} from "../../../services/api";
 
 import "./styles/AddAlumns.css";
 
 function AddAlumnsController({
     alumns,
     setAlumns,
-    openAlumnShow,
+    handleAlumnShowAndTourSteps,
     setProgressMap,
+    handleChangeSteps,
 }) {
-    const admin = useContext(AdminContext);
-    const showToast = useContext(ToastContext);
-
     const [showAlumnQuerySearchModal, setShowAlumnQuerySearchModal] =
         useState(false);
     const [showAddAlumnModal, setShowAddAlumnModal] = useState(false);
@@ -33,6 +44,15 @@ function AddAlumnsController({
     const [isLoading, setIsLoading] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
     const [eventSourceMap, setEventSourceMap] = useState(new Map());
+
+    const admin = useContext(AdminContext);
+    const showToast = useContext(ToastContext);
+
+    const {
+        isOpen: isTourOpen,
+        currentStep: currentTourStep,
+        setCurrentStep: setCurrentTourStep,
+    } = useTour();
 
     const abortControllerRef = useRef(new AbortController());
 
@@ -50,16 +70,11 @@ function AddAlumnsController({
         return alumnQueryResults.esearchresult?.querytranslation;
     }, [alumnQueryResults.esearchresult?.querytranslation]);
 
-    const handleAlumnQuerySearchModalShow = () =>
-        setShowAlumnQuerySearchModal(true);
-
     const handleAlumnQuerySearchModalClose = () => {
         abortControllerRef.current.abort();
         abortControllerRef.current = new AbortController();
         setShowAlumnQuerySearchModal(false);
     };
-
-    const handleAddAlumnModalShow = () => setShowAddAlumnModal(true);
 
     const handleAddAlumnModalClose = () => {
         setShowAddAlumnModal(false);
@@ -67,9 +82,53 @@ function AddAlumnsController({
         setDuplicateDisplayNameError("");
     };
 
+    const handleAutoTourNextStep = () => {
+        if (isTourOpen) {
+            setCurrentTourStep(currentTourStep + 1);
+        }
+    };
+
+    const handleAlumnQuerySearchModalCancel = () => {
+        handleAlumnQuerySearchModalClose();
+        handleChangeSteps(ADD_RESEARCHER_INITIAL_STEPS, 3, false);
+    };
+
+    const handleAddAlumnModalCancel = () => {
+        handleAddAlumnModalClose();
+        handleChangeSteps(ADD_RESEARCHER_INITIAL_STEPS, 3, false);
+    };
+
     const handleContinue = () => {
         handleAlumnQuerySearchModalClose();
-        handleAddAlumnModalShow();
+        setShowAddAlumnModal(true);
+        handleChangeSteps(ADD_RESEARCHER_MODAL_STEPS, 0, true);
+    };
+
+    const searchAlumn = async (alumnNameQuery) => {
+        setShowAlumnQuerySearchModal(true);
+        setIsLoading(true);
+        handleChangeSteps(QUERY_RESULTS_MODAL_STEPS, 0, true);
+
+        try {
+            const res = await fetchAlumnNameQuerySearchResults(
+                alumnNameQuery,
+                abortControllerRef.current.signal
+            );
+
+            if (!res.ok) throw res;
+
+            const alumnNameQueryResults = await res.json();
+
+            setAlumnQueryResults(alumnNameQueryResults);
+        } catch (err) {
+            if (err.name === "AbortError") {
+                console.error(err);
+            } else {
+                console.error(err);
+            }
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     const initializeEventSource = (job_id, full_name) => {
@@ -184,7 +243,7 @@ function AddAlumnsController({
                 newMap.set(full_name, {});
                 return newMap;
             });
-            openAlumnShow(alumn_id, full_name);
+            handleAlumnShowAndTourSteps(alumn_id, full_name);
             handleAddAlumnModalClose();
 
             initializeEventSource(job_id, full_name);
@@ -212,20 +271,24 @@ function AddAlumnsController({
 
     return (
         <div className="add-alumns">
-            <h1 className="text-center m-2">Add Researcher</h1>
+            <h1 className="text-center m-2" data-tour="add-alumns-header-tour">
+                Add Researcher
+            </h1>
             <NewAlumnForm
-                handleModalShow={handleAlumnQuerySearchModalShow}
-                setAlumnQueryResults={setAlumnQueryResults}
-                setIsLoading={setIsLoading}
-                signal={abortControllerRef.current.signal}
+                handleAutoTourNextStep={handleAutoTourNextStep}
+                searchAlumn={searchAlumn}
             />
             {/* Alumn Query Search Modal BEGINS*/}
             <ConfirmationModal
+                dataTour="query-results-modal"
                 show={showAlumnQuerySearchModal}
                 title="Query Results"
                 body={
                     isLoading ? (
-                        <div className="d-flex justify-content-center">
+                        <div
+                            className="d-flex justify-content-center align-items-center"
+                            style={{ minHeight: "128px" }}
+                        >
                             <Spinner
                                 className="add-alumns-spinner"
                                 animation="border"
@@ -255,13 +318,14 @@ function AddAlumnsController({
                 }
                 confirmText="Continue"
                 onConfirm={handleContinue}
-                onCancel={handleAlumnQuerySearchModalClose}
+                onCancel={handleAlumnQuerySearchModalCancel}
                 disableConfirm={isResultCountZero || isLoading}
             />
             {/* Alumn Query Search Modal ENDS*/}
             {/* Add Alumn Modal BEGINS*/}
             <Form>
                 <ConfirmationModal
+                    dataTour="add-researcher-modal"
                     show={showAddAlumnModal}
                     title="Add Researcher"
                     body={
@@ -309,6 +373,7 @@ function AddAlumnsController({
                                         duplicateDisplayNameError.error.map(
                                             (val) => (
                                                 <Form.Text className="text-danger">
+                                                    <br />
                                                     {val}
                                                 </Form.Text>
                                             )
@@ -322,7 +387,7 @@ function AddAlumnsController({
                     }
                     confirmText="Save"
                     onConfirm={addAlumn}
-                    onCancel={handleAddAlumnModalClose}
+                    onCancel={handleAddAlumnModalCancel}
                     disableCancel={isSaving}
                     disableConfirm={addAlumnDisplayName.length === 0}
                     isConfirming={isSaving}

@@ -1,20 +1,10 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Dropdown from "react-bootstrap/Dropdown";
 import InputGroup from "react-bootstrap/InputGroup";
 
-import { fetchAlumnNameQuerySearchResults } from "../../../../services/api";
-
-function NewAlumnForm({
-    handleModalShow,
-    setAlumnQueryResults,
-    setIsLoading,
-    signal,
-}) {
-    const navigate = useNavigate();
-
+function NewAlumnForm({ handleAutoTourNextStep, searchAlumn }) {
     const [alumnName, setAlumnName] = useState("");
     const [alumnNameQuery, setAlumnNameQuery] = useState("");
     const [queryBooleanType, setQueryBooleanType] = useState("Add");
@@ -52,6 +42,7 @@ function NewAlumnForm({
 
             setAlumnName("");
             addInput.setCustomValidity("");
+            handleAutoTourNextStep();
         } else {
             addInput.setCustomValidity("Please enter a value.");
         }
@@ -68,33 +59,6 @@ function NewAlumnForm({
                     `(${prev}) ${newQueryBooleanType} (${alumnName.trim()}[Author])`
             );
             setAlumnName("");
-        }
-    };
-
-    const searchAlumn = async (alumnNameQuery) => {
-        handleModalShow();
-        setIsLoading(true);
-
-        try {
-            const res = await fetchAlumnNameQuerySearchResults(
-                alumnNameQuery,
-                signal
-            );
-
-            if (!res.ok) throw res;
-
-            const alumnNameQueryResults = await res.json();
-
-            setAlumnQueryResults(alumnNameQueryResults);
-        } catch (err) {
-            if (err.name === "AbortError") {
-                console.error(err);
-            } else {
-                console.error(err);
-                navigate("/error");
-            }
-        } finally {
-            setIsLoading(false);
         }
     };
 
@@ -122,7 +86,7 @@ function NewAlumnForm({
             }}
             className="m-2"
         >
-            <InputGroup className="mb-2">
+            <InputGroup className="mb-2" data-tour="add-input-input-group">
                 <Form.Control
                     id="addInput"
                     type="text"
@@ -165,7 +129,7 @@ function NewAlumnForm({
                     </Dropdown.Menu>
                 </Dropdown>
             </InputGroup>
-            <InputGroup>
+            <InputGroup data-tour="query-input-input-group">
                 <Form.Control
                     id="queryInput"
                     type="text"
