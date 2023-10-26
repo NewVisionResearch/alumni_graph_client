@@ -88,14 +88,18 @@ function DashboardController() {
     const handleAlumnsChange = useCallback(
         (alumnsLength) => {
             if (alumnsLength === 0 && !isAlumnListLoading) {
-                setIsTourOpen(true);
-                setCurrentTourStep(0);
+                if (!isTourOpen) {
+                    setIsTourOpen(true);
+                    setCurrentTourStep(0);
+                }
             } else if (alumnsLength > 0) {
                 if (
                     tourSteps[0].selector !==
                         '[data-tour="query-results-modal"]' &&
                     tourSteps[0].selector !==
-                        '[data-tour="add-researcher-modal"]'
+                        '[data-tour="add-researcher-modal"]' &&
+                    tourSteps[0].selector !==
+                        '[data-tour="add-researcher-dropdown-menu"]'
                 ) {
                     handleChangeSteps(
                         (prevSteps) => {

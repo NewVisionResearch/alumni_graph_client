@@ -3,7 +3,7 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 
-import { AiFillInfoCircle } from "react-icons/ai";
+import { AiFillQuestionCircle } from "react-icons/ai";
 
 import AlumnShowController from "./AlumnShow/AlumnShowController";
 import AddAlumnsController from "./AddAlumns/AddAlumnsController";
@@ -77,7 +77,7 @@ function DashboardContainer({
                 type="button"
                 onClick={handleTourClick}
             >
-                <AiFillInfoCircle size={"2em"} />
+                <AiFillQuestionCircle size={"2em"} />
             </Button>
         </div>
     );

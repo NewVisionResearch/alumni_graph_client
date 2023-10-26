@@ -4,7 +4,11 @@ import Form from "react-bootstrap/Form";
 import Dropdown from "react-bootstrap/Dropdown";
 import InputGroup from "react-bootstrap/InputGroup";
 
-function NewAlumnForm({ handleAutoTourNextStep, searchAlumn }) {
+function NewAlumnForm({
+    handleAddDropdownMenuStep,
+    handleAutoTourNextStep,
+    searchAlumn,
+}) {
     const [alumnName, setAlumnName] = useState("");
     const [alumnNameQuery, setAlumnNameQuery] = useState("");
     const [queryBooleanType, setQueryBooleanType] = useState("Add");
@@ -94,7 +98,7 @@ function NewAlumnForm({ handleAutoTourNextStep, searchAlumn }) {
                     placeholder="Enter an author's name"
                     onChange={(e) => handleInputOnChange(e, setAlumnName)}
                 />
-                <Dropdown>
+                <Dropdown onToggle={(show) => handleAddDropdownMenuStep(show)}>
                     <Button
                         className="button"
                         style={{ width: "59px" }}
@@ -110,7 +114,7 @@ function NewAlumnForm({ handleAutoTourNextStep, searchAlumn }) {
                         id="dropdown-split-basic"
                         disabled={queryBooleanType === "Add" ? true : false}
                     />
-                    <Dropdown.Menu>
+                    <Dropdown.Menu data-tour="add-researcher-dropdown-menu">
                         <Dropdown.Item
                             onClick={() => handleQueryBooleanTypeChange("AND")}
                         >

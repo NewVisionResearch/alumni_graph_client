@@ -13,6 +13,7 @@ import NewAlumnForm from "./NewAlumnForm/NewAlumnForm";
 import ConfirmationModal from "../../../Components/Modal/ConfirmationModal/ConfirmationModal";
 
 import {
+    ADD_RESEARCHER_DROPDOWN_MENU_STEPS,
     ADD_RESEARCHER_INITIAL_STEPS,
     ADD_RESEARCHER_MODAL_STEPS,
     QUERY_RESULTS_MODAL_STEPS,
@@ -44,6 +45,7 @@ function AddAlumnsController({
     const [isLoading, setIsLoading] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
     const [eventSourceMap, setEventSourceMap] = useState(new Map());
+    const [previousTourStep, setPreviousTourStep] = useState(0);
 
     const admin = useContext(AdminContext);
     const showToast = useContext(ToastContext);
@@ -52,6 +54,7 @@ function AddAlumnsController({
         isOpen: isTourOpen,
         currentStep: currentTourStep,
         setCurrentStep: setCurrentTourStep,
+        setSteps: setTourSteps,
     } = useTour();
 
     const abortControllerRef = useRef(new AbortController());
@@ -80,6 +83,20 @@ function AddAlumnsController({
         setShowAddAlumnModal(false);
         setAddAlumnDisplayName("");
         setDuplicateDisplayNameError("");
+    };
+
+    const handleAddDropdownMenuStep = (show) => {
+        setPreviousTourStep(currentTourStep);
+
+        if (isTourOpen && show) {
+            setTimeout(() => {
+                setTourSteps(ADD_RESEARCHER_DROPDOWN_MENU_STEPS);
+                setCurrentTourStep(0);
+            }, 100);
+        } else {
+            setTourSteps(ADD_RESEARCHER_INITIAL_STEPS);
+            setCurrentTourStep(previousTourStep);
+        }
     };
 
     const handleAutoTourNextStep = () => {
@@ -275,6 +292,7 @@ function AddAlumnsController({
                 Add Researcher
             </h1>
             <NewAlumnForm
+                handleAddDropdownMenuStep={handleAddDropdownMenuStep}
                 handleAutoTourNextStep={handleAutoTourNextStep}
                 searchAlumn={searchAlumn}
             />

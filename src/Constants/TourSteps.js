@@ -5,8 +5,12 @@ export const ADD_RESEARCHER_INITIAL_STEPS = [
             <div>
                 <h1 className="text-center">Welcome to the Dashboard!</h1>
                 <p>
-                    If it's your first time here or you're just brushing up,
-                    let's walk through together. 😊
+                    This dashboard allows you to add and view researchers.
+                    Researchers you add will appear in the collaboration graph,
+                    showing their connections with other added researchers.
+                    <br />
+                    <br />
+                    If you're new or need a reminder, follow this tour! 😊
                 </p>
             </div>
         ),
@@ -17,8 +21,9 @@ export const ADD_RESEARCHER_INITIAL_STEPS = [
         content: () => (
             <div>
                 <p>
-                    Meet the <b>Add Researcher</b> section. Here, you can input
-                    a researcher's name or modify an existing query.
+                    This is the <b>Add Researcher</b> section. You can input a
+                    researcher's name or directly adjust the search query.
+                    Researchers you add will fetch publications from PubMed.
                 </p>
             </div>
         ),
@@ -29,28 +34,54 @@ export const ADD_RESEARCHER_INITIAL_STEPS = [
         content: () => (
             <div>
                 <p>
-                    Enter the researcher's name here and click <b>Add</b>. It'll
-                    then appear in the query box below.
+                    Start by entering a researcher's name. After hitting{" "}
+                    <b>Add</b>, their details will populate the query box below.
                 </p>
             </div>
         ),
         padding: { mask: [10, 10, 5, 10] },
+        position: "top",
     },
     {
         selector: '[data-tour="query-input-input-group"]',
         content: () => (
             <div>
                 <p>
-                    Want to tweak the query? Do it here! Alternatively, return
-                    to the previous step to add another variation of the
-                    researcher's name.
+                    Here, you can fine-tune your query. If you wish, go back and
+                    add another variant of the researcher's name.
                     <br />
-                    Once you're set, hit <b>Search</b> to see how many results
-                    PubMed pulls up.
+                    When you're ready, press <b>Search</b> to see the number of
+                    matches from PubMed.
                 </p>
             </div>
         ),
         padding: { mask: [5, 10, 10, 10] },
+    },
+];
+
+export const ADD_RESEARCHER_DROPDOWN_MENU_STEPS = [
+    {
+        selector: '[data-tour="add-researcher-dropdown-menu"]',
+        content: () => (
+            <div>
+                <h4>🔍 Refine Your Search</h4>
+                <p>
+                    Use the dropdown to combine search terms with boolean logic:
+                </p>
+                <ul>
+                    <li>
+                        <strong>AND</strong>: Both terms included.
+                    </li>
+                    <li>
+                        <strong>OR</strong>: Either term included.
+                    </li>
+                    <li>
+                        <strong>NOT</strong>: Exclude the term.
+                    </li>
+                </ul>
+                <p>Combine to tailor your query!</p>
+            </div>
+        ),
     },
 ];
 
@@ -60,9 +91,9 @@ export const QUERY_RESULTS_MODAL_STEPS = [
         content: () => (
             <div>
                 <p>
-                    These are your search results. Feel free to either{" "}
-                    <b>Cancel</b> or <b>Continue</b> with the researcher
-                    addition.
+                    Behold, your search results from PubMed! From here, you can
+                    either <b>Cancel</b> the operation or <b>Continue</b> to add
+                    the researcher.
                 </p>
             </div>
         ),
@@ -75,9 +106,14 @@ export const ADD_RESEARCHER_MODAL_STEPS = [
         content: () => (
             <div>
                 <p>
-                    Now, select a display name for the researcher. When you're
-                    satisfied, hit <b>Save</b> to include this researcher in
-                    your list.
+                    Now, it's time to choose a display name for this researcher.
+                    It's recommended to use the researcher's full name for
+                    clarity. This name will be displayed on the collaboration
+                    graph.
+                    <br />
+                    <br />
+                    When you're done, click <b>Save</b> to officially add this
+                    researcher.
                 </p>
             </div>
         ),
@@ -90,8 +126,8 @@ export const ALUMN_SHOW_STEPS = [
         content: () => (
             <div>
                 <p>
-                    After adding a researcher, they'll appear here. Note: It
-                    might take some time for their publications to load.
+                    Here, you'll see the added researcher. It might take a
+                    moment for their publications to fully appear.
                 </p>
             </div>
         ),
@@ -104,9 +140,9 @@ export const ALUMNS_LIST_STEPS = [
         content: () => (
             <div>
                 <p>
-                    This is your list of added researchers. You can search
-                    through this list or simply click on a researcher's name to
-                    view their details on the right.
+                    This is your directory of added researchers. Peruse the
+                    list, and click on any researcher to see their detailed
+                    profile on the right.
                 </p>
             </div>
         ),
