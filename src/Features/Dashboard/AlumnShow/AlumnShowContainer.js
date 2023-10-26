@@ -9,8 +9,8 @@ import { byDate, byCoAuthors, sortByTwoFns } from "../../../services/sorts";
 
 function AlumnShowContainer({
     alumn,
-    editSearchNames,
-    setEditSearchNames,
+    showEditAlumnForm,
+    handleShowEditAlumnForm,
     handleRemoveAlumn,
     handleDeletePublication,
     updateIdArray,
@@ -27,7 +27,7 @@ function AlumnShowContainer({
     return (
         <>
             <h1 className="custom-h1">{alumn.full_name}</h1>
-            {editSearchNames ? (
+            {showEditAlumnForm ? (
                 <EditAlumnForm
                     submitInput={updateSearchNames}
                     propsValue={[alumn.full_name, alumn.search_query]}
@@ -46,7 +46,7 @@ function AlumnShowContainer({
                             className="button my-2 ms-2"
                             size="md"
                             type="button"
-                            onClick={() => setEditSearchNames(true)}
+                            onClick={() => handleShowEditAlumnForm()}
                         >
                             Edit Researcher
                         </Button>

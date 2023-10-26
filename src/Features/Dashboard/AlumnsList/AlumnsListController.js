@@ -2,7 +2,11 @@ import { useState } from "react";
 
 import AlumnsListContainer from "./AlumnsListContainer";
 
-function AlumnsListController({ alumns, openAlumnShow, isAlumnListLoading }) {
+function AlumnsListController({
+    alumns,
+    handleAlumnShowAndTourSteps,
+    isAlumnListLoading,
+}) {
     const [searchTerm, setSearchTerm] = useState("");
 
     let filteredAlumns = [];
@@ -34,7 +38,7 @@ function AlumnsListController({ alumns, openAlumnShow, isAlumnListLoading }) {
             filteredAlumns={filteredAlumns}
             searchTerm={searchTerm}
             setSearchTerm={setSearchTerm}
-            openAlumnShow={openAlumnShow}
+            handleAlumnShowAndTourSteps={handleAlumnShowAndTourSteps}
             showNoResultFoundListItem={showNoResultFoundListItem}
             showPleaseAddResearchersListItem={showPleaseAddResearchersListItem}
             isAlumnListLoading={isAlumnListLoading}

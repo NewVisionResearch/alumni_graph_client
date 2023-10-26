@@ -12,7 +12,7 @@ function AlumnsListContainer({
     filteredAlumns,
     searchTerm,
     setSearchTerm,
-    openAlumnShow,
+    handleAlumnShowAndTourSteps,
     showNoResultFoundListItem,
     showPleaseAddResearchersListItem,
     isAlumnListLoading,
@@ -53,7 +53,10 @@ function AlumnsListContainer({
                             as="li"
                             action
                             onClick={() =>
-                                openAlumnShow(alumn.alumn_id, alumn.full_name)
+                                handleAlumnShowAndTourSteps(
+                                    alumn.alumn_id,
+                                    alumn.full_name
+                                )
                             }
                         >
                             {alumn.full_name}

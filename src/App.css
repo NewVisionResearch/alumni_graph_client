@@ -51,7 +51,9 @@ span.coauthor {
     border-color: var(--custom-purple) !important;
 }
 
-.button:hover {
+.button:hover,
+/* This class references the navigation dots of the reactour */
+.reactour__popover div div button:hover {
     background-color: var(--custom-teal) !important;
     border-color: var(--custom-teal-border) !important;
 }
@@ -128,10 +130,6 @@ span.coauthor {
     background-color: var(--custom-grey) !important;
 }
 
-div.card-body {
-    font-size: 100%;
-}
-
 .list-group-item-action:hover {
     background-color: var(--custom-purple) !important;
     border-color: var(--custom-purple) !important;
@@ -152,10 +150,4 @@ div.card-body {
 
 .custom-form-group {
     margin-bottom: 1rem;
-}
-
-@media only screen and (max-width: 825px) {
-    div.card-body {
-        font-size: 75%;
-    }
 }
