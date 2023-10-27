@@ -132,125 +132,113 @@ function GraphController({ impactMode }) {
     }, [publications, gData.length]);
 
     useEffect(() => {
-        let len = gData.nodes.length;
-        if (len) {
-            const graphElement = document.getElementById("graph");
-            let graphWidth = graphElement.clientWidth;
-            let graphHeight = graphElement.clientHeight;
+        const graphElement = document.getElementById("graph");
+        let graphWidth = graphElement.clientWidth;
+        let graphHeight = graphElement.clientHeight;
 
-            graphInstance &&
-                graphInstance
-                    .graphData(gData)
-                    .nodeCanvasObject((node, ctx, globalScale) => {
-                        const label = node.id.trim();
-                        const fontSize = 10;
+        graphInstance &&
+            graphInstance
+                .graphData(gData)
+                .nodeCanvasObject((node, ctx, globalScale) => {
+                    const label = node.id.trim();
+                    const fontSize = 10;
 
-                        ctx.font = `${fontSize}px Sans-Serif`;
-                        // const textWidth = ctx.measureText(label).width;
+                    ctx.font = `${fontSize}px Sans-Serif`;
+                    // const textWidth = ctx.measureText(label).width;
 
-                        // TODO: replace 80 with textWidth if necessary
-                        const bckgDimensions = [80, fontSize].map(
-                            (n) => n + fontSize * 0.5
-                        ); // some padding
+                    // TODO: replace 80 with textWidth if necessary
+                    const bckgDimensions = [80, fontSize].map(
+                        (n) => n + fontSize * 0.5
+                    ); // some padding
 
-                        ctx.fillStyle = "rgba(255, 255, 255, 1)";
-                        ctx.beginPath();
-                        // TODO: replace 80 with textWidth if necessary
-                        ctx.arc(
-                            node.x,
-                            node.y,
-                            (80 / fontSize) * 4.25,
-                            0,
-                            2 * Math.PI,
-                            false
-                        );
-                        ctx.fill();
+                    ctx.fillStyle = "rgba(255, 255, 255, 1)";
+                    ctx.beginPath();
+                    // TODO: replace 80 with textWidth if necessary
+                    ctx.arc(
+                        node.x,
+                        node.y,
+                        (80 / fontSize) * 4.25,
+                        0,
+                        2 * Math.PI,
+                        false
+                    );
+                    ctx.fill();
 
-                        ctx.lineWidth = 2;
-                        ctx.strokeStyle = "rgb(77, 172, 147)";
-                        ctx.stroke();
+                    ctx.lineWidth = 2;
+                    ctx.strokeStyle = "rgb(77, 172, 147)";
+                    ctx.stroke();
 
-                        ctx.textAlign = "center";
+                    ctx.textAlign = "center";
 
-                        ctx.fillStyle = "rgb(77, 172, 147)";
-                        let splitLabel = label.split(" ");
-                        let n = splitLabel.length;
-                        let height =
-                            ctx.measureText(label).fontBoundingBoxAscent +
-                            ctx.measureText(label).fontBoundingBoxDescent;
-                        let start = height * 1.5;
-                        // determine line height based on number of lines
-                        if (n > 2) {
-                            ctx.textBaseline = "top";
-                            splitLabel.forEach((l) => {
-                                ctx.fillText(l, node.x, node.y - start);
-                                start -= height * 1.25;
-                            });
-                        } else {
-                            ctx.textBaseline = "bottom";
-                            splitLabel.forEach((l) => {
-                                ctx.fillText(l, node.x, node.y - start + 16);
-                                start -= start / 1.25;
-                            });
+                    ctx.fillStyle = "rgb(77, 172, 147)";
+                    let splitLabel = label.split(" ");
+                    let n = splitLabel.length;
+                    let height =
+                        ctx.measureText(label).fontBoundingBoxAscent +
+                        ctx.measureText(label).fontBoundingBoxDescent;
+                    let start = height * 1.5;
+                    // determine line height based on number of lines
+                    if (n > 2) {
+                        ctx.textBaseline = "top";
+                        splitLabel.forEach((l) => {
+                            ctx.fillText(l, node.x, node.y - start);
+                            start -= height * 1.25;
+                        });
+                    } else {
+                        ctx.textBaseline = "bottom";
+                        splitLabel.forEach((l) => {
+                            ctx.fillText(l, node.x, node.y - start + 16);
+                            start -= start / 1.25;
+                        });
+                    }
+
+                    node.__bckgDimensions = bckgDimensions; // to re-use in nodePointerAreaPaint
+                })
+                .linkColor((link) => "rgb(73, 50, 123)")
+                .nodeRelSize(25)
+                .backgroundColor("rgb(255, 255, 255)")
+                .width(graphWidth)
+                .height(graphHeight)
+                .onNodeHover(
+                    (node) =>
+                        (graphElement.style.cursor = node ? "pointer" : null)
+                )
+                .onNodeClick((node) => {
+                    let windowWidth = window.innerWidth;
+                    if (windowWidth < 540) {
+                        if (graphInstance.zoom && graphInstance.zoom() > 1.25) {
+                            graphInstance.centerAt(
+                                window.innerWidth <= 425 ? node.x : node.x + 75,
+                                window.innerWidth <= 425 ? node.y + 25 : node.y,
+                                1000
+                            );
+                            graphInstance.zoom(decideZoomOnClick(), 1000);
+                            setAlumnId(node.alumn_id);
                         }
+                        return;
+                    }
+                    graphInstance.centerAt(
+                        window.innerWidth <= 425 ? node.x : node.x + 75,
+                        window.innerWidth <= 425 ? node.y + 25 : node.y,
+                        1000
+                    );
+                    graphInstance.zoom(decideZoomOnClick(), 1000);
+                    setAlumnId(node.alumn_id);
+                })
+                .onNodeDragEnd((node) => {
+                    node.fx = node.x;
+                    node.fy = node.y;
+                })
+                .zoom(0.55, 500)
+                .dagMode("radialout")
+                .onDagError(() => {});
+        // .centerAt(750, 0, 1000)
 
-                        node.__bckgDimensions = bckgDimensions; // to re-use in nodePointerAreaPaint
-                    })
-                    .linkColor((link) => "rgb(73, 50, 123)")
-                    .nodeRelSize(25)
-                    .backgroundColor("rgb(255, 255, 255)")
-                    .width(graphWidth)
-                    .height(graphHeight)
-                    .onNodeHover(
-                        (node) =>
-                            (graphElement.style.cursor = node
-                                ? "pointer"
-                                : null)
-                    )
-                    .onNodeClick((node) => {
-                        let windowWidth = window.innerWidth;
-                        if (windowWidth < 540) {
-                            if (
-                                graphInstance.zoom &&
-                                graphInstance.zoom() > 1.25
-                            ) {
-                                graphInstance.centerAt(
-                                    window.innerWidth <= 425
-                                        ? node.x
-                                        : node.x + 75,
-                                    window.innerWidth <= 425
-                                        ? node.y + 25
-                                        : node.y,
-                                    1000
-                                );
-                                graphInstance.zoom(decideZoomOnClick(), 1000);
-                                setAlumnId(node.alumn_id);
-                            }
-                            return;
-                        }
-                        graphInstance.centerAt(
-                            window.innerWidth <= 425 ? node.x : node.x + 75,
-                            window.innerWidth <= 425 ? node.y + 25 : node.y,
-                            1000
-                        );
-                        graphInstance.zoom(decideZoomOnClick(), 1000);
-                        setAlumnId(node.alumn_id);
-                    })
-                    .onNodeDragEnd((node) => {
-                        node.fx = node.x;
-                        node.fy = node.y;
-                    })
-                    .zoom(0.55, 500)
-                    .dagMode("radialout")
-                    .onDagError(() => {});
-            // .centerAt(750, 0, 1000)
-
-            if (graphInstance) {
-                graphInstance.d3Force("charge").strength(-7500);
-                graphInstance.d3Force("center").x(0).y(-40); //.strength(0.05)
-                // stateGraph.d3Force('link')
-                graphInstance.d3Force("gravity");
-            }
+        if (graphInstance) {
+            graphInstance.d3Force("charge").strength(-7500);
+            graphInstance.d3Force("center").x(0).y(-40); //.strength(0.05)
+            // graphInstance.d3Force("link");
+            graphInstance.d3Force("gravity");
         }
     }, [gData, graphInstance]);
 
