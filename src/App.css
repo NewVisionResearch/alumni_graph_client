@@ -136,7 +136,8 @@ span.coauthor {
     color: white !important;
 }
 
-.list-group-item-action:active {
+.list-group-item-action:active,
+.list-group-item-action.item-active {
     background-color: var(--custom-teal) !important;
     border-color: var(--custom-teal-border) !important;
     color: white !important;
