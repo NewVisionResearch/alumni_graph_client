@@ -41,6 +41,7 @@ function AlumnShowController({
     const [isDeletingPublication, setIsDeletingPublication] = useState(false);
     const [eventSourceMap, setEventSourceMap] = useState(new Map());
     const [isSavingAlumnEdit, setIsSavingAlumnEdit] = useState(false);
+    const [isUpdatingPublication, setIsUpdatingPublication] = useState(false);
 
     const publicationToDelete = useRef(null);
 
@@ -153,24 +154,36 @@ function AlumnShowController({
     };
 
     const updateDatabase = async () => {
-        for (const id in idObj) {
-            let bodyObj = {
-                alumn_publication: {
-                    alumn_id: alumnShowIdAndName.alumn_id,
-                    alumn_publication_id: id,
-                    display: idObj[id],
-                },
-            };
+        setIsUpdatingPublication(true);
 
-            try {
+        try {
+            for (const id in idObj) {
+                let bodyObj = {
+                    alumn_publication: {
+                        alumn_id: alumnShowIdAndName.alumn_id,
+                        alumn_publication_id: id,
+                        display: idObj[id],
+                    },
+                };
                 const res = await patchAlumnPublication(bodyObj, id);
 
                 if (!res.ok) throw res;
 
                 setIdObj({});
-            } catch (err) {
-                console.error(err);
             }
+
+            showToast({
+                header: "Update Success!",
+                body: "The publications have been updated.",
+            });
+        } catch (err) {
+            console.error(err);
+            showToast({
+                header: "Publication Update Error",
+                body: "Please try again later or contact the administrator.",
+            });
+        } finally {
+            setIsUpdatingPublication(false);
         }
     };
 
@@ -369,6 +382,7 @@ function AlumnShowController({
                         closeForm={closeForm}
                         progressMap={progressMap}
                         isSavingAlumnEdit={isSavingAlumnEdit}
+                        isUpdatingPublication={isUpdatingPublication}
                     />
 
                     <ConfirmationModal

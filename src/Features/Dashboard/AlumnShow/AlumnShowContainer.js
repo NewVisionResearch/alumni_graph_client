@@ -1,6 +1,7 @@
 import Button from "react-bootstrap/Button";
 import ButtonToolbar from "react-bootstrap/ButtonToolbar";
 import ListGroup from "react-bootstrap/ListGroup";
+import Spinner from "react-bootstrap/Spinner";
 
 import EditAlumnForm from "./EditAlumnForm/EditAlumnForm";
 import PublicationDisplayCheck from "./PublicationDisplayCheck/PublicationDisplayCheck";
@@ -23,6 +24,7 @@ function AlumnShowContainer({
     closeForm,
     progressMap,
     isSavingAlumnEdit,
+    isUpdatingPublication,
 }) {
     return (
         <>
@@ -103,10 +105,25 @@ function AlumnShowContainer({
                             size="md"
                             onClick={updateDatabase}
                             disabled={
-                                Object.keys(idObj).length === 0 ? true : false
+                                Object.keys(idObj).length === 0
+                                    ? true
+                                    : false || isUpdatingPublication
                             }
                         >
-                            Update Publications
+                            {isUpdatingPublication ? (
+                                <>
+                                    <Spinner
+                                        as="span"
+                                        animation="border"
+                                        size="sm"
+                                        role="status"
+                                        aria-hidden="true"
+                                    />
+                                    {" Updating..."}
+                                </>
+                            ) : (
+                                "Update Publications"
+                            )}
                         </Button>
                         <Button
                             className="button my-2 ms-2"
