@@ -1,10 +1,17 @@
 import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
 import Container from "react-bootstrap/Container";
+import Spinner from "react-bootstrap/Spinner";
 
 import "./styles/NavBar.css";
 
-function NavBarContainer({ isSysAdmin, labId, handleGetAdminsClick, logout }) {
+function NavBarContainer({
+    isExporting,
+    isSysAdmin,
+    labId,
+    handleGetAdminsClick,
+    logout,
+}) {
     return (
         <Navbar expand="md">
             <Container fluid>
@@ -24,12 +31,26 @@ function NavBarContainer({ isSysAdmin, labId, handleGetAdminsClick, logout }) {
                         <Nav.Link href="/dashboard">Dashboard</Nav.Link>
                         {isSysAdmin && (
                             <Nav.Link
+                                disabled={isExporting}
                                 onClick={(e) => {
                                     e.preventDefault();
                                     handleGetAdminsClick();
                                 }}
                             >
-                                Export Admins
+                                {isExporting ? (
+                                    <>
+                                        <Spinner
+                                            as="span"
+                                            animation="border"
+                                            size="sm"
+                                            role="status"
+                                            aria-hidden="true"
+                                        />
+                                        {" Exporting..."}
+                                    </>
+                                ) : (
+                                    "Export Admins"
+                                )}
                             </Nav.Link>
                         )}
                         <Nav.Link
