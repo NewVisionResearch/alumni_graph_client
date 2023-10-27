@@ -9,6 +9,7 @@ function NavBarController({ logout }) {
     const showToast = useContext(ToastContext);
 
     const [isSysAdmin, setIsSysAdmin] = useState(false);
+    const [isExporting, setIsExporting] = useState(false);
 
     useEffect(() => {
         const controller = new AbortController();
@@ -36,32 +37,33 @@ function NavBarController({ logout }) {
         };
     }, []);
 
-    const handleGetAdminsClick = () => {
-        const fetchAdminQuery = async () => {
-            try {
-                const response = await getAdmins();
+    const handleGetAdminsClick = async () => {
+        setIsExporting(true);
 
-                if (response.ok) {
-                    showToast({
-                        header: "Export Success!",
-                        body: "The export has been sent to your email!",
-                    });
-                } else {
-                    showToast({
-                        header: "Export Error",
-                        body: "There has been an error.",
-                    });
-                }
-            } catch (error) {
-                console.error("Error:", error);
+        try {
+            const response = await getAdmins();
+
+            if (response.ok) {
+                showToast({
+                    header: "Export Success!",
+                    body: "The export has been sent to your email!",
+                });
+            } else {
+                showToast({
+                    header: "Export Error",
+                    body: "There has been an error.",
+                });
             }
-        };
-
-        fetchAdminQuery();
+        } catch (error) {
+            console.error("Error:", error);
+        } finally {
+            setIsExporting(false);
+        }
     };
 
     return (
         <NavBarContainer
+            isExporting={isExporting}
             isSysAdmin={isSysAdmin}
             labId={admin.labId}
             handleGetAdminsClick={handleGetAdminsClick}
