@@ -66,72 +66,70 @@ function GraphController({ impactMode }) {
     }, [labId]);
 
     useEffect(() => {
-        if (!gData.length) {
-            function uniqueIds(array) {
-                array = array.map((p) => p.joins.map((j) => j)).flat();
-                let obj = {};
-                for (let i = 0; i < array.length; i++) {
-                    if (!array[i]) continue;
-                    if (obj[array[i].display_name]) {
-                        continue;
-                    } else {
-                        obj[array[i].display_name] = array[i];
-                    }
+        function uniqueIds(array) {
+            array = array.map((p) => p.joins.map((j) => j)).flat();
+            let obj = {};
+            for (let i = 0; i < array.length; i++) {
+                if (!array[i]) continue;
+                if (obj[array[i].display_name]) {
+                    continue;
+                } else {
+                    obj[array[i].display_name] = array[i];
                 }
-
-                return Object.values(obj);
             }
 
-            function createPairs(array) {
-                let resArray = [];
-                let obj = {};
-                array = array.map((obj) => obj.joins);
+            return Object.values(obj);
+        }
 
-                for (let i = 0; i < array.length; i++) {
-                    for (let j = 0; j < array[i].length; j++) {
-                        if (!array[i][j]) continue;
-                        obj[array[i][j].display_name] =
-                            obj[array[i][j].display_name] || [];
-                        for (let k = 0; k < array[i].length; k++) {
-                            if (!array[i][k]) continue;
-                            if (
-                                array[i][j].display_name ===
+        function createPairs(array) {
+            let resArray = [];
+            let obj = {};
+            array = array.map((obj) => obj.joins);
+
+            for (let i = 0; i < array.length; i++) {
+                for (let j = 0; j < array[i].length; j++) {
+                    if (!array[i][j]) continue;
+                    obj[array[i][j].display_name] =
+                        obj[array[i][j].display_name] || [];
+                    for (let k = 0; k < array[i].length; k++) {
+                        if (!array[i][k]) continue;
+                        if (
+                            array[i][j].display_name ===
+                            array[i][k].display_name
+                        ) {
+                            continue;
+                        }
+                        if (
+                            obj[array[i][j].display_name].includes(
                                 array[i][k].display_name
-                            ) {
-                                continue;
-                            }
-                            if (
-                                obj[array[i][j].display_name].includes(
-                                    array[i][k].display_name
-                                )
-                            ) {
-                                continue;
-                            } else {
-                                obj[array[i][j].display_name].push(
-                                    array[i][k].display_name
-                                );
-                                resArray.push([array[i][j], array[i][k]]);
-                            }
+                            )
+                        ) {
+                            continue;
+                        } else {
+                            obj[array[i][j].display_name].push(
+                                array[i][k].display_name
+                            );
+                            resArray.push([array[i][j], array[i][k]]);
                         }
                     }
                 }
-
-                return resArray;
             }
-            const data = {
-                nodes: uniqueIds(publications).map((alumn) => ({
-                    id: alumn.display_name,
-                    alumn_id: alumn.alumn_id,
-                })),
-                links: createPairs(publications).map((arr) => ({
-                    source: arr[0].display_name,
-                    target: arr[1].display_name,
-                })),
-            };
 
-            setGData(data);
+            return resArray;
         }
-    }, [publications, gData.length]);
+        const data = {
+            nodes: uniqueIds(publications).map((alumn) => ({
+                id: alumn.display_name,
+                alumn_id: alumn.alumn_id,
+            })),
+            links: createPairs(publications).map((arr) => ({
+                source: arr[0].display_name,
+                target: arr[1].display_name,
+            })),
+        };
+
+        setGData(data);
+    }, [publications]);
 
     useEffect(() => {
         const graphElement = document.getElementById("graph");
@@ -265,6 +263,23 @@ function GraphController({ impactMode }) {
                     alt="loading"
                     className="graph-loading-spinner"
                 />
+            )}
+            {!isGraphLoading && gData?.links?.length === 0 && (
+                <div
+                    style={{
+                        position: "absolute",
+                        top: "50%",
+                        left: "50%",
+                        transform: "translate(-50%, -50%)",
+                        fontSize: "1.5rem",
+                        textAlign: "center",
+                        zIndex: 1000,
+                    }}
+                >
+                    {headerMode
+                        ? "No collaborations have been recorded for this graph yet. Head to the dashboard to add researchers and start tracking collaborations!"
+                        : "No collaborations have been recorded for this graph yet. Check back soon for updates!"}
+                </div>
             )}
             <GraphContainer headerMode={headerMode} impactMode={impactMode} />
             {alumnId !== null && (
