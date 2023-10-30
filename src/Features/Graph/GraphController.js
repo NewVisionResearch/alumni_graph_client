@@ -11,6 +11,8 @@ import { AdminContext } from "../../Context/AdminContext/AdminContext";
 import { decideZoomOnClick } from "../../services/zoom";
 import { fetchGraphPublications } from "../../services/api";
 
+import "./styles/Graph.css";
+
 function GraphController({ impactMode }) {
     const admin = useContext(AdminContext);
     const { labId } = useParams();
@@ -19,6 +21,7 @@ function GraphController({ impactMode }) {
     const [publications, setPublications] = useState([]);
     const [alumnId, setAlumnId] = useState(null);
     const [gData, setGData] = useState({ nodes: [], links: [] });
+    const [isGraphLoading, setIsGraphLoading] = useState(true);
 
     const headerMode = admin.email !== "";
 
@@ -49,19 +52,18 @@ function GraphController({ impactMode }) {
         const controller = new AbortController();
         const signal = controller.signal;
 
-        if (!publications.length) {
-            fetchGraphPublications(labId, signal)
-                .then((res) => res.json())
-                .then((publications) => {
-                    setPublications(publications);
-                })
-                .catch((err) => console.error(err));
-        }
+        setIsGraphLoading(true);
+
+        fetchGraphPublications(labId, signal)
+            .then((res) => res.json())
+            .then((publications) => setPublications(publications))
+            .catch((err) => console.error(err))
+            .finally(() => setIsGraphLoading(false));
 
         return () => {
             controller.abort();
         };
-    }, [publications.length, labId]);
+    }, [labId]);
 
     useEffect(() => {
         if (!gData.length) {
@@ -257,6 +259,13 @@ function GraphController({ impactMode }) {
                 position: "relative",
             }}
         >
+            {isGraphLoading && (
+                <Image
+                    src="../NVR1-TC-cropped.png"
+                    alt="loading"
+                    className="graph-loading-spinner"
+                />
+            )}
             <GraphContainer headerMode={headerMode} impactMode={impactMode} />
             {alumnId !== null && (
                 <GraphAlumnDetailsModalController
@@ -286,6 +295,7 @@ function GraphController({ impactMode }) {
                             zIndex: 1000,
                         }}
                         src="../NVR1-TC.png"
+                        alt="logo"
                         fluid
                     />
                 </Link>
