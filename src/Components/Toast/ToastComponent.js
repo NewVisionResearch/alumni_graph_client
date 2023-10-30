@@ -24,7 +24,7 @@ function ToastComponent({ toastData, handleOnClose }) {
             }}
         >
             <Toast.Header>
-                <strong className="mr-auto">{toastData?.header}</strong>
+                <strong className="me-auto">{toastData?.header}</strong>
                 <small>now</small>
             </Toast.Header>
             <Toast.Body>{toastData?.body}</Toast.Body>

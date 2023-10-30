@@ -8,6 +8,7 @@ function AlumnsListController({
     isAlumnListLoading,
 }) {
     const [searchTerm, setSearchTerm] = useState("");
+    const [selectedAlumnId, setSelectedAlumnId] = useState(null);
 
     let filteredAlumns = [];
     let showNoResultFoundListItem = false;
@@ -33,12 +34,18 @@ function AlumnsListController({
         showPleaseAddResearchersListItem = false;
     }
 
+    const handleItemClick = (alumnId, alumnFullName) => {
+        setSelectedAlumnId(alumnId);
+        handleAlumnShowAndTourSteps(alumnId, alumnFullName);
+    };
+
     return (
         <AlumnsListContainer
             filteredAlumns={filteredAlumns}
             searchTerm={searchTerm}
             setSearchTerm={setSearchTerm}
-            handleAlumnShowAndTourSteps={handleAlumnShowAndTourSteps}
+            selectedAlumnId={selectedAlumnId}
+            handleItemClick={handleItemClick}
             showNoResultFoundListItem={showNoResultFoundListItem}
             showPleaseAddResearchersListItem={showPleaseAddResearchersListItem}
             isAlumnListLoading={isAlumnListLoading}

@@ -12,7 +12,8 @@ function AlumnsListContainer({
     filteredAlumns,
     searchTerm,
     setSearchTerm,
-    handleAlumnShowAndTourSteps,
+    selectedAlumnId,
+    handleItemClick,
     showNoResultFoundListItem,
     showPleaseAddResearchersListItem,
     isAlumnListLoading,
@@ -49,14 +50,16 @@ function AlumnsListContainer({
                 <ListGroup as="ul" className="alumns-list-scrollable">
                     {byLastName(filteredAlumns).map((alumn) => (
                         <ListGroup.Item
+                            className={
+                                alumn.alumn_id === selectedAlumnId
+                                    ? "item-active"
+                                    : ""
+                            }
                             key={alumn.alumn_id}
                             as="li"
                             action
                             onClick={() =>
-                                handleAlumnShowAndTourSteps(
-                                    alumn.alumn_id,
-                                    alumn.full_name
-                                )
+                                handleItemClick(alumn.alumn_id, alumn.full_name)
                             }
                         >
                             {alumn.full_name}
