@@ -42,7 +42,7 @@ function DashboardController() {
         }
     };
 
-    const handleTourClick = () => {
+    const toggleTour = () => {
         setIsTourOpen((prev) => !prev);
     };
 
@@ -81,26 +81,35 @@ function DashboardController() {
             if (stepNumber !== -1) {
                 setCurrentTourStep(stepNumber);
             }
+
             setTourDisabledActions(isDisabled);
         }
+    };
+
+    const isSoloTour = (selector) => {
+        const soloTourSelectors = [
+            '[data-tour="query-results-modal"]',
+            '[data-tour="add-researcher-modal"]',
+            '[data-tour="add-researcher-dropdown-menu"]',
+        ];
+
+        return soloTourSelectors.includes(selector);
     };
 
     const handleAlumnsChange = useCallback(
         (alumnsLength) => {
             if (alumnsLength === 0 && !isAlumnListLoading) {
                 if (!isTourOpen) {
+                    handleChangeSteps(
+                        ADD_RESEARCHER_INITIAL_STEPS,
+                        0,
+                        false,
+                        true
+                    );
                     setIsTourOpen(true);
-                    setCurrentTourStep(0);
                 }
             } else if (alumnsLength > 0) {
-                if (
-                    tourSteps[0].selector !==
-                        '[data-tour="query-results-modal"]' &&
-                    tourSteps[0].selector !==
-                        '[data-tour="add-researcher-modal"]' &&
-                    tourSteps[0].selector !==
-                        '[data-tour="add-researcher-dropdown-menu"]'
-                ) {
+                if (!isSoloTour(tourSteps[0].selector)) {
                     handleChangeSteps(
                         (prevSteps) => {
                             if (
@@ -142,7 +151,6 @@ function DashboardController() {
         }
     }, [admin.labId]);
 
-    // fetch alumns when alumns or admin changes
     useEffect(() => {
         if (admin.labId !== "") {
             memoizedAlumnFetch();
@@ -156,7 +164,7 @@ function DashboardController() {
     return (
         <DashboardContainer
             handleAlumnShowAndTourSteps={handleAlumnShowAndTourSteps}
-            handleTourClick={handleTourClick}
+            handleTourClick={toggleTour}
             handleChangeSteps={handleChangeSteps}
             handleDeleteAlumn={handleDeleteAlumn}
             alumns={alumns}
