@@ -82,6 +82,7 @@ export const ADD_RESEARCHER_DROPDOWN_MENU_STEPS = [
                 <p>Combine to tailor your query!</p>
             </div>
         ),
+        padding: { mask: [0, 0, 0, 0] },
     },
 ];
 
