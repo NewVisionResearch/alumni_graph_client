@@ -47,7 +47,7 @@ function DashboardController() {
         setIsTourOpen((prev) => !prev);
     };
 
-    const handleAlumnShowAndTourSteps = (alumn_id, full_name) => {
+    const handleAlumnShowAndTourSteps = (alumn_id, full_name, stepNumber) => {
         setAlumnShowIdAndName({ alumn_id, full_name });
         handleChangeSteps(
             (prevSteps) => {
@@ -56,11 +56,11 @@ function DashboardController() {
                 }
                 return [
                     ...ADD_RESEARCHER_INITIAL_STEPS,
-                    ...ALUMN_SHOW_STEPS,
                     ...ALUMNS_LIST_STEPS,
+                    ...ALUMN_SHOW_STEPS,
                 ];
             },
-            4,
+            stepNumber,
             false,
             false
         );
@@ -114,8 +114,9 @@ function DashboardController() {
                     handleChangeSteps(
                         (prevSteps) => {
                             if (
-                                prevSteps[prevSteps.length - 1].selector ===
-                                ".alumns-list"
+                                prevSteps.some(
+                                    (step) => step.selector === ".alumns-list"
+                                )
                             ) {
                                 return prevSteps;
                             }
@@ -133,9 +134,9 @@ function DashboardController() {
         [isAlumnListLoading, tourSteps]
     );
 
-    const handleItemClick = (alumnId, alumnFullName) => {
+    const handleItemClick = (alumnId, alumnFullName, stepNumber) => {
         setSelectedAlumnId(alumnId);
-        handleAlumnShowAndTourSteps(alumnId, alumnFullName);
+        handleAlumnShowAndTourSteps(alumnId, alumnFullName, stepNumber);
     };
 
     const memoizedAlumnFetch = useCallback(async () => {

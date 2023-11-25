@@ -121,29 +121,30 @@ export const ADD_RESEARCHER_MODAL_STEPS = [
     },
 ];
 
-export const ALUMN_SHOW_STEPS = [
-    {
-        selector: ".alumn-show",
-        content: () => (
-            <div>
-                <p>
-                    Here, you'll see the added researcher. It might take a
-                    moment for their publications to fully appear.
-                </p>
-            </div>
-        ),
-    },
-];
-
 export const ALUMNS_LIST_STEPS = [
     {
         selector: ".alumns-list",
         content: () => (
             <div>
                 <p>
-                    This is your directory of added researchers. Peruse the
-                    list, and click on any researcher to see their detailed
-                    profile on the right.
+                    Start by exploring your directory of added researchers.
+                    Click on any researcher in the list to view their detailed
+                    profile and manage their publications.
+                </p>
+            </div>
+        ),
+    },
+];
+
+export const ALUMN_SHOW_STEPS = [
+    {
+        selector: ".alumn-show",
+        content: () => (
+            <div>
+                <p>
+                    After selecting a researcher, you'll be able to see their
+                    full profile here. Manage their details or update their
+                    publications as needed.
                 </p>
             </div>
         ),

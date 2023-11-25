@@ -59,7 +59,11 @@ function AlumnsListContainer({
                             as="li"
                             action
                             onClick={() =>
-                                handleItemClick(alumn.alumn_id, alumn.full_name)
+                                handleItemClick(
+                                    alumn.alumn_id,
+                                    alumn.full_name,
+                                    5
+                                )
                             }
                         >
                             {alumn.full_name}
