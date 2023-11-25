@@ -15,6 +15,7 @@ function DashboardController() {
     const [alumnShowIdAndName, setAlumnShowIdAndName] = useState(null);
     const [isAlumnListLoading, setIsAlumnListLoading] = useState(true);
     const [progressMap, setProgressMap] = useState(new Map());
+    const [selectedAlumnId, setSelectedAlumnId] = useState(null);
 
     const {
         isOpen: isTourOpen,
@@ -132,6 +133,11 @@ function DashboardController() {
         [isAlumnListLoading, tourSteps]
     );
 
+    const handleItemClick = (alumnId, alumnFullName) => {
+        setSelectedAlumnId(alumnId);
+        handleAlumnShowAndTourSteps(alumnId, alumnFullName);
+    };
+
     const memoizedAlumnFetch = useCallback(async () => {
         setIsAlumnListLoading(true);
 
@@ -163,7 +169,7 @@ function DashboardController() {
 
     return (
         <DashboardContainer
-            handleAlumnShowAndTourSteps={handleAlumnShowAndTourSteps}
+            handleItemClick={handleItemClick}
             handleTourClick={toggleTour}
             handleChangeSteps={handleChangeSteps}
             handleDeleteAlumn={handleDeleteAlumn}
@@ -173,6 +179,7 @@ function DashboardController() {
             isAlumnListLoading={isAlumnListLoading}
             progressMap={progressMap}
             setProgressMap={setProgressMap}
+            selectedAlumnId={selectedAlumnId}
         />
     );
 }
