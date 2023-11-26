@@ -148,5 +148,75 @@ export const ALUMN_SHOW_STEPS = [
                 </p>
             </div>
         ),
+        position: "left",
+    },
+    {
+        selector: "[data-tour='alumn-show-edit-button-tour']",
+        content: () => (
+            <div>
+                <p>
+                    This section displays the selected researcher's details,
+                    including the search query that was used to find their
+                    publications. You have the option to <b>Edit Researcher</b>{" "}
+                    to refine the search query, or <b>Delete Researcher</b> if
+                    you wish to remove their profile from your list.
+                </p>
+            </div>
+        ),
+    },
+];
+
+export const EDITING_RESEARCHER_STEPS = [
+    {
+        selector: "[data-tour='edit-researcher-form-tour']",
+        content: () => (
+            <div>
+                <p>
+                    This form allows you to update the information for the
+                    selected researcher. You can modify their display name or
+                    the search query used to fetch their publications.
+                </p>
+            </div>
+        ),
+        position: "left",
+    },
+    {
+        selector: "[data-tour='edit-researcher-display-name-tour']",
+        content: () => (
+            <div>
+                <p>
+                    In this field, you can edit the researcher's display name.
+                    This name will be used on the collaboration graph and
+                    throughout the dashboard. Make sure it's accurate and
+                    recognizable.
+                </p>
+            </div>
+        ),
+    },
+    {
+        selector: "[data-tour='edit-researcher-search-query-tour']",
+        content: () => (
+            <div>
+                <p>
+                    Here you can refine the search query for the researcher's
+                    publications. Adjusting this query can help in accurately
+                    fetching the researcher's body of work from PubMed.
+                </p>
+            </div>
+        ),
+        position: "top",
+    },
+    {
+        selector: "[data-tour='edit-researcher-button-tour']",
+        content: () => (
+            <div>
+                <p>
+                    Once you've finished editing, you can choose to{" "}
+                    <b>Cancel</b> to discard any changes, or <b>Save</b> to
+                    apply them. Remember, hitting <b>Save</b> will update the
+                    information for this researcher across the dashboard.
+                </p>
+            </div>
+        ),
     },
 ];

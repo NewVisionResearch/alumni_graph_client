@@ -39,28 +39,30 @@ function AlumnShowContainer({
                 />
             ) : (
                 <>
-                    <p className="m-2">
-                        Search Query:{" "}
-                        {loading ? "Loading..." : alumn.search_query}
-                    </p>
-                    <ButtonToolbar>
-                        <Button
-                            className="button my-2 ms-2"
-                            size="md"
-                            type="button"
-                            onClick={() => handleShowEditAlumnForm()}
-                        >
-                            Edit Researcher
-                        </Button>
-                        <Button
-                            className="delete-button my-2 ms-2"
-                            size="md"
-                            type="button"
-                            onClick={() => handleRemoveAlumn()}
-                        >
-                            Delete Researcher
-                        </Button>
-                    </ButtonToolbar>
+                    <div data-tour="alumn-show-edit-button-tour">
+                        <p className="m-2">
+                            Search Query:{" "}
+                            {loading ? "Loading..." : alumn.search_query}
+                        </p>
+                        <ButtonToolbar>
+                            <Button
+                                className="button my-2 ms-2"
+                                size="md"
+                                type="button"
+                                onClick={() => handleShowEditAlumnForm()}
+                            >
+                                Edit Researcher
+                            </Button>
+                            <Button
+                                className="delete-button my-2 ms-2"
+                                size="md"
+                                type="button"
+                                onClick={() => handleRemoveAlumn()}
+                            >
+                                Delete Researcher
+                            </Button>
+                        </ButtonToolbar>
+                    </div>
                     <p className="m-2">
                         Publications (
                         {loading

@@ -20,6 +20,7 @@ function DashboardController() {
     const {
         isOpen: isTourOpen,
         steps: tourSteps,
+        currentStep: currentTourStep,
         setIsOpen: setIsTourOpen,
         setCurrentStep: setCurrentTourStep,
         setSteps: setTourSteps,
@@ -81,6 +82,10 @@ function DashboardController() {
 
             if (stepNumber !== -1) {
                 setCurrentTourStep(stepNumber);
+            } else {
+                if (currentTourStep > tourSteps.length - 1) {
+                    setCurrentTourStep(tourSteps.length - 1);
+                }
             }
 
             setTourDisabledActions(isDisabled);

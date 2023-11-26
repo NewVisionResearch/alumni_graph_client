@@ -13,12 +13,17 @@ import {
 } from "../../../services/api";
 
 import "./styles/AlumnShow.css";
+import {
+    ALUMN_SHOW_STEPS,
+    EDITING_RESEARCHER_STEPS,
+} from "../../../Constants/TourSteps";
 
 function AlumnShowController({
     alumnShowIdAndName,
     handleDeleteAlumn,
     progressMap,
     setProgressMap,
+    handleChangeSteps,
 }) {
     const showToast = useContext(ToastContext);
 
@@ -52,6 +57,55 @@ function AlumnShowController({
             alumnShowIdAndName.full_name
         );
     }
+
+    useEffect(() => {
+        if (alumnShowIdAndName) {
+            const handleShowEditAlumnFormStepsChange = (prevSteps) => {
+                if (showEditAlumnForm) {
+                    const filteredForEditing = prevSteps.filter(
+                        (step) =>
+                            !ALUMN_SHOW_STEPS.some(
+                                (alumnStep) =>
+                                    alumnStep.selector === step.selector
+                            )
+                    );
+
+                    const shouldAddEditingSteps = !prevSteps.some(
+                        (step) =>
+                            step.selector ===
+                            EDITING_RESEARCHER_STEPS[0].selector
+                    );
+
+                    return shouldAddEditingSteps
+                        ? [...filteredForEditing, ...EDITING_RESEARCHER_STEPS]
+                        : filteredForEditing;
+                } else {
+                    const filteredForAlumnShow = prevSteps.filter(
+                        (step) =>
+                            !EDITING_RESEARCHER_STEPS.some(
+                                (editStep) =>
+                                    editStep.selector === step.selector
+                            )
+                    );
+                    const shouldAddAlumnSteps = !prevSteps.some(
+                        (step) => step.selector === ALUMN_SHOW_STEPS[0].selector
+                    );
+                    return shouldAddAlumnSteps
+                        ? [...filteredForAlumnShow, ...ALUMN_SHOW_STEPS]
+                        : filteredForAlumnShow;
+                }
+            };
+
+            handleChangeSteps(
+                handleShowEditAlumnFormStepsChange,
+                -1,
+                false,
+                true
+            );
+        }
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [showEditAlumnForm, alumnShowIdAndName]);
 
     useEffect(() => {
         if (alumnShowIdAndName) {

@@ -66,6 +66,7 @@ function DashboardContainer({
                             handleDeleteAlumn={handleDeleteAlumn}
                             progressMap={progressMap}
                             setProgressMap={setProgressMap}
+                            handleChangeSteps={handleChangeSteps}
                         />
                     </Col>
                 </Row>
