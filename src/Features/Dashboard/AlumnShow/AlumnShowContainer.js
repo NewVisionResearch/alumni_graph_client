@@ -63,7 +63,7 @@ function AlumnShowContainer({
                             </Button>
                         </ButtonToolbar>
                     </div>
-                    <p className="m-2">
+                    <p className="m-2" data-tour="publications-count-tour">
                         Publications (
                         {loading
                             ? "Loading..."
@@ -100,7 +100,7 @@ function AlumnShowContainer({
                             ))}
                         </ListGroup>
                     )}
-                    <ButtonToolbar>
+                    <ButtonToolbar data-tour="alumn-show-buttons-tour">
                         <Button
                             className="button my-2 ms-2"
                             type="button"

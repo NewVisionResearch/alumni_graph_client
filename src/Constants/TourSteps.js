@@ -163,6 +163,53 @@ export const ALUMN_SHOW_STEPS = [
                 </p>
             </div>
         ),
+        position: "left",
+    },
+    {
+        selector: "[data-tour='publications-count-tour']",
+        content: () => (
+            <div>
+                <p>
+                    This figure represents the number of publications currently
+                    linked to the researcher in your dashboard.
+                </p>
+            </div>
+        ),
+        position: "left",
+    },
+    {
+        selector: ".alumn-show-list",
+        content: () => (
+            <div>
+                <p>
+                    This list shows the researcher's publications. Uncheck a
+                    publication to hide it from the graph. Click <b>Delete</b>{" "}
+                    to permanently remove it from this profile. To retrieve it
+                    again, you'll need to use the <b>Fetch New Publications</b>{" "}
+                    feature.
+                </p>
+            </div>
+        ),
+        position: "left",
+    },
+    {
+        selector: "[data-tour='alumn-show-buttons-tour']",
+        content: () => (
+            <div>
+                <p>
+                    Click <b>Update Publications</b> to apply changes after
+                    checking or unchecking publications. This will adjust which
+                    publications are displayed for this researcher in the graph.
+                </p>
+                <p>
+                    Click <b>Fetch New Publications</b> to retrieve the most
+                    recent publications based on the researcher's search query.
+                    This is useful for adding new publications or refreshing the
+                    current list.
+                </p>
+            </div>
+        ),
+        position: "left",
     },
 ];
 
