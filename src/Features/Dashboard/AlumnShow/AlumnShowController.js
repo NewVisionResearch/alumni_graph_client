@@ -334,6 +334,7 @@ function AlumnShowController({
             );
 
             if (!res.ok) throw res;
+            handleChangeSteps((prevSteps) => prevSteps, 8, false, false);
             setLoading(true);
 
             const { job_id } = await res.json();

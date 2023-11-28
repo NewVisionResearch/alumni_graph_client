@@ -178,7 +178,7 @@ export const ALUMN_SHOW_STEPS = [
         position: "left",
     },
     {
-        selector: ".alumn-show-list",
+        selector: ".alumn-show-list-container",
         content: () => (
             <div>
                 <p>
@@ -190,7 +190,9 @@ export const ALUMN_SHOW_STEPS = [
                 </p>
             </div>
         ),
+        padding: { mask: [5, 10, 5, 10] },
         position: "left",
+        mutationObservables: [".alumn-show-list"],
     },
     {
         selector: "[data-tour='alumn-show-buttons-tour']",
