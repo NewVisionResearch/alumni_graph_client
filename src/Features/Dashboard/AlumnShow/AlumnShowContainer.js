@@ -39,66 +39,72 @@ function AlumnShowContainer({
                 />
             ) : (
                 <>
-                    <p className="m-2">
-                        Search Query:{" "}
-                        {loading ? "Loading..." : alumn.search_query}
-                    </p>
-                    <ButtonToolbar>
-                        <Button
-                            className="button my-2 ms-2"
-                            size="md"
-                            type="button"
-                            onClick={() => handleShowEditAlumnForm()}
-                        >
-                            Edit Researcher
-                        </Button>
-                        <Button
-                            className="delete-button my-2 ms-2"
-                            size="md"
-                            type="button"
-                            onClick={() => handleRemoveAlumn()}
-                        >
-                            Delete Researcher
-                        </Button>
-                    </ButtonToolbar>
-                    <p className="m-2">
+                    <div data-tour="alumn-show-edit-button-tour">
+                        <p className="m-2">
+                            Search Query:{" "}
+                            {loading ? "Loading..." : alumn.search_query}
+                        </p>
+                        <ButtonToolbar>
+                            <Button
+                                className="button my-2 ms-2"
+                                size="md"
+                                type="button"
+                                onClick={() => handleShowEditAlumnForm()}
+                            >
+                                Edit Researcher
+                            </Button>
+                            <Button
+                                className="delete-button my-2 ms-2"
+                                size="md"
+                                type="button"
+                                onClick={() => handleRemoveAlumn()}
+                            >
+                                Delete Researcher
+                            </Button>
+                        </ButtonToolbar>
+                    </div>
+                    <p className="m-2" data-tour="publications-count-tour">
                         Publications (
                         {loading
                             ? "Loading..."
                             : alumn.my_alumn_publications.length}
                         ):
                     </p>
-                    {loading ? (
-                        <Loading
-                            key={alumn.full_name}
-                            progressMapData={progressMap.get(alumn.full_name)}
-                        />
-                    ) : (
-                        <ListGroup as="ul" className="alumn-show-list">
-                            {sortByTwoFns(
-                                byDate,
-                                byCoAuthors,
-                                alumn.my_alumn_publications
-                            ).map((alumn_pub, idx) => (
-                                <ListGroup.Item
-                                    key={`${alumn_pub.alumn_publication_id}_${idx}`}
-                                    as="li"
-                                    className="mb-2"
-                                >
-                                    <></>
-                                    <PublicationDisplayCheck
-                                        alumnName={alumn.search_query}
-                                        alumn_publication={alumn_pub}
-                                        updateIdArray={updateIdArray}
-                                        handleDeletePublication={
-                                            handleDeletePublication
-                                        }
-                                    />
-                                </ListGroup.Item>
-                            ))}
-                        </ListGroup>
-                    )}
-                    <ButtonToolbar>
+                    <div className="alumn-show-list-container">
+                        {loading ? (
+                            <Loading
+                                key={alumn.full_name}
+                                progressMapData={progressMap.get(
+                                    alumn.full_name
+                                )}
+                            />
+                        ) : (
+                            <ListGroup as="ul" className="alumn-show-list">
+                                {sortByTwoFns(
+                                    byDate,
+                                    byCoAuthors,
+                                    alumn.my_alumn_publications
+                                ).map((alumn_pub, idx) => (
+                                    <ListGroup.Item
+                                        key={`${alumn_pub.alumn_publication_id}_${idx}`}
+                                        as="li"
+                                        className="mb-2"
+                                    >
+                                        <></>
+                                        <PublicationDisplayCheck
+                                            alumnName={alumn.search_query}
+                                            alumn_publication={alumn_pub}
+                                            updateIdArray={updateIdArray}
+                                            handleDeletePublication={
+                                                handleDeletePublication
+                                            }
+                                        />
+                                    </ListGroup.Item>
+                                ))}
+                            </ListGroup>
+                        )}
+                    </div>
+                    <ButtonToolbar data-tour="alumn-show-buttons-tour">
                         <Button
                             className="button my-2 ms-2"
                             type="button"

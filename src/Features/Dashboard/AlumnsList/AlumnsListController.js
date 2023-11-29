@@ -4,11 +4,11 @@ import AlumnsListContainer from "./AlumnsListContainer";
 
 function AlumnsListController({
     alumns,
-    handleAlumnShowAndTourSteps,
+    handleItemClick,
     isAlumnListLoading,
+    selectedAlumnId,
 }) {
     const [searchTerm, setSearchTerm] = useState("");
-    const [selectedAlumnId, setSelectedAlumnId] = useState(null);
 
     let filteredAlumns = [];
     let showNoResultFoundListItem = false;
@@ -33,11 +33,6 @@ function AlumnsListController({
     } else {
         showPleaseAddResearchersListItem = false;
     }
-
-    const handleItemClick = (alumnId, alumnFullName) => {
-        setSelectedAlumnId(alumnId);
-        handleAlumnShowAndTourSteps(alumnId, alumnFullName);
-    };
 
     return (
         <AlumnsListContainer

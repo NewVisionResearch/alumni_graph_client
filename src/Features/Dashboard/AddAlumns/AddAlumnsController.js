@@ -30,7 +30,7 @@ import "./styles/AddAlumns.css";
 function AddAlumnsController({
     alumns,
     setAlumns,
-    handleAlumnShowAndTourSteps,
+    handleItemClick,
     setProgressMap,
     handleChangeSteps,
 }) {
@@ -260,7 +260,7 @@ function AddAlumnsController({
                 newMap.set(full_name, {});
                 return newMap;
             });
-            handleAlumnShowAndTourSteps(alumn_id, full_name);
+            handleItemClick(alumn_id, full_name, 4);
             handleAddAlumnModalClose();
 
             initializeEventSource(job_id, full_name);

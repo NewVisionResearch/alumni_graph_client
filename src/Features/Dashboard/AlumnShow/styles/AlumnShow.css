@@ -10,5 +10,8 @@
 
 .alumn-show-list {
     margin: 1em;
+}
+
+.alumn-show-list-container {
     overflow-y: scroll;
 }

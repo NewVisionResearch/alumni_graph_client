@@ -15,10 +15,12 @@ function DashboardController() {
     const [alumnShowIdAndName, setAlumnShowIdAndName] = useState(null);
     const [isAlumnListLoading, setIsAlumnListLoading] = useState(true);
     const [progressMap, setProgressMap] = useState(new Map());
+    const [selectedAlumnId, setSelectedAlumnId] = useState(null);
 
     const {
         isOpen: isTourOpen,
         steps: tourSteps,
+        currentStep: currentTourStep,
         setIsOpen: setIsTourOpen,
         setCurrentStep: setCurrentTourStep,
         setSteps: setTourSteps,
@@ -42,11 +44,11 @@ function DashboardController() {
         }
     };
 
-    const handleTourClick = () => {
+    const toggleTour = () => {
         setIsTourOpen((prev) => !prev);
     };
 
-    const handleAlumnShowAndTourSteps = (alumn_id, full_name) => {
+    const handleAlumnShowAndTourSteps = (alumn_id, full_name, stepNumber) => {
         setAlumnShowIdAndName({ alumn_id, full_name });
         handleChangeSteps(
             (prevSteps) => {
@@ -55,11 +57,11 @@ function DashboardController() {
                 }
                 return [
                     ...ADD_RESEARCHER_INITIAL_STEPS,
-                    ...ALUMN_SHOW_STEPS,
                     ...ALUMNS_LIST_STEPS,
+                    ...ALUMN_SHOW_STEPS,
                 ];
             },
-            4,
+            stepNumber,
             false,
             false
         );
@@ -80,32 +82,46 @@ function DashboardController() {
 
             if (stepNumber !== -1) {
                 setCurrentTourStep(stepNumber);
+            } else {
+                if (currentTourStep > tourSteps.length - 1) {
+                    setCurrentTourStep(tourSteps.length - 1);
+                }
             }
+
             setTourDisabledActions(isDisabled);
         }
+    };
+
+    const isSoloTour = (selector) => {
+        const soloTourSelectors = [
+            '[data-tour="query-results-modal"]',
+            '[data-tour="add-researcher-modal"]',
+            '[data-tour="add-researcher-dropdown-menu"]',
+        ];
+
+        return soloTourSelectors.includes(selector);
     };
 
     const handleAlumnsChange = useCallback(
         (alumnsLength) => {
             if (alumnsLength === 0 && !isAlumnListLoading) {
                 if (!isTourOpen) {
+                    handleChangeSteps(
+                        ADD_RESEARCHER_INITIAL_STEPS,
+                        0,
+                        false,
+                        true
+                    );
                     setIsTourOpen(true);
-                    setCurrentTourStep(0);
                 }
             } else if (alumnsLength > 0) {
-                if (
-                    tourSteps[0].selector !==
-                        '[data-tour="query-results-modal"]' &&
-                    tourSteps[0].selector !==
-                        '[data-tour="add-researcher-modal"]' &&
-                    tourSteps[0].selector !==
-                        '[data-tour="add-researcher-dropdown-menu"]'
-                ) {
+                if (!isSoloTour(tourSteps[0].selector)) {
                     handleChangeSteps(
                         (prevSteps) => {
                             if (
-                                prevSteps[prevSteps.length - 1].selector ===
-                                ".alumns-list"
+                                prevSteps.some(
+                                    (step) => step.selector === ".alumns-list"
+                                )
                             ) {
                                 return prevSteps;
                             }
@@ -122,6 +138,11 @@ function DashboardController() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
         [isAlumnListLoading, tourSteps]
     );
+
+    const handleItemClick = (alumnId, alumnFullName, stepNumber) => {
+        setSelectedAlumnId(alumnId);
+        handleAlumnShowAndTourSteps(alumnId, alumnFullName, stepNumber);
+    };
 
     const memoizedAlumnFetch = useCallback(async () => {
         setIsAlumnListLoading(true);
@@ -142,7 +163,6 @@ function DashboardController() {
         }
     }, [admin.labId]);
 
-    // fetch alumns when alumns or admin changes
     useEffect(() => {
         if (admin.labId !== "") {
             memoizedAlumnFetch();
@@ -155,8 +175,8 @@ function DashboardController() {
 
     return (
         <DashboardContainer
-            handleAlumnShowAndTourSteps={handleAlumnShowAndTourSteps}
-            handleTourClick={handleTourClick}
+            handleItemClick={handleItemClick}
+            handleTourClick={toggleTour}
             handleChangeSteps={handleChangeSteps}
             handleDeleteAlumn={handleDeleteAlumn}
             alumns={alumns}
@@ -165,6 +185,7 @@ function DashboardController() {
             isAlumnListLoading={isAlumnListLoading}
             progressMap={progressMap}
             setProgressMap={setProgressMap}
+            selectedAlumnId={selectedAlumnId}
         />
     );
 }

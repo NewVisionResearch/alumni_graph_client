@@ -12,7 +12,7 @@ import AlumnsListController from "./AlumnsList/AlumnsListController";
 import "./styles/Dashboard.css";
 
 function DashboardContainer({
-    handleAlumnShowAndTourSteps,
+    handleItemClick,
     handleTourClick,
     handleChangeSteps,
     handleDeleteAlumn,
@@ -22,6 +22,7 @@ function DashboardContainer({
     isAlumnListLoading,
     progressMap,
     setProgressMap,
+    selectedAlumnId,
 }) {
     return (
         <div className="dashboard">
@@ -39,9 +40,7 @@ function DashboardContainer({
                                     <AddAlumnsController
                                         alumns={alumns}
                                         setAlumns={setAlumns}
-                                        handleAlumnShowAndTourSteps={
-                                            handleAlumnShowAndTourSteps
-                                        }
+                                        handleItemClick={handleItemClick}
                                         setProgressMap={setProgressMap}
                                         handleChangeSteps={handleChangeSteps}
                                     />
@@ -52,10 +51,9 @@ function DashboardContainer({
                                     {/* Content for the second row in the left column */}
                                     <AlumnsListController
                                         alumns={alumns}
-                                        handleAlumnShowAndTourSteps={
-                                            handleAlumnShowAndTourSteps
-                                        }
+                                        handleItemClick={handleItemClick}
                                         isAlumnListLoading={isAlumnListLoading}
+                                        selectedAlumnId={selectedAlumnId}
                                     />
                                 </Col>
                             </Row>
@@ -68,6 +66,7 @@ function DashboardContainer({
                             handleDeleteAlumn={handleDeleteAlumn}
                             progressMap={progressMap}
                             setProgressMap={setProgressMap}
+                            handleChangeSteps={handleChangeSteps}
                         />
                     </Col>
                 </Row>

@@ -82,6 +82,7 @@ export const ADD_RESEARCHER_DROPDOWN_MENU_STEPS = [
                 <p>Combine to tailor your query!</p>
             </div>
         ),
+        padding: { mask: [0, 0, 0, 0] },
     },
 ];
 
@@ -120,29 +121,149 @@ export const ADD_RESEARCHER_MODAL_STEPS = [
     },
 ];
 
-export const ALUMN_SHOW_STEPS = [
-    {
-        selector: ".alumn-show",
-        content: () => (
-            <div>
-                <p>
-                    Here, you'll see the added researcher. It might take a
-                    moment for their publications to fully appear.
-                </p>
-            </div>
-        ),
-    },
-];
-
 export const ALUMNS_LIST_STEPS = [
     {
         selector: ".alumns-list",
         content: () => (
             <div>
                 <p>
-                    This is your directory of added researchers. Peruse the
-                    list, and click on any researcher to see their detailed
-                    profile on the right.
+                    Start by exploring your directory of added researchers.
+                    Click on any researcher in the list to view their detailed
+                    profile and manage their publications.
+                </p>
+            </div>
+        ),
+    },
+];
+
+export const ALUMN_SHOW_STEPS = [
+    {
+        selector: ".alumn-show",
+        content: () => (
+            <div>
+                <p>
+                    After selecting a researcher, you'll be able to see their
+                    full profile here. Manage their details or update their
+                    publications as needed.
+                </p>
+            </div>
+        ),
+        position: "left",
+    },
+    {
+        selector: "[data-tour='alumn-show-edit-button-tour']",
+        content: () => (
+            <div>
+                <p>
+                    This section displays the selected researcher's details,
+                    including the search query that was used to find their
+                    publications. You have the option to <b>Edit Researcher</b>{" "}
+                    to refine the search query, or <b>Delete Researcher</b> if
+                    you wish to remove their profile from your list.
+                </p>
+            </div>
+        ),
+        position: "left",
+    },
+    {
+        selector: "[data-tour='publications-count-tour']",
+        content: () => (
+            <div>
+                <p>
+                    This figure represents the number of publications currently
+                    linked to the researcher in your dashboard.
+                </p>
+            </div>
+        ),
+        position: "left",
+    },
+    {
+        selector: ".alumn-show-list-container",
+        content: () => (
+            <div>
+                <p>
+                    This list shows the researcher's publications. Uncheck a
+                    publication to hide it from the graph. Click <b>Delete</b>{" "}
+                    to permanently remove it from this profile. To retrieve it
+                    again, you'll need to use the <b>Fetch New Publications</b>{" "}
+                    feature.
+                </p>
+            </div>
+        ),
+        padding: { mask: [5, 10, 5, 10] },
+        position: "left",
+        mutationObservables: [".alumn-show-list"],
+    },
+    {
+        selector: "[data-tour='alumn-show-buttons-tour']",
+        content: () => (
+            <div>
+                <p>
+                    Click <b>Update Publications</b> to apply changes after
+                    checking or unchecking publications. This will adjust which
+                    publications are displayed for this researcher in the graph.
+                </p>
+                <p>
+                    Click <b>Fetch New Publications</b> to retrieve the most
+                    recent publications based on the researcher's search query.
+                    This is useful for adding new publications or refreshing the
+                    current list.
+                </p>
+            </div>
+        ),
+        position: "left",
+    },
+];
+
+export const EDITING_RESEARCHER_STEPS = [
+    {
+        selector: "[data-tour='edit-researcher-form-tour']",
+        content: () => (
+            <div>
+                <p>
+                    This form allows you to update the information for the
+                    selected researcher. You can modify their display name or
+                    the search query used to fetch their publications.
+                </p>
+            </div>
+        ),
+        position: "left",
+    },
+    {
+        selector: "[data-tour='edit-researcher-display-name-tour']",
+        content: () => (
+            <div>
+                <p>
+                    In this field, you can edit the researcher's display name.
+                    This name will be used on the collaboration graph and
+                    throughout the dashboard. Make sure it's accurate and
+                    recognizable.
+                </p>
+            </div>
+        ),
+    },
+    {
+        selector: "[data-tour='edit-researcher-search-query-tour']",
+        content: () => (
+            <div>
+                <p>
+                    Here you can refine the search query for the researcher's
+                    publications. Adjusting this query can help in accurately
+                    fetching the researcher's body of work from PubMed.
+                </p>
+            </div>
+        ),
+        position: "top",
+    },
+    {
+        selector: "[data-tour='edit-researcher-button-tour']",
+        content: () => (
+            <div>
+                <p>
+                    Once you've finished editing, you can choose to{" "}
+                    <b>Cancel</b> to discard any changes, or <b>Save</b> to
+                    apply them. Remember, hitting <b>Save</b> will update the
+                    information for this researcher across the dashboard.
                 </p>
             </div>
         ),
