@@ -23,6 +23,11 @@ function GraphController({ impactMode }) {
     const [gData, setGData] = useState({ nodes: [], links: [] });
     const [isGraphLoading, setIsGraphLoading] = useState(true);
 
+    const [maxCount, setMaxCount] = useState({
+        maxUniqueCollaborationCount: 1,
+        maxCollaborationCount: 1,
+    });
+
     const headerMode = admin.email !== "";
 
     useEffect(() => {
@@ -65,68 +70,112 @@ function GraphController({ impactMode }) {
         };
     }, [labId]);
 
-    useEffect(() => {
-        function uniqueIds(array) {
-            array = array.map((p) => p.joins.map((j) => j)).flat();
-            let obj = {};
-            for (let i = 0; i < array.length; i++) {
-                if (!array[i]) continue;
-                if (obj[array[i].display_name]) {
-                    continue;
-                } else {
-                    obj[array[i].display_name] = array[i];
+    /**
+     * Creates graph nodes and links from publication data. Each node represents an author,
+     * and each link represents a collaboration between authors, counted by their joint publications.
+     *
+     * @param {Array<Object>} publications - The publications data, each with a joins array indicating co-authors.
+     * @returns {{nodes: Array<Object>, links: Array<Object>}} An object containing arrays of nodes and links for the graph.
+     */
+    function createNodesAndLinks(publications) {
+        const authors = new Map(); // Maps display_name to node data
+        const collaborations = new Map(); // Maps author pairs to collaboration data
+
+        let nodesAndLinks = {};
+
+        // Process each publication to update authors and collaborations
+        publications.forEach((pub) => {
+            const { joins } = pub;
+
+            // Create all possible pairs of authors from each publication
+            for (let i = 0; i < joins.length; i++) {
+                const authorKey = joins[i].display_name;
+                if (!authors.has(authorKey)) {
+                    authors.set(authorKey, {
+                        id: authorKey,
+                        alumn_id: joins[i].alumn_id,
+                        uniqueCollaborationCount: 0,
+                    });
+                }
+
+                for (let j = i + 1; j < joins.length; j++) {
+                    const authorPairKey = [joins[i].alumn_id, joins[j].alumn_id]
+                        .sort((a, b) => a - b)
+                        .join("-");
+                    const link = [joins[i].display_name, joins[j].display_name]
+                        .sort()
+                        .join("*");
+
+                    let collab = collaborations.get(authorPairKey) || {
+                        link: link,
+                        collaborationCount: 0,
+                    };
+
+                    collaborations.set(authorPairKey, {
+                        ...collab,
+                        collaborationCount: collab.collaborationCount + 1,
+                    });
                 }
             }
+        });
 
-            return Object.values(obj);
-        }
+        // Convert collaboration data into links and update author counts
+        let links = [];
+        let sortedCollaborationsbyCount;
+        let sortedAuthorsByCount;
 
-        function createPairs(array) {
-            let resArray = [];
-            let obj = {};
-            array = array.map((obj) => obj.joins);
+        sortedCollaborationsbyCount = new Map(
+            [...collaborations].sort(
+                (a, b) => a[1].collaborationCount - b[1].collaborationCount
+            )
+        );
 
-            for (let i = 0; i < array.length; i++) {
-                for (let j = 0; j < array[i].length; j++) {
-                    if (!array[i][j]) continue;
-                    obj[array[i][j].display_name] =
-                        obj[array[i][j].display_name] || [];
-                    for (let k = 0; k < array[i].length; k++) {
-                        if (!array[i][k]) continue;
-                        if (
-                            array[i][j].display_name ===
-                            array[i][k].display_name
-                        ) {
-                            continue;
-                        }
-                        if (
-                            obj[array[i][j].display_name].includes(
-                                array[i][k].display_name
-                            )
-                        ) {
-                            continue;
-                        } else {
-                            obj[array[i][j].display_name].push(
-                                array[i][k].display_name
-                            );
-                            resArray.push([array[i][j], array[i][k]]);
-                        }
-                    }
-                }
+        sortedCollaborationsbyCount.forEach(
+            ({ link, collaborationCount }, _pairKey) => {
+                const [source, target] = link.split("*");
+
+                links.push({
+                    source: source,
+                    target: target,
+                    collaborationCount: collaborationCount,
+                });
+
+                authors.get(source).uniqueCollaborationCount += 1;
+                authors.get(target).uniqueCollaborationCount += 1;
             }
+        );
 
-            return resArray;
-        }
-        const data = {
-            nodes: uniqueIds(publications).map((alumn) => ({
-                id: alumn.display_name,
-                alumn_id: alumn.alumn_id,
-            })),
-            links: createPairs(publications).map((arr) => ({
-                source: arr[0].display_name,
-                target: arr[1].display_name,
-            })),
+        sortedAuthorsByCount = new Map(
+            [...authors].sort(
+                (a, b) =>
+                    a[1].uniqueCollaborationCount -
+                    b[1].uniqueCollaborationCount
+            )
+        );
+
+        setMaxCount({
+            maxCollaborationCount: Array.from(
+                sortedCollaborationsbyCount.values()
+            )[sortedCollaborationsbyCount.size - 1]?.collaborationCount,
+            maxUniqueCollaborationCount: Array.from(
+                sortedAuthorsByCount.values()
+            )[sortedAuthorsByCount.size - 1]?.uniqueCollaborationCount,
+        });
+
+        nodesAndLinks = {
+            nodes: Array.from(sortedAuthorsByCount.values()),
+            links: links,
         };
+
+        return nodesAndLinks;
+    }
+
+    // Effect hook to process publications into graph data
+    useEffect(() => {
+        /**
+         * Handles the processing of publications to create nodes and links for the graph visualization.
+         */
+        const data = createNodesAndLinks(publications);
 
         setGData(data);
     }, [publications]);
@@ -140,65 +189,82 @@ function GraphController({ impactMode }) {
             graphInstance
                 .graphData(gData)
                 .nodeCanvasObject((node, ctx, globalScale) => {
-                    const label = node.id.trim();
-                    const fontSize = 10;
+                    const baseFontSize = 15;
+                    const baseRadiusSize = 15;
 
-                    ctx.font = `${fontSize}px Sans-Serif`;
-                    // const textWidth = ctx.measureText(label).width;
+                    // Calculate scale adjustments based on globalScale
+                    const linearScaleAdjustment = (coefficient) =>
+                        (1 + coefficient / globalScale) / (coefficient + 1); // Decreases as you zoom in
 
-                    // TODO: replace 80 with textWidth if necessary
-                    const bckgDimensions = [80, fontSize].map(
-                        (n) => n + fontSize * 0.5
-                    ); // some padding
+                    // Calculate significance adjustment based on uniqueCollaborationCount
+                    const collaborationAdjustment = (coefficient) =>
+                        (1 +
+                            (node.uniqueCollaborationCount /
+                                maxCount.maxUniqueCollaborationCount) *
+                                coefficient) /
+                        (coefficient + 1);
 
-                    ctx.fillStyle = "rgba(255, 255, 255, 1)";
+                    // Adjust font and radius size based on global scale and node significance
+                    const fontSize =
+                        baseFontSize *
+                        linearScaleAdjustment(1) *
+                        collaborationAdjustment(1); // Adjust font size based on zoom level
+                    const radius =
+                        baseRadiusSize *
+                        linearScaleAdjustment(0.5) *
+                        collaborationAdjustment(1) *
+                        3; // Multiplying by 3 for more significant size difference
+                    node.radius = radius;
+
+                    ctx.fillStyle = "rgba(255, 255, 255, .9)"; // Semi-transparent white background for readability
                     ctx.beginPath();
-                    // TODO: replace 80 with textWidth if necessary
-                    ctx.arc(
-                        node.x,
-                        node.y,
-                        (80 / fontSize) * 4.25,
-                        0,
-                        2 * Math.PI,
-                        false
-                    );
+                    ctx.arc(node.x, node.y, radius, 0, 2 * Math.PI, false);
                     ctx.fill();
 
+                    ctx.strokeStyle = "#00b092"; // NVR Teal
                     ctx.lineWidth = 2;
-                    ctx.strokeStyle = "rgb(77, 172, 147)";
                     ctx.stroke();
 
                     ctx.textAlign = "center";
+                    ctx.textBaseLine = "middle";
+                    ctx.fillStyle = "#00b092"; // NVR Teal
+                    ctx.font = `${fontSize}px Sans-Serif`;
 
-                    ctx.fillStyle = "rgb(77, 172, 147)";
-                    let splitLabel = label.split(" ");
-                    let n = splitLabel.length;
-                    let height =
-                        ctx.measureText(label).fontBoundingBoxAscent +
-                        ctx.measureText(label).fontBoundingBoxDescent;
-                    let start = height * 1.5;
-                    // determine line height based on number of lines
-                    if (n > 2) {
-                        ctx.textBaseline = "top";
-                        splitLabel.forEach((l) => {
-                            ctx.fillText(l, node.x, node.y - start);
-                            start -= height * 1.25;
-                        });
-                    } else {
-                        ctx.textBaseline = "bottom";
-                        splitLabel.forEach((l) => {
-                            ctx.fillText(l, node.x, node.y - start + 16);
-                            start -= start / 1.25;
-                        });
-                    }
+                    const label = node.id.trim();
+                    const splitLabel = label.split(" ");
+                    const numberOfLines = splitLabel.length;
+                    const ctxTextMetrics = ctx.measureText("M"); // Measure a sample character for height approximation.
+                    const lineHeight =
+                        1.25 *
+                        (ctxTextMetrics.fontBoundingBoxAscent +
+                            ctxTextMetrics.fontBoundingBoxDescent);
+                    const totalHeight = lineHeight * numberOfLines;
+                    let startY = node.y - totalHeight / 2 + lineHeight / 2; // Start Y position adjusted for centering.
 
-                    node.__bckgDimensions = bckgDimensions; // to re-use in nodePointerAreaPaint
+                    ctx.textBaseLine = "middle"; // Set baseline to middle, aligning text around its center.
+                    splitLabel.forEach((line, index) => {
+                        let yPos = startY + index * lineHeight;
+                        ctx.fillText(line, node.x, yPos);
+                    });
                 })
-                .linkColor((link) => "rgb(73, 50, 123)")
-                .nodeRelSize(25)
-                .backgroundColor("rgb(255, 255, 255)")
+                .linkColor((_link) => "#4f2d7f") // NVR Purple
+                .linkWidth(
+                    (link) =>
+                        1 +
+                        (link.collaborationCount /
+                            maxCount.maxCollaborationCount) *
+                            10
+                ) // Scaling link width
                 .width(graphWidth)
                 .height(graphHeight)
+                .nodePointerAreaPaint((node, color, ctx, _globalScale) => {
+                    const size = node.radius || 10;
+
+                    ctx.beginPath();
+                    ctx.arc(node.x, node.y, size, 0, 2 * Math.PI, false);
+                    ctx.fillStyle = color;
+                    ctx.fill();
+                })
                 .onNodeHover(
                     (node) =>
                         (graphElement.style.cursor = node ? "pointer" : null)
@@ -212,7 +278,7 @@ function GraphController({ impactMode }) {
                                 window.innerWidth <= 425 ? node.y + 25 : node.y,
                                 1000
                             );
-                            graphInstance.zoom(decideZoomOnClick(), 1000);
+                            graphInstance.zoom(decideZoomOnClick(), 2000);
                             setAlumnId(node.alumn_id);
                         }
                         return;
@@ -222,30 +288,33 @@ function GraphController({ impactMode }) {
                         window.innerWidth <= 425 ? node.y + 25 : node.y,
                         1000
                     );
-                    graphInstance.zoom(decideZoomOnClick(), 1000);
+                    graphInstance.zoom(decideZoomOnClick(), 2000);
                     setAlumnId(node.alumn_id);
                 })
                 .onNodeDragEnd((node) => {
                     node.fx = node.x;
                     node.fy = node.y;
                 })
-                .zoom(0.55, 500)
+                .zoom(1, 2000)
                 .dagMode("radialout")
                 .onDagError(() => {});
-        // .centerAt(750, 0, 1000)
 
         if (graphInstance) {
-            graphInstance.d3Force("charge").strength(-7500);
-            graphInstance.d3Force("center").x(0).y(-40); //.strength(0.05)
-            // graphInstance.d3Force("link");
-            graphInstance.d3Force("gravity");
+            graphInstance.d3Force("charge").strength(-2500);
+            graphInstance.d3Force("center").strength(0.05);
+            // graphInstance
+            //     .d3Force("link")
+            //     .strength(
+            //         (link) =>
+            //             link.collaborationCount / maxCount.maxCollaborationCount
+            //     );
         }
-    }, [gData, graphInstance]);
+    }, [gData, graphInstance, maxCount]);
 
     const closeModal = () => {
         setAlumnId(null);
-        graphInstance.centerAt(0, -40, 1000);
-        graphInstance.zoom(0.55, 1000);
+        graphInstance.centerAt(0, 0, 2000);
+        graphInstance.zoom(1, 2000);
     };
 
     return (
