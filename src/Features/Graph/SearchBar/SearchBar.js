@@ -16,8 +16,8 @@ export default function SearchBar({ graph, nodes, setAlumnId }) {
         setSearchTerm("");
 
         graph.centerAt(
-            window.innerWidth <= 425 ? x : x + 75,
-            window.innerWidth <= 425 ? y + 25 : y,
+            x + (window.innerWidth < 425 ? 0 : 50),
+            y + (window.innerHeight < 425 ? 25 : 0),
             1000
         );
         graph.zoom(decideZoomOnClick(), 1000);

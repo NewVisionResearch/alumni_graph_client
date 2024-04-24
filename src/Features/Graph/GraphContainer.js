@@ -1,4 +1,4 @@
-function GraphContainer({ headerMode, impactMode }) {
+function GraphContainer({ headerMode, impactMode, children }) {
     return (
         <div
             id="graph"
@@ -9,7 +9,9 @@ function GraphContainer({ headerMode, impactMode }) {
                     headerMode && !impactMode ? "calc(100vh - 104px)" : "100vh",
                 boxSizing: "border-box",
             }}
-        ></div>
+        >
+            {children}
+        </div>
     );
 }
 

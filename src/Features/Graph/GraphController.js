@@ -1,8 +1,8 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useRef, useCallback } from "react";
 import { Link, useParams } from "react-router-dom";
 import Image from "react-bootstrap/Image";
 import Nav from "react-bootstrap/Nav";
-import ForceGraph from "force-graph";
+import ForceGraph2D from "react-force-graph-2d";
 
 import GraphAlumnDetailsModalController from "./GraphAlumnDetailsModal/GraphAlumnDetailsModalController";
 import SearchBar from "./SearchBar/SearchBar";
@@ -16,67 +16,51 @@ import "./styles/Graph.css";
 function GraphController({ impactMode }) {
     const admin = useContext(AdminContext);
     const { labId } = useParams();
+    const fgRef = useRef(); // Create a ref for accessing the graph component
 
-    const [graphInstance, setGraphInstance] = useState(null);
-    const [publications, setPublications] = useState([]);
-    const [alumnId, setAlumnId] = useState(null);
-    const [gData, setGData] = useState({ nodes: [], links: [] });
     const [isGraphLoading, setIsGraphLoading] = useState(true);
-
+    const [publications, setPublications] = useState([]);
+    const [gData, setGData] = useState({ nodes: [], links: [] });
+    const [alumnId, setAlumnId] = useState(null);
     const [maxCount, setMaxCount] = useState({
         maxUniqueCollaborationCount: 1,
         maxCollaborationCount: 1,
+    });
+    const [graphDimensions, setGraphDimensions] = useState({
+        width: window.innerWidth,
+        height: window.innerHeight,
     });
 
     const headerMode = admin.email !== "";
 
     useEffect(() => {
-        const graphElement = document.getElementById("graph");
-        if (graphElement) {
-            const graph = ForceGraph()(graphElement);
-            setGraphInstance((prev) => (prev = graph));
-        }
-    }, []);
+        const controller = new AbortController();
 
-    useEffect(() => {
-        const handleResize = () => {
-            const graphElement = document.getElementById("graph");
-            if (graphInstance) {
-                graphInstance
-                    .width(graphElement.clientWidth)
-                    .height(graphElement.clientHeight);
+        const fetchPublications = async () => {
+            setIsGraphLoading(true);
+
+            try {
+                const response = await fetchGraphPublications(
+                    labId,
+                    controller.signal
+                );
+                const data = await response.json();
+
+                setPublications(data);
+            } catch (error) {
+                console.error(error);
+            } finally {
+                setIsGraphLoading(false);
             }
         };
 
-        window.addEventListener("resize", handleResize);
-
-        return () => window.removeEventListener("resize", handleResize);
-    }, [graphInstance]);
-
-    useEffect(() => {
-        const controller = new AbortController();
-        const signal = controller.signal;
-
-        setIsGraphLoading(true);
-
-        fetchGraphPublications(labId, signal)
-            .then((res) => res.json())
-            .then((publications) => setPublications(publications))
-            .catch((err) => console.error(err))
-            .finally(() => setIsGraphLoading(false));
+        fetchPublications();
 
         return () => {
             controller.abort();
         };
     }, [labId]);
 
-    /**
-     * Creates graph nodes and links from publication data. Each node represents an author,
-     * and each link represents a collaboration between authors, counted by their joint publications.
-     *
-     * @param {Array<Object>} publications - The publications data, each with a joins array indicating co-authors.
-     * @returns {{nodes: Array<Object>, links: Array<Object>}} An object containing arrays of nodes and links for the graph.
-     */
     function createNodesAndLinks(publications) {
         const authors = new Map(); // Maps display_name to node data
         const collaborations = new Map(); // Maps author pairs to collaboration data
@@ -172,150 +156,141 @@ function GraphController({ impactMode }) {
 
     // Effect hook to process publications into graph data
     useEffect(() => {
-        /**
-         * Handles the processing of publications to create nodes and links for the graph visualization.
-         */
         const data = createNodesAndLinks(publications);
 
         setGData(data);
     }, [publications]);
 
     useEffect(() => {
-        const graphElement = document.getElementById("graph");
-        let graphWidth = graphElement.clientWidth;
-        let graphHeight = graphElement.clientHeight;
+        if (gData) {
+            const graphElement = document.getElementById("graph");
 
-        graphInstance &&
-            graphInstance
-                .graphData(gData)
-                .nodeCanvasObject((node, ctx, globalScale) => {
-                    const baseFontSize = 15;
-                    const baseRadiusSize = 15;
+            setGraphDimensions({
+                width: graphElement.clientWidth,
+                height: graphElement.clientHeight,
+            });
 
-                    // Calculate scale adjustments based on globalScale
-                    const linearScaleAdjustment = (coefficient) =>
-                        (1 + coefficient / globalScale) / (coefficient + 1); // Decreases as you zoom in
-
-                    // Calculate significance adjustment based on uniqueCollaborationCount
-                    const collaborationAdjustment = (coefficient) =>
-                        (1 +
-                            (node.uniqueCollaborationCount /
-                                maxCount.maxUniqueCollaborationCount) *
-                                coefficient) /
-                        (coefficient + 1);
-
-                    // Adjust font and radius size based on global scale and node significance
-                    const fontSize =
-                        baseFontSize *
-                        linearScaleAdjustment(1) *
-                        collaborationAdjustment(1); // Adjust font size based on zoom level
-                    const radius =
-                        baseRadiusSize *
-                        linearScaleAdjustment(0.5) *
-                        collaborationAdjustment(1) *
-                        3; // Multiplying by 3 for more significant size difference
-                    node.radius = radius;
-
-                    ctx.fillStyle = "rgba(255, 255, 255, .9)"; // Semi-transparent white background for readability
-                    ctx.beginPath();
-                    ctx.arc(node.x, node.y, radius, 0, 2 * Math.PI, false);
-                    ctx.fill();
-
-                    ctx.strokeStyle = "#00b092"; // NVR Teal
-                    ctx.lineWidth = 2;
-                    ctx.stroke();
-
-                    ctx.textAlign = "center";
-                    ctx.textBaseLine = "middle";
-                    ctx.fillStyle = "#00b092"; // NVR Teal
-                    ctx.font = `${fontSize}px Sans-Serif`;
-
-                    const label = node.id.trim();
-                    const splitLabel = label.split(" ");
-                    const numberOfLines = splitLabel.length;
-                    const ctxTextMetrics = ctx.measureText("M"); // Measure a sample character for height approximation.
-                    const lineHeight =
-                        1.25 *
-                        (ctxTextMetrics.fontBoundingBoxAscent +
-                            ctxTextMetrics.fontBoundingBoxDescent);
-                    const totalHeight = lineHeight * numberOfLines;
-                    let startY = node.y - totalHeight / 2 + lineHeight / 2; // Start Y position adjusted for centering.
-
-                    ctx.textBaseLine = "middle"; // Set baseline to middle, aligning text around its center.
-                    splitLabel.forEach((line, index) => {
-                        let yPos = startY + index * lineHeight;
-                        ctx.fillText(line, node.x, yPos);
+            const updateDimensions = () => {
+                if (graphElement) {
+                    setGraphDimensions({
+                        width: graphElement.clientWidth,
+                        height: graphElement.clientHeight,
                     });
-                })
-                .linkColor((_link) => "#4f2d7f") // NVR Purple
-                .linkWidth(
-                    (link) =>
-                        1 +
-                        (link.collaborationCount /
-                            maxCount.maxCollaborationCount) *
-                            10
-                ) // Scaling link width
-                .width(graphWidth)
-                .height(graphHeight)
-                .nodePointerAreaPaint((node, color, ctx, _globalScale) => {
-                    const size = node.radius || 10;
+                }
+            };
 
-                    ctx.beginPath();
-                    ctx.arc(node.x, node.y, size, 0, 2 * Math.PI, false);
-                    ctx.fillStyle = color;
-                    ctx.fill();
-                })
-                .onNodeHover(
-                    (node) =>
-                        (graphElement.style.cursor = node ? "pointer" : null)
-                )
-                .onNodeClick((node) => {
-                    let windowWidth = window.innerWidth;
-                    if (windowWidth < 540) {
-                        if (graphInstance.zoom && graphInstance.zoom() > 1.25) {
-                            graphInstance.centerAt(
-                                window.innerWidth <= 425 ? node.x : node.x + 75,
-                                window.innerWidth <= 425 ? node.y + 25 : node.y,
-                                1000
-                            );
-                            graphInstance.zoom(decideZoomOnClick(), 2000);
-                            setAlumnId(node.alumn_id);
-                        }
-                        return;
-                    }
-                    graphInstance.centerAt(
-                        window.innerWidth <= 425 ? node.x : node.x + 75,
-                        window.innerWidth <= 425 ? node.y + 25 : node.y,
-                        1000
-                    );
-                    graphInstance.zoom(decideZoomOnClick(), 2000);
-                    setAlumnId(node.alumn_id);
-                })
-                .onNodeDragEnd((node) => {
-                    node.fx = node.x;
-                    node.fy = node.y;
-                })
-                .zoom(1, 2000)
-                .dagMode("radialout")
-                .onDagError(() => {});
+            window.addEventListener("resize", updateDimensions);
 
-        if (graphInstance) {
-            graphInstance.d3Force("charge").strength(-2500);
-            graphInstance.d3Force("center").strength(0.05);
-            // graphInstance
-            //     .d3Force("link")
-            //     .strength(
-            //         (link) =>
-            //             link.collaborationCount / maxCount.maxCollaborationCount
-            //     );
+            return () => window.removeEventListener("resize", updateDimensions);
         }
-    }, [gData, graphInstance, maxCount]);
+    }, [gData]);
 
-    const closeModal = () => {
-        setAlumnId(null);
-        graphInstance.centerAt(0, 0, 2000);
-        graphInstance.zoom(1, 2000);
+    useEffect(() => {
+        if (fgRef.current) {
+            fgRef.current.d3Force("charge").strength(-2500);
+            fgRef.current.d3Force("center").strength(0.05);
+            fgRef.current.zoom(1, 2000);
+        }
+    }, []);
+
+    const handleNodeCanvasObject = (node, ctx, globalScale) => {
+        const baseFontSize = 15;
+        const baseRadiusSize = 15;
+
+        // Calculate scale adjustments based on globalScale
+        const linearScaleAdjustment = (coefficient) =>
+            (1 + coefficient / globalScale) / (coefficient + 1); // Decreases as you zoom in
+
+        // Calculate significance adjustment based on uniqueCollaborationCount
+        const collaborationAdjustment = (coefficient) =>
+            (1 +
+                (node.uniqueCollaborationCount /
+                    maxCount.maxUniqueCollaborationCount) *
+                    coefficient) /
+            (coefficient + 1);
+
+        // Adjust font and radius size based on global scale and node significance
+        const fontSize =
+            baseFontSize *
+            linearScaleAdjustment(1) *
+            collaborationAdjustment(1); // Adjust font size based on zoom level
+        const radius =
+            baseRadiusSize *
+            linearScaleAdjustment(0.5) *
+            collaborationAdjustment(1) *
+            3; // Multiplying by 3 for more significant size difference
+        node.radius = radius;
+
+        ctx.fillStyle = "rgba(255, 255, 255, .9)"; // Semi-transparent white background for readability
+        ctx.beginPath();
+        ctx.arc(node.x, node.y, radius, 0, 2 * Math.PI, false);
+        ctx.fill();
+
+        ctx.strokeStyle = "#00b092"; // NVR Teal
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        ctx.textAlign = "center";
+        ctx.textBaseLine = "middle";
+        ctx.fillStyle = "#00b092"; // NVR Teal
+        ctx.font = `${fontSize}px Sans-Serif`;
+
+        const label = node.id.trim();
+        const splitLabel = label.split(" ");
+        const numberOfLines = splitLabel.length;
+        const ctxTextMetrics = ctx.measureText("M"); // Measure a sample character for height approximation.
+        const lineHeight =
+            1.25 *
+            (ctxTextMetrics.fontBoundingBoxAscent +
+                ctxTextMetrics.fontBoundingBoxDescent);
+        const totalHeight = lineHeight * numberOfLines;
+        let startY = node.y - totalHeight / 2 + lineHeight / 2; // Start Y position adjusted for centering.
+
+        ctx.textBaseLine = "middle"; // Set baseline to middle, aligning text around its center.
+        splitLabel.forEach((line, index) => {
+            let yPos = startY + index * lineHeight;
+            ctx.fillText(line, node.x, yPos);
+        });
     };
+
+    const handleNodeHover = (node) =>
+        (document.getElementById("graph").style.cursor = node
+            ? "pointer"
+            : null);
+
+    const handleNodeClick = (node) => {
+        fgRef.current.centerAt(
+            node.x + (window.innerWidth < 425 ? 0 : 50),
+            node.y + (window.innerHeight < 425 ? 25 : 25),
+            1000
+        );
+        fgRef.current.zoom(decideZoomOnClick(), 2000);
+
+        setAlumnId(node.alumn_id);
+    };
+
+    const handleNodeDragEnd = (node) => {
+        node.fx = node.x;
+        node.fy = node.y;
+    };
+
+    const handleNodePointerAreaPaint = (node, color, ctx, _globalScale) => {
+        const size = node.radius || 10;
+
+        ctx.beginPath();
+        ctx.arc(node.x, node.y, size, 0, 2 * Math.PI, false);
+        ctx.fillStyle = color;
+        ctx.fill();
+    };
+
+    const closeModal = useCallback(() => {
+        setAlumnId(null);
+
+        if (fgRef.current) {
+            fgRef.current.zoom(1, 2000);
+            fgRef.current.centerAt(0, 0, 2000);
+        }
+    }, [fgRef]);
 
     return (
         <div
@@ -350,7 +325,29 @@ function GraphController({ impactMode }) {
                         : "No collaborations have been recorded for this graph yet. Check back soon for updates!"}
                 </div>
             )}
-            <GraphContainer headerMode={headerMode} impactMode={impactMode} />
+            <GraphContainer headerMode={headerMode} impactMode={impactMode}>
+                <ForceGraph2D
+                    id={"graph"}
+                    ref={fgRef}
+                    graphData={gData}
+                    nodeCanvasObject={handleNodeCanvasObject}
+                    nodePointerAreaPaint={handleNodePointerAreaPaint}
+                    linkColor={(_link) => "#4f2d7f"}
+                    linkWidth={(link) =>
+                        1 +
+                        (link.collaborationCount /
+                            maxCount.maxCollaborationCount) *
+                            10
+                    }
+                    onNodeHover={handleNodeHover}
+                    onNodeClick={handleNodeClick}
+                    onNodeDragEnd={handleNodeDragEnd}
+                    width={graphDimensions.width}
+                    height={graphDimensions.height}
+                    dagMode="radialout"
+                    d3
+                />
+            </GraphContainer>
             {alumnId !== null && (
                 <GraphAlumnDetailsModalController
                     alumnId={alumnId}
@@ -358,7 +355,7 @@ function GraphController({ impactMode }) {
                 />
             )}
             <SearchBar
-                graph={graphInstance}
+                graph={fgRef.current}
                 nodes={gData.nodes}
                 setAlumnId={setAlumnId}
             />
