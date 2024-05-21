@@ -30,6 +30,7 @@ function GraphController({ impactMode }) {
         width: window.innerWidth,
         height: window.innerHeight,
     });
+    const [isZooming, setIsZooming] = useState(false);
 
     const headerMode = admin.email !== "";
 
@@ -259,14 +260,24 @@ function GraphController({ impactMode }) {
             : null);
 
     const handleNodeClick = (node) => {
-        fgRef.current.centerAt(
-            node.x + (window.innerWidth < 425 ? 0 : 50),
-            node.y + (window.innerHeight < 425 ? 25 : 25),
-            1000
-        );
-        fgRef.current.zoom(decideZoomOnClick(), 2000);
+        if (!isZooming) {
+            fgRef.current.centerAt(
+                node.x + (window.innerWidth < 425 ? 0 : 50),
+                node.y + (window.innerHeight < 425 ? 25 : 25),
+                1000
+            );
+            fgRef.current.zoom(decideZoomOnClick(), 2000);
 
-        setAlumnId(node.alumn_id);
+            setAlumnId(node.alumn_id);
+        }
+    };
+
+    const handleZoom = ({ k, x, y }) => {
+        setIsZooming(true);
+    };
+
+    const handleZoomEnd = ({ k, x, y }) => {
+        setIsZooming(false);
     };
 
     const handleNodeDragEnd = (node) => {
@@ -341,6 +352,8 @@ function GraphController({ impactMode }) {
                     }
                     onNodeHover={handleNodeHover}
                     onNodeClick={handleNodeClick}
+                    onZoom={handleZoom}
+                    onZoomEnd={handleZoomEnd}
                     onNodeDragEnd={handleNodeDragEnd}
                     width={graphDimensions.width}
                     height={graphDimensions.height}
