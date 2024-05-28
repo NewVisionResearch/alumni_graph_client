@@ -1,0 +1,39 @@
+#graph-legend {
+    position: absolute;
+    left: 30px;
+    bottom: 30px;
+    z-index: 1;
+    width: 200px;
+    height: 150px;
+    background: white;
+    padding: 5px;
+    border: 1px solid;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.legend-item span {
+    flex-basis: 0;
+    text-align: center;
+}
+
+.legend-circle {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: solid var(--custom-teal);
+}
+
+.legend-line {
+    width: 50px;
+    height: 2px;
+    background-color: var(--custom-purple);
+}
