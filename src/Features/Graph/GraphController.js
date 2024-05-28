@@ -376,17 +376,16 @@ function GraphController({ impactMode }) {
                 className="nav-item"
                 style={{
                     position: "absolute",
-                    right: 25,
-                    bottom: 25,
-                    display:
-                        admin.email === "" || impactMode ? "block" : "none",
+                    right: 30,
+                    bottom: 30,
+                    display: !headerMode || impactMode ? "block" : "none",
                 }}
             >
                 <Link reloadDocument to={"https://newvisionresearch.org"}>
                     <Image
                         style={{
                             width: "5rem",
-                            zIndex: 1000,
+                            zIndex: 1,
                         }}
                         src="../NVR1-TC.png"
                         alt="logo"
