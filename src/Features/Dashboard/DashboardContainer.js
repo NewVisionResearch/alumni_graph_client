@@ -72,7 +72,7 @@ function DashboardContainer({
                 </Row>
             </Container>
             <Button
-                className="button info-button"
+                className="button question-button"
                 type="button"
                 onClick={handleTourClick}
             >

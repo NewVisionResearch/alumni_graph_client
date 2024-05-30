@@ -10,12 +10,7 @@
     text-align: left;
 }
 
-.info-card {
-    border: 2px solid var(--custom-teal) !important;
-    margin: 2em;
-}
-
-.info-button {
+.question-button {
     position: absolute;
     padding: 0;
     right: 5px;
