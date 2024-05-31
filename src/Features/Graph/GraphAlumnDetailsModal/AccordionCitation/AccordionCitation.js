@@ -1,10 +1,16 @@
+import React from "react";
 import Accordion from "react-bootstrap/Accordion";
 
 import dashToDate from "../../../../services/conversions";
 
 import "./styles/AccordionCitation.css";
 
-function AccordionCitation({ listNum, alumnName, publication, coauthors }) {
+function AccordionCitation({
+    listNum,
+    alumnSearchQuery,
+    publication,
+    coauthors,
+}) {
     const {
         authors,
         elocationid,
@@ -21,21 +27,78 @@ function AccordionCitation({ listNum, alumnName, publication, coauthors }) {
     const displayDate = dashToDate(pubdate).split("-")[0];
 
     const decideClassName = (author) => {
-        const splitName = alumnName.split(" ");
-        const first = splitName[0];
-        const last = splitName[splitName.length - 1];
-        const [authorLast, initials] = author.split(" ");
+        /* remove NOT and associated name term from alumnSearchQuery */
+        const splitAlumnSearchQuery = alumnSearchQuery.split(" ");
+        let filteredAndSplitAlumnSearchQuery = [];
+
+        for (
+            let i = 0, skipNext = false;
+            i < splitAlumnSearchQuery.length;
+            i++
+        ) {
+            if (splitAlumnSearchQuery[i] === "NOT") {
+                skipNext = true;
+            }
+
+            if (skipNext) {
+                if (
+                    splitAlumnSearchQuery[i] === "AND" ||
+                    splitAlumnSearchQuery[i] === "OR"
+                ) {
+                    skipNext = false;
+                    filteredAndSplitAlumnSearchQuery.push(
+                        splitAlumnSearchQuery[i]
+                    );
+                }
+            } else {
+                filteredAndSplitAlumnSearchQuery.push(splitAlumnSearchQuery[i]);
+            }
+        }
+
+        /* remove AND and OR from filteredAndSplitAlumnSearchQuery */
+        let splitAlumnNames = [];
+        let tempName = "";
+
+        for (let i = 0; i < filteredAndSplitAlumnSearchQuery.length; i++) {
+            let currentNameTerm = filteredAndSplitAlumnSearchQuery[i];
+
+            if (currentNameTerm === "AND" || currentNameTerm === "OR") {
+                if (tempName !== "") {
+                    splitAlumnNames.push(tempName);
+                    tempName = "";
+                }
+            } else {
+                if (tempName !== "") {
+                    tempName += ` ${currentNameTerm}`;
+                } else {
+                    tempName += `${currentNameTerm}`;
+                }
+            }
+        }
+
+        if (tempName !== "") {
+            splitAlumnNames.push(tempName);
+        }
+
+        // get author last name
+        const [authorLastName, authorRemainingInitials] = author.split(" ");
+        const authorFirstInitial = authorRemainingInitials[0];
+
         const coauthorsLastNames = () => {
-            let lastNames = coauthors.map((ca) => {
-                let splitName = ca.split(" ");
-                return splitName[splitName.length - 1];
+            const lastNames = coauthors.map((coauthor) => {
+                const coauthorLastName = coauthor.split(" ");
+                return coauthorLastName[coauthorLastName.length - 1];
             });
             return lastNames;
         };
 
-        if (authorLast === last && initials[0] === first[0]) {
+        /* select appropriate class name */
+        if (
+            splitAlumnNames.includes(author) ||
+            splitAlumnNames.includes(`${authorLastName} ${authorFirstInitial}`)
+        ) {
             return "alumn";
-        } else if (coauthorsLastNames().includes(authorLast)) {
+        } else if (coauthorsLastNames().includes(authorLastName)) {
             return "coauthor";
         } else {
             return "non-alumn";
@@ -101,4 +164,4 @@ function AccordionCitation({ listNum, alumnName, publication, coauthors }) {
     );
 }
 
-export default AccordionCitation;
+export default React.memo(AccordionCitation);

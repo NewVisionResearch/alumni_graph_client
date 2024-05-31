@@ -23,7 +23,7 @@ function GraphAlumnDetailsModalContainer({ alumn }) {
                         <AccordionCitation
                             key={`citation_key_${alumn_pub}_${idx}`}
                             listNum={idx}
-                            alumnName={alumn.search_query}
+                            alumnSearchQuery={alumn.search_query}
                             publication={publication}
                             coauthors={coauthors}
                         />
