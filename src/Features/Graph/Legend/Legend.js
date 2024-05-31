@@ -8,13 +8,13 @@ import "./styles/Legend.css";
 function Legend() {
     const renderTooltip = (props) => (
         <Tooltip id="button-tooltip" {...props}>
-            <div className="graph-legend-detailed">
-                <div className="legend-item-detailed">
-                    <span>Unique Collaborations</span>
-                    <div className="legend-detailed-circles">
-                        <div className="legend-circle-sm"></div>
-                        <div className="legend-circle-md"></div>
-                        <div className="legend-circle-lg"></div>
+            <div className="graph-detailed-legend">
+                <div className="detailed-legend-item">
+                    <span>Researcher's Unique Collaborations</span>
+                    <div className="detailed-legend-circles">
+                        <div className="detailed-legend-circle-sm"></div>
+                        <div className="detailed-legend-circle-md"></div>
+                        <div className="detailed-legend-circle-lg"></div>
                     </div>
                 </div>
                 <div class="line-with-arrows">
@@ -22,20 +22,20 @@ function Legend() {
                     <div class="line"></div>
                     <div class="line-text-right">More</div>
                 </div>
-                <div className="legend-item-detailed">
-                    <span>Collaborations Between Authors</span>
-                    <div className="legend-detailed-lines">
-                        <div className="legend-line-sm"></div>
-                        <div className="legend-line-md"></div>
-                        <div className="legend-line-lg"></div>
+                <div className="detailed-legend-item">
+                    <div className="detailed-legend-lines">
+                        <div className="detailed-legend-line-sm"></div>
+                        <div className="detailed-legend-line-md"></div>
+                        <div className="detailed-legend-line-lg"></div>
                     </div>
+                    <span>Publications Between Authors</span>
                 </div>
             </div>
         </Tooltip>
     );
 
     return (
-        <div id="graph-legend">
+        <div className="graph-legend">
             <div className="legend-header">
                 <span>Legend</span>
                 <OverlayTrigger
