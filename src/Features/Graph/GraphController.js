@@ -6,6 +6,7 @@ import ForceGraph2D from "react-force-graph-2d";
 
 import GraphAlumnDetailsModalController from "./GraphAlumnDetailsModal/GraphAlumnDetailsModalController";
 import SearchBar from "./SearchBar/SearchBar";
+import Legend from "./Legend/Legend";
 import GraphContainer from "./GraphContainer";
 import { AdminContext } from "../../Context/AdminContext/AdminContext";
 import { decideZoomOnClick } from "../../services/zoom";
@@ -372,6 +373,7 @@ function GraphController({ impactMode }) {
                 nodes={gData.nodes}
                 setAlumnId={setAlumnId}
             />
+            <Legend></Legend>
             <Nav.Item
                 className="nav-item"
                 style={{

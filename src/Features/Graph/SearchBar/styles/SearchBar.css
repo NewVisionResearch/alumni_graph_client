@@ -1,5 +1,6 @@
 .search-bar {
     width: 10%;
+    min-width: 100px;
     transition: width 300ms ease-in-out;
     position: absolute;
     left: 30px;

@@ -1,62 +1,90 @@
+import React, { useState } from "react";
 import Button from "react-bootstrap/Button";
-import OverlayTrigger from "react-bootstrap/OverlayTrigger";
-import Tooltip from "react-bootstrap/Tooltip";
-import { AiFillInfoCircle } from "react-icons/ai";
+import Container from "react-bootstrap/Container";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
+import Badge from "react-bootstrap/Badge";
+
+import { PiCaretDoubleUp, PiCaretDoubleDown } from "react-icons/pi";
 
 import "./styles/Legend.css";
 
 function Legend() {
-    const renderTooltip = (props) => (
-        <Tooltip id="button-tooltip" {...props}>
-            <div className="graph-detailed-legend">
-                <div className="detailed-legend-item">
-                    <span>Researcher's Unique Collaborations</span>
-                    <div className="detailed-legend-circles">
-                        <div className="detailed-legend-circle-sm"></div>
-                        <div className="detailed-legend-circle-md"></div>
-                        <div className="detailed-legend-circle-lg"></div>
-                    </div>
-                </div>
-                <div class="line-with-arrows">
-                    <div class="line-text-left">Less</div>
-                    <div class="line"></div>
-                    <div class="line-text-right">More</div>
-                </div>
-                <div className="detailed-legend-item">
-                    <div className="detailed-legend-lines">
-                        <div className="detailed-legend-line-sm"></div>
-                        <div className="detailed-legend-line-md"></div>
-                        <div className="detailed-legend-line-lg"></div>
-                    </div>
-                    <span>Publications Between Authors</span>
-                </div>
-            </div>
-        </Tooltip>
-    );
+    const [isLegendExpanded, setIsLegendExpanded] = useState(false);
+
+    const handleLegendOnClick = () => {
+        setIsLegendExpanded(!isLegendExpanded);
+    };
 
     return (
-        <div className="graph-legend">
-            <div className="legend-header">
-                <span>Legend</span>
-                <OverlayTrigger
-                    placement="right"
-                    overlay={renderTooltip}
-                    trigger={["click", "hover", "focus"]}
-                >
-                    <Button className="button info-button" type="button">
-                        <AiFillInfoCircle size={"2em"} />
-                    </Button>
-                </OverlayTrigger>
-            </div>
-            <div className="legend-item">
-                <div className="legend-circle"></div>
-                <span>Researcher</span>
-            </div>
-            <div className="legend-item">
-                <div className="legend-line"></div>
-                <span>Publication Collaborations</span>
-            </div>
-        </div>
+        <Container
+            fluid
+            className={`graph-legend ${
+                isLegendExpanded ? "legend-expanded" : "legend-collapse"
+            }`}
+        >
+            <Button
+                className={`graph-legend-button ${
+                    isLegendExpanded ? "legend-expanded" : ""
+                }`}
+                type="button"
+                variant="light"
+                onClick={handleLegendOnClick}
+            >
+                <Row className="graph-legend-row">
+                    <Col xs={7}>
+                        <Row className="graph-legend-row">
+                            <Container className="legend-circle"></Container>
+                            <Container className="legend-line"></Container>
+                        </Row>
+                    </Col>
+                    <Col xs={5}>
+                        <Container className="legend-caret">
+                            <Badge bg="secondary">
+                                {isLegendExpanded ? (
+                                    <PiCaretDoubleDown size={"2em"} />
+                                ) : (
+                                    <PiCaretDoubleUp size={"2em"} />
+                                )}
+                            </Badge>
+                        </Container>
+                    </Col>
+                </Row>
+            </Button>
+            {isLegendExpanded && (
+                <Row xs className="graph-detailed-legend">
+                    <Col xs={7}>
+                        <Row className="detailed-legend-circles-and-lines">
+                            <Col className="detailed-legend-circles">
+                                <Row className="detailed-legend-item">
+                                    <Container className="detailed-legend-circle-sm"></Container>
+                                    <Container className="detailed-legend-circle-md"></Container>
+                                    <Container className="detailed-legend-circle-lg"></Container>
+                                    <span>
+                                        Researcher's Unique Collaborations
+                                    </span>
+                                </Row>
+                            </Col>
+                            <Col className="detailed-legend-lines">
+                                <Row className="detailed-legend-item">
+                                    <Container className="detailed-legend-line-sm"></Container>
+                                    <Container className="detailed-legend-line-md"></Container>
+                                    <Container className="detailed-legend-line-lg"></Container>
+                                    <span>Publications Between Authors</span>
+                                </Row>
+                            </Col>
+                        </Row>
+                    </Col>
+                    <Col xs={5}>
+                        <Row className="detailed-legend-item">
+                            <div class="line-text">Less</div>
+                            <div class="line"></div>
+                            <div class="line-text">More</div>
+                        </Row>
+                    </Col>
+                </Row>
+            )}
+        </Container>
     );
 }
 

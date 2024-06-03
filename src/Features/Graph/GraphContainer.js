@@ -1,5 +1,3 @@
-import Legend from "./Legend/Legend";
-
 function GraphContainer({ headerMode, impactMode, children }) {
     return (
         <div
@@ -12,7 +10,6 @@ function GraphContainer({ headerMode, impactMode, children }) {
                 boxSizing: "border-box",
             }}
         >
-            <Legend></Legend>
             {children}
         </div>
     );
