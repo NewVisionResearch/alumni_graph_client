@@ -1,8 +1,5 @@
 import React, { useState } from "react";
 import Button from "react-bootstrap/Button";
-import Container from "react-bootstrap/Container";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
 import Badge from "react-bootstrap/Badge";
 
 import { PiCaretDoubleUp, PiCaretDoubleDown } from "react-icons/pi";
@@ -17,74 +14,69 @@ function Legend() {
     };
 
     return (
-        <Container
-            fluid
-            className={`graph-legend ${
-                isLegendExpanded ? "legend-expanded" : "legend-collapse"
+        <div
+            className={`legend ${
+                isLegendExpanded ? "legend-expanded" : "legend-collapsed"
             }`}
         >
             <Button
-                className={`graph-legend-button ${
-                    isLegendExpanded ? "legend-expanded" : ""
+                className={`legend-button ${
+                    isLegendExpanded ? "legend-button-expanded" : ""
                 }`}
                 type="button"
                 variant="light"
                 onClick={handleLegendOnClick}
             >
-                <Row className="graph-legend-row">
-                    <Col xs={7}>
-                        <Row className="graph-legend-row">
-                            <Container className="legend-circle"></Container>
-                            <Container className="legend-line"></Container>
-                        </Row>
-                    </Col>
-                    <Col xs={5}>
-                        <Container className="legend-caret">
+                <div
+                    className={`legend-row ${
+                        isLegendExpanded ? "legend-row-expanded" : ""
+                    }`}
+                >
+                    <div className="legend-col legend-col-1">
+                        <div className="legend-circle"></div>
+                    </div>
+                    <div className="legend-col legend-col-2">
+                        <div className="legend-line"></div>
+                    </div>
+                    <div className="legend-col legend-col-3">
+                        <div className="legend-caret">
                             <Badge bg="secondary">
                                 {isLegendExpanded ? (
-                                    <PiCaretDoubleDown size={"2em"} />
+                                    <PiCaretDoubleDown />
                                 ) : (
-                                    <PiCaretDoubleUp size={"2em"} />
+                                    <PiCaretDoubleUp />
                                 )}
                             </Badge>
-                        </Container>
-                    </Col>
-                </Row>
+                        </div>
+                    </div>
+                </div>
             </Button>
             {isLegendExpanded && (
-                <Row xs className="graph-detailed-legend">
-                    <Col xs={7}>
-                        <Row className="detailed-legend-circles-and-lines">
-                            <Col className="detailed-legend-circles">
-                                <Row className="detailed-legend-item">
-                                    <Container className="detailed-legend-circle-sm"></Container>
-                                    <Container className="detailed-legend-circle-md"></Container>
-                                    <Container className="detailed-legend-circle-lg"></Container>
-                                    <span>
-                                        Researcher's Unique Collaborations
-                                    </span>
-                                </Row>
-                            </Col>
-                            <Col className="detailed-legend-lines">
-                                <Row className="detailed-legend-item">
-                                    <Container className="detailed-legend-line-sm"></Container>
-                                    <Container className="detailed-legend-line-md"></Container>
-                                    <Container className="detailed-legend-line-lg"></Container>
-                                    <span>Publications Between Authors</span>
-                                </Row>
-                            </Col>
-                        </Row>
-                    </Col>
-                    <Col xs={5}>
-                        <Row className="detailed-legend-item">
-                            <div class="line-text">Less</div>
-                            <div class="line"></div>
-                            <div class="line-text">More</div>
-                        </Row>
-                    </Col>
-                </Row>
+                <div className="legend-detailed-row">
+                    <div className="legend-detailed-col legend-detailed-col-1">
+                        <div className="legend-circles">
+                            <div className="legend-circle-sm"></div>
+                            <div className="legend-circle-md"></div>
+                            <div className="legend-circle-lg"></div>
+                            <span>Researcher's Unique Collaborations</span>
+                        </div>
+                    </div>
+                    <div className="legend-detailed-col legend-detailed-col-2">
+                        <div className="legend-lines">
+                            <div className="legend-line-sm"></div>
+                            <div className="legend-line-md"></div>
+                            <div className="legend-line-lg"></div>
+                            <span>Publications Between Authors</span>
+                        </div>
+                    </div>
+                    <div className="legend-detailed-col legend-detailed-col-3">
+                        <div class="legend-line-text">Less</div>
+                        <div class="legend-line-scale"></div>
+                        <div class="legend-line-text">More</div>
+                    </div>
+                </div>
             )}
-        </Container>
+        </div>
     );
 }
 
