@@ -1,0 +1,178 @@
+/* Legend Container */
+.legend {
+    position: absolute;
+    left: 30px;
+    bottom: 30px;
+    width: 100px;
+    box-shadow: -1px 1px 10px rgb(31, 31, 31);
+    border-radius: var(--bs-border-radius);
+    background-color: var(--custom-grey);
+    overflow: hidden;
+}
+
+.legend-expanded {
+    animation: expandLegend 1s ease-in-out forwards;
+}
+
+@keyframes expandLegend {
+    0% {
+        width: 100px;
+        height: 37px;
+    }
+    50% {
+        width: 250px;
+        height: 37px;
+    }
+    100% {
+        width: 250px;
+        height: 250px;
+    }
+}
+
+.legend-button {
+    background-color: var(--custom-grey);
+    border-color: var(--custom-grey);
+    padding: 5px;
+    width: 100%;
+}
+
+.legend-button-expanded {
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
+}
+
+.legend-row {
+    align-items: center;
+    display: flex;
+}
+
+.legend-row-expanded .legend-col-1,
+.legend-row-expanded .legend-col-2,
+.legend-row-expanded .legend-col-3 {
+    width: 33.33%;
+}
+
+.legend-col {
+    display: flex;
+}
+
+.legend-col-1,
+.legend-col-2 {
+    justify-content: center;
+    width: 30%;
+}
+
+.legend-col-3 {
+    justify-content: end;
+    width: 40%;
+}
+
+.legend-circle {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: solid var(--custom-teal);
+}
+
+.legend-line {
+    width: 20px;
+    height: 3px;
+    background-color: var(--custom-purple);
+}
+
+/* Detailed Legend */
+.legend-detailed-row {
+    background-color: var(--custom-grey);
+    border-radius: 10px;
+    box-shadow: -1px 1px 5px rgb(31, 31, 31);
+    display: flex;
+    margin: 5px;
+    height: 200px;
+}
+
+.legend-detailed-col {
+    display: flex;
+    width: 33.33%;
+}
+
+.legend-detailed-col-1,
+.legend-detailed-col-2 {
+    justify-content: center;
+    padding: 5px;
+}
+
+.legend-detailed-col-3 {
+    margin-top: 9px;
+    align-items: center;
+    justify-content: start;
+    flex-direction: column;
+}
+
+.legend-circles,
+.legend-lines {
+    align-items: center;
+    border: 2px black solid;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    font-size: 10px;
+    justify-content: space-evenly;
+    text-align: center;
+}
+
+.legend-circle-sm,
+.legend-circle-md,
+.legend-circle-lg {
+    border-radius: 50%;
+    border: solid var(--custom-teal);
+}
+
+.legend-circle-sm {
+    width: 20px;
+    height: 20px;
+}
+
+.legend-circle-md {
+    width: 30px;
+    height: 30px;
+}
+
+.legend-circle-lg {
+    width: 50px;
+    height: 50px;
+}
+
+.legend-line-sm,
+.legend-line-md,
+.legend-line-lg {
+    width: 50px;
+    background-color: var(--custom-purple);
+}
+
+.legend-line-sm {
+    margin-top: 9px;
+    margin-bottom: 9px;
+    height: 2px;
+}
+
+.legend-line-md {
+    margin-top: 12.5px;
+    margin-bottom: 12.5px;
+    height: 5px;
+}
+
+.legend-line-lg {
+    margin-top: 21px;
+    margin-bottom: 21px;
+    height: 8px;
+}
+
+.legend-line-scale {
+    width: 2px;
+    height: 60px;
+    background-color: black;
+}
+
+.legend-line-text {
+    text-align: center;
+}

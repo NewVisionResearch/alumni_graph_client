@@ -1,11 +1,12 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useRef, useCallback } from "react";
 import { Link, useParams } from "react-router-dom";
 import Image from "react-bootstrap/Image";
 import Nav from "react-bootstrap/Nav";
-import ForceGraph from "force-graph";
+import ForceGraph2D from "react-force-graph-2d";
 
 import GraphAlumnDetailsModalController from "./GraphAlumnDetailsModal/GraphAlumnDetailsModalController";
 import SearchBar from "./SearchBar/SearchBar";
+import Legend from "./Legend/Legend";
 import GraphContainer from "./GraphContainer";
 import { AdminContext } from "../../Context/AdminContext/AdminContext";
 import { decideZoomOnClick } from "../../services/zoom";
@@ -16,237 +17,292 @@ import "./styles/Graph.css";
 function GraphController({ impactMode }) {
     const admin = useContext(AdminContext);
     const { labId } = useParams();
+    const fgRef = useRef(); // Create a ref for accessing the graph component
 
-    const [graphInstance, setGraphInstance] = useState(null);
-    const [publications, setPublications] = useState([]);
-    const [alumnId, setAlumnId] = useState(null);
-    const [gData, setGData] = useState({ nodes: [], links: [] });
     const [isGraphLoading, setIsGraphLoading] = useState(true);
+    const [publications, setPublications] = useState([]);
+    const [gData, setGData] = useState({ nodes: [], links: [] });
+    const [alumnId, setAlumnId] = useState(null);
+    const [maxCount, setMaxCount] = useState({
+        maxUniqueCollaborationCount: 1,
+        maxCollaborationCount: 1,
+    });
+    const [graphDimensions, setGraphDimensions] = useState({
+        width: window.innerWidth,
+        height: window.innerHeight,
+    });
+    const [isZooming, setIsZooming] = useState(false);
 
     const headerMode = admin.email !== "";
 
     useEffect(() => {
-        const graphElement = document.getElementById("graph");
-        if (graphElement) {
-            const graph = ForceGraph()(graphElement);
-            setGraphInstance((prev) => (prev = graph));
-        }
-    }, []);
+        const controller = new AbortController();
 
-    useEffect(() => {
-        const handleResize = () => {
-            const graphElement = document.getElementById("graph");
-            if (graphInstance) {
-                graphInstance
-                    .width(graphElement.clientWidth)
-                    .height(graphElement.clientHeight);
+        const fetchPublications = async () => {
+            setIsGraphLoading(true);
+
+            try {
+                const response = await fetchGraphPublications(
+                    labId,
+                    controller.signal
+                );
+                const data = await response.json();
+
+                setPublications(data);
+            } catch (error) {
+                console.error(error);
+            } finally {
+                setIsGraphLoading(false);
             }
         };
 
-        window.addEventListener("resize", handleResize);
-
-        return () => window.removeEventListener("resize", handleResize);
-    }, [graphInstance]);
-
-    useEffect(() => {
-        const controller = new AbortController();
-        const signal = controller.signal;
-
-        setIsGraphLoading(true);
-
-        fetchGraphPublications(labId, signal)
-            .then((res) => res.json())
-            .then((publications) => setPublications(publications))
-            .catch((err) => console.error(err))
-            .finally(() => setIsGraphLoading(false));
+        fetchPublications();
 
         return () => {
             controller.abort();
         };
     }, [labId]);
 
-    useEffect(() => {
-        function uniqueIds(array) {
-            array = array.map((p) => p.joins.map((j) => j)).flat();
-            let obj = {};
-            for (let i = 0; i < array.length; i++) {
-                if (!array[i]) continue;
-                if (obj[array[i].display_name]) {
-                    continue;
-                } else {
-                    obj[array[i].display_name] = array[i];
+    function createNodesAndLinks(publications) {
+        const authors = new Map(); // Maps display_name to node data
+        const collaborations = new Map(); // Maps author pairs to collaboration data
+
+        let nodesAndLinks = {};
+
+        // Process each publication to update authors and collaborations
+        publications.forEach((pub) => {
+            const { joins } = pub;
+
+            // Create all possible pairs of authors from each publication
+            for (let i = 0; i < joins.length; i++) {
+                const authorKey = joins[i].display_name;
+                if (!authors.has(authorKey)) {
+                    authors.set(authorKey, {
+                        id: authorKey,
+                        alumn_id: joins[i].alumn_id,
+                        uniqueCollaborationCount: 0,
+                    });
+                }
+
+                for (let j = i + 1; j < joins.length; j++) {
+                    const authorPairKey = [joins[i].alumn_id, joins[j].alumn_id]
+                        .sort((a, b) => a - b)
+                        .join("-");
+                    const link = [joins[i].display_name, joins[j].display_name]
+                        .sort()
+                        .join("*");
+
+                    let collab = collaborations.get(authorPairKey) || {
+                        link: link,
+                        collaborationCount: 0,
+                    };
+
+                    collaborations.set(authorPairKey, {
+                        ...collab,
+                        collaborationCount: collab.collaborationCount + 1,
+                    });
                 }
             }
+        });
 
-            return Object.values(obj);
-        }
+        // Convert collaboration data into links and update author counts
+        let links = [];
+        let sortedCollaborationsbyCount;
+        let sortedAuthorsByCount;
 
-        function createPairs(array) {
-            let resArray = [];
-            let obj = {};
-            array = array.map((obj) => obj.joins);
+        sortedCollaborationsbyCount = new Map(
+            [...collaborations].sort(
+                (a, b) => a[1].collaborationCount - b[1].collaborationCount
+            )
+        );
 
-            for (let i = 0; i < array.length; i++) {
-                for (let j = 0; j < array[i].length; j++) {
-                    if (!array[i][j]) continue;
-                    obj[array[i][j].display_name] =
-                        obj[array[i][j].display_name] || [];
-                    for (let k = 0; k < array[i].length; k++) {
-                        if (!array[i][k]) continue;
-                        if (
-                            array[i][j].display_name ===
-                            array[i][k].display_name
-                        ) {
-                            continue;
-                        }
-                        if (
-                            obj[array[i][j].display_name].includes(
-                                array[i][k].display_name
-                            )
-                        ) {
-                            continue;
-                        } else {
-                            obj[array[i][j].display_name].push(
-                                array[i][k].display_name
-                            );
-                            resArray.push([array[i][j], array[i][k]]);
-                        }
-                    }
-                }
+        sortedCollaborationsbyCount.forEach(
+            ({ link, collaborationCount }, _pairKey) => {
+                const [source, target] = link.split("*");
+
+                links.push({
+                    source: source,
+                    target: target,
+                    collaborationCount: collaborationCount,
+                });
+
+                authors.get(source).uniqueCollaborationCount += 1;
+                authors.get(target).uniqueCollaborationCount += 1;
             }
+        );
 
-            return resArray;
-        }
-        const data = {
-            nodes: uniqueIds(publications).map((alumn) => ({
-                id: alumn.display_name,
-                alumn_id: alumn.alumn_id,
-            })),
-            links: createPairs(publications).map((arr) => ({
-                source: arr[0].display_name,
-                target: arr[1].display_name,
-            })),
+        sortedAuthorsByCount = new Map(
+            [...authors].sort(
+                (a, b) =>
+                    a[1].uniqueCollaborationCount -
+                    b[1].uniqueCollaborationCount
+            )
+        );
+
+        setMaxCount({
+            maxCollaborationCount: Array.from(
+                sortedCollaborationsbyCount.values()
+            )[sortedCollaborationsbyCount.size - 1]?.collaborationCount,
+            maxUniqueCollaborationCount: Array.from(
+                sortedAuthorsByCount.values()
+            )[sortedAuthorsByCount.size - 1]?.uniqueCollaborationCount,
+        });
+
+        nodesAndLinks = {
+            nodes: Array.from(sortedAuthorsByCount.values()),
+            links: links,
         };
+
+        return nodesAndLinks;
+    }
+
+    // Effect hook to process publications into graph data
+    useEffect(() => {
+        const data = createNodesAndLinks(publications);
 
         setGData(data);
     }, [publications]);
 
     useEffect(() => {
-        const graphElement = document.getElementById("graph");
-        let graphWidth = graphElement.clientWidth;
-        let graphHeight = graphElement.clientHeight;
+        if (gData) {
+            const graphElement = document.getElementById("graph");
 
-        graphInstance &&
-            graphInstance
-                .graphData(gData)
-                .nodeCanvasObject((node, ctx, globalScale) => {
-                    const label = node.id.trim();
-                    const fontSize = 10;
+            setGraphDimensions({
+                width: graphElement.clientWidth,
+                height: graphElement.clientHeight,
+            });
 
-                    ctx.font = `${fontSize}px Sans-Serif`;
-                    // const textWidth = ctx.measureText(label).width;
+            const updateDimensions = () => {
+                if (graphElement) {
+                    setGraphDimensions({
+                        width: graphElement.clientWidth,
+                        height: graphElement.clientHeight,
+                    });
+                }
+            };
 
-                    // TODO: replace 80 with textWidth if necessary
-                    const bckgDimensions = [80, fontSize].map(
-                        (n) => n + fontSize * 0.5
-                    ); // some padding
+            window.addEventListener("resize", updateDimensions);
 
-                    ctx.fillStyle = "rgba(255, 255, 255, 1)";
-                    ctx.beginPath();
-                    // TODO: replace 80 with textWidth if necessary
-                    ctx.arc(
-                        node.x,
-                        node.y,
-                        (80 / fontSize) * 4.25,
-                        0,
-                        2 * Math.PI,
-                        false
-                    );
-                    ctx.fill();
-
-                    ctx.lineWidth = 2;
-                    ctx.strokeStyle = "rgb(77, 172, 147)";
-                    ctx.stroke();
-
-                    ctx.textAlign = "center";
-
-                    ctx.fillStyle = "rgb(77, 172, 147)";
-                    let splitLabel = label.split(" ");
-                    let n = splitLabel.length;
-                    let height =
-                        ctx.measureText(label).fontBoundingBoxAscent +
-                        ctx.measureText(label).fontBoundingBoxDescent;
-                    let start = height * 1.5;
-                    // determine line height based on number of lines
-                    if (n > 2) {
-                        ctx.textBaseline = "top";
-                        splitLabel.forEach((l) => {
-                            ctx.fillText(l, node.x, node.y - start);
-                            start -= height * 1.25;
-                        });
-                    } else {
-                        ctx.textBaseline = "bottom";
-                        splitLabel.forEach((l) => {
-                            ctx.fillText(l, node.x, node.y - start + 16);
-                            start -= start / 1.25;
-                        });
-                    }
-
-                    node.__bckgDimensions = bckgDimensions; // to re-use in nodePointerAreaPaint
-                })
-                .linkColor((link) => "rgb(73, 50, 123)")
-                .nodeRelSize(25)
-                .backgroundColor("rgb(255, 255, 255)")
-                .width(graphWidth)
-                .height(graphHeight)
-                .onNodeHover(
-                    (node) =>
-                        (graphElement.style.cursor = node ? "pointer" : null)
-                )
-                .onNodeClick((node) => {
-                    let windowWidth = window.innerWidth;
-                    if (windowWidth < 540) {
-                        if (graphInstance.zoom && graphInstance.zoom() > 1.25) {
-                            graphInstance.centerAt(
-                                window.innerWidth <= 425 ? node.x : node.x + 75,
-                                window.innerWidth <= 425 ? node.y + 25 : node.y,
-                                1000
-                            );
-                            graphInstance.zoom(decideZoomOnClick(), 1000);
-                            setAlumnId(node.alumn_id);
-                        }
-                        return;
-                    }
-                    graphInstance.centerAt(
-                        window.innerWidth <= 425 ? node.x : node.x + 75,
-                        window.innerWidth <= 425 ? node.y + 25 : node.y,
-                        1000
-                    );
-                    graphInstance.zoom(decideZoomOnClick(), 1000);
-                    setAlumnId(node.alumn_id);
-                })
-                .onNodeDragEnd((node) => {
-                    node.fx = node.x;
-                    node.fy = node.y;
-                })
-                .zoom(0.55, 500)
-                .dagMode("radialout")
-                .onDagError(() => {});
-        // .centerAt(750, 0, 1000)
-
-        if (graphInstance) {
-            graphInstance.d3Force("charge").strength(-7500);
-            graphInstance.d3Force("center").x(0).y(-40); //.strength(0.05)
-            // graphInstance.d3Force("link");
-            graphInstance.d3Force("gravity");
+            return () => window.removeEventListener("resize", updateDimensions);
         }
-    }, [gData, graphInstance]);
+    }, [gData]);
 
-    const closeModal = () => {
-        setAlumnId(null);
-        graphInstance.centerAt(0, -40, 1000);
-        graphInstance.zoom(0.55, 1000);
+    useEffect(() => {
+        if (fgRef.current) {
+            fgRef.current.d3Force("charge").strength(-2500);
+            fgRef.current.d3Force("center").strength(0.05);
+            fgRef.current.zoom(1, 2000);
+        }
+    }, []);
+
+    const handleNodeCanvasObject = (node, ctx, globalScale) => {
+        const baseFontSize = 15;
+        const baseRadiusSize = 15;
+
+        // Calculate scale adjustments based on globalScale
+        const linearScaleAdjustment = (coefficient) =>
+            (1 + coefficient / globalScale) / (coefficient + 1); // Decreases as you zoom in
+
+        // Calculate significance adjustment based on uniqueCollaborationCount
+        const collaborationAdjustment = (coefficient) =>
+            (1 +
+                (node.uniqueCollaborationCount /
+                    maxCount.maxUniqueCollaborationCount) *
+                    coefficient) /
+            (coefficient + 1);
+
+        // Adjust font and radius size based on global scale and node significance
+        const fontSize =
+            baseFontSize *
+            linearScaleAdjustment(1) *
+            collaborationAdjustment(1); // Adjust font size based on zoom level
+        const radius =
+            baseRadiusSize *
+            linearScaleAdjustment(0.5) *
+            collaborationAdjustment(1) *
+            3; // Multiplying by 3 for more significant size difference
+        node.radius = radius;
+
+        ctx.fillStyle = "rgba(255, 255, 255, .9)"; // Semi-transparent white background for readability
+        ctx.beginPath();
+        ctx.arc(node.x, node.y, radius, 0, 2 * Math.PI, false);
+        ctx.fill();
+
+        ctx.strokeStyle = "#00b092"; // NVR Teal
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        ctx.textAlign = "center";
+        ctx.textBaseLine = "middle";
+        ctx.fillStyle = "#00b092"; // NVR Teal
+        ctx.font = `${fontSize}px Sans-Serif`;
+
+        const label = node.id.trim();
+        const splitLabel = label.split(" ");
+        const numberOfLines = splitLabel.length;
+        const ctxTextMetrics = ctx.measureText("M"); // Measure a sample character for height approximation.
+        const lineHeight =
+            1.25 *
+            (ctxTextMetrics.fontBoundingBoxAscent +
+                ctxTextMetrics.fontBoundingBoxDescent);
+        const totalHeight = lineHeight * numberOfLines;
+        let startY = node.y - totalHeight / 2 + lineHeight / 2; // Start Y position adjusted for centering.
+
+        ctx.textBaseLine = "middle"; // Set baseline to middle, aligning text around its center.
+        splitLabel.forEach((line, index) => {
+            let yPos = startY + index * lineHeight;
+            ctx.fillText(line, node.x, yPos);
+        });
     };
+
+    const handleNodeHover = (node) =>
+        (document.getElementById("graph").style.cursor = node
+            ? "pointer"
+            : null);
+
+    const handleNodeClick = (node) => {
+        if (!isZooming) {
+            fgRef.current.centerAt(
+                node.x + (window.innerWidth < 425 ? 0 : 50),
+                node.y + (window.innerHeight < 425 ? 25 : 25),
+                1000
+            );
+            fgRef.current.zoom(decideZoomOnClick(), 2000);
+
+            setAlumnId(node.alumn_id);
+        }
+    };
+
+    const handleZoom = ({ k, x, y }) => {
+        setIsZooming(true);
+    };
+
+    const handleZoomEnd = ({ k, x, y }) => {
+        setIsZooming(false);
+    };
+
+    const handleNodeDragEnd = (node) => {
+        node.fx = node.x;
+        node.fy = node.y;
+    };
+
+    const handleNodePointerAreaPaint = (node, color, ctx, _globalScale) => {
+        const size = node.radius || 10;
+
+        ctx.beginPath();
+        ctx.arc(node.x, node.y, size, 0, 2 * Math.PI, false);
+        ctx.fillStyle = color;
+        ctx.fill();
+    };
+
+    const closeModal = useCallback(() => {
+        setAlumnId(null);
+
+        if (fgRef.current) {
+            fgRef.current.zoom(1, 2000);
+            fgRef.current.centerAt(0, 0, 2000);
+        }
+    }, [fgRef]);
 
     return (
         <div
@@ -281,7 +337,31 @@ function GraphController({ impactMode }) {
                         : "No collaborations have been recorded for this graph yet. Check back soon for updates!"}
                 </div>
             )}
-            <GraphContainer headerMode={headerMode} impactMode={impactMode} />
+            <GraphContainer headerMode={headerMode} impactMode={impactMode}>
+                <ForceGraph2D
+                    id={"graph"}
+                    ref={fgRef}
+                    graphData={gData}
+                    nodeCanvasObject={handleNodeCanvasObject}
+                    nodePointerAreaPaint={handleNodePointerAreaPaint}
+                    linkColor={(_link) => "#4f2d7f"}
+                    linkWidth={(link) =>
+                        1 +
+                        (link.collaborationCount /
+                            maxCount.maxCollaborationCount) *
+                            10
+                    }
+                    onNodeHover={handleNodeHover}
+                    onNodeClick={handleNodeClick}
+                    onZoom={handleZoom}
+                    onZoomEnd={handleZoomEnd}
+                    onNodeDragEnd={handleNodeDragEnd}
+                    width={graphDimensions.width}
+                    height={graphDimensions.height}
+                    dagMode="radialout"
+                    d3
+                />
+            </GraphContainer>
             {alumnId !== null && (
                 <GraphAlumnDetailsModalController
                     alumnId={alumnId}
@@ -289,25 +369,25 @@ function GraphController({ impactMode }) {
                 />
             )}
             <SearchBar
-                graph={graphInstance}
+                graph={fgRef.current}
                 nodes={gData.nodes}
                 setAlumnId={setAlumnId}
             />
+            <Legend></Legend>
             <Nav.Item
                 className="nav-item"
                 style={{
                     position: "absolute",
-                    right: 25,
-                    bottom: 25,
-                    display:
-                        admin.email === "" || impactMode ? "block" : "none",
+                    right: 30,
+                    bottom: 30,
+                    display: !headerMode || impactMode ? "block" : "none",
                 }}
             >
                 <Link reloadDocument to={"https://newvisionresearch.org"}>
                     <Image
                         style={{
                             width: "5rem",
-                            zIndex: 1000,
+                            zIndex: 1,
                         }}
                         src="../NVR1-TC.png"
                         alt="logo"
