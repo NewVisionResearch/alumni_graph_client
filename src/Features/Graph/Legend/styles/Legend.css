@@ -11,12 +11,8 @@
 }
 
 .legend-expanded {
-    animation: expandLegend 1s ease-in forwards;
+    animation: expandLegend 1s ease-in-out forwards;
 }
-
-/* .legend-collapsed {
-    height: unset;
-} */
 
 @keyframes expandLegend {
     0% {
@@ -38,7 +34,6 @@
     border-color: var(--custom-grey);
     padding: 5px;
     width: 100%;
-    transition: width 1000ms ease-in-out, height 1000ms ease-in-out;
 }
 
 .legend-button-expanded {
@@ -93,7 +88,6 @@
     display: flex;
     margin: 5px;
     height: 200px;
-    /* transition: opacity 1000ms ease-in-out; */
 }
 
 .legend-detailed-col {
