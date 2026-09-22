@@ -194,3 +194,7 @@ That response means the client reached the login endpoint. Confirm that the loca
 Login succeeded for the lab 1 (NewVisionResearch) admin account and opened the dashboard. A single **Fetch New Publications** operation for Rebecca A. Melrose (local alumn 111) completed through the browser, Rails, local Redis, Sidekiq, and PubMed. Sidekiq reported completion in approximately 1.9 seconds; job status was `complete`, progress was 1 of 1, and the dashboard returned to the publication list. SQL confirmed that the researcher remained in lab 1 with one publication. This validates the existing-query refresh path, not researcher creation/editing, large batches, mail, automated tests, or deployment.
 
 The test used database `localhost` through `/tmp:5432` and Redis `redis://127.0.0.1:6379/0`. A private local database backup was created before the refresh. The test worker was stopped afterward; the local web application and Redis remained running. No application code was changed or committed.
+
+## Releasing changes
+
+See [RELEASE.md](RELEASE.md) for the inspected hosting configuration, staging prerequisites, focused-commit workflow, release checks, and rollback procedure. Hosted staging is not yet provisioned.
