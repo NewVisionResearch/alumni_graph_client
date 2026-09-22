@@ -5,6 +5,8 @@ import ListGroup from "react-bootstrap/ListGroup";
 
 import { decideZoomOnClick } from "../../../services/zoom";
 
+import { formatGraphName } from "../../../services/formatGraphName";
+
 import "./styles/SearchBar.css";
 
 export default function SearchBar({ graph, nodes, setAlumnId }) {
@@ -72,7 +74,7 @@ export default function SearchBar({ graph, nodes, setAlumnId }) {
                                   focusFxn(node.alumn_id, node.x, node.y)
                               }
                           >
-                              {node.id}
+                              {formatGraphName(node.id)}
                           </ListGroup.Item>
                       ))
                     : searchTerm && (

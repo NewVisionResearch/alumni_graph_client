@@ -12,6 +12,8 @@ import { AdminContext } from "../../Context/AdminContext/AdminContext";
 import { decideZoomOnClick } from "../../services/zoom";
 import { fetchGraphPublications } from "../../services/api";
 
+import { formatGraphName } from "../../services/formatGraphName";
+
 import "./styles/Graph.css";
 
 function GraphController({ impactMode }) {
@@ -237,7 +239,7 @@ function GraphController({ impactMode }) {
         ctx.fillStyle = "#00b092"; // NVR Teal
         ctx.font = `${fontSize}px Sans-Serif`;
 
-        const label = node.id.trim();
+        const label = formatGraphName(node.id);
         const splitLabel = label.split(" ");
         const numberOfLines = splitLabel.length;
         const ctxTextMetrics = ctx.measureText("M"); // Measure a sample character for height approximation.
