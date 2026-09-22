@@ -39,7 +39,12 @@ A new paid staging/review environment needs an approved budget before resources 
 
 - Client fix/graph-name-capitalization: local commit 6ea7a41, six focused tests passed, production build passed, local Chrome checks passed.
 - GitHub push attempted: HTTPS credentials unavailable in this terminal. SSH also lacked a verified host/authentication setup. No host-verification bypass was attempted.
-- Pending: authenticate Git and push the topic branch; open the PR; inspect the actual Netlify deployment; update this record with the PR and preview URLs and results.
+- Published client branch after GitHub sign-in; draft PR: https://github.com/NewVisionResearch/alumni_graph_client/pull/13
+- Netlify Deploy Preview succeeded in 41 seconds. Deploy ID: 6ab2fbcb18f57b0008c2c83a. Build log confirms Node v22.23.2 from .nvmrc and npm 10.9.8.
+- Review URL: https://deploy-preview-13--jocular-stardust-058a50.netlify.app/graph/1
+- Immutable deploy: https://6ab2fbcb18f57b0008c2c83a--jocular-stardust-058a50.netlify.app/graph/1
+- Hosted Chrome checks passed: direct graph route, capitalized canvas labels, case-insensitive search for castellano, and Joseph M. Castellano researcher details. No login, dashboard writes, or fetch jobs were exercised against production.
+- Production remains commit 6e92fbc; PR remains draft and unmerged. Heroku environment choice, budget, and provisioning remain pending.
 
 ## Official references
 
