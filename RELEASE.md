@@ -76,3 +76,7 @@ Validation: six focused formatting tests passed; npm run build compiled successf
 - Netlify environment configuration: https://docs.netlify.com/build/environment-variables/overview/
 - Heroku pipelines and promotion: https://devcenter.heroku.com/articles/pipelines
 - Heroku releases: https://devcenter.heroku.com/articles/releases
+
+## Pull request previews
+
+See [PREVIEWS.md](PREVIEWS.md) for the verified Netlify preview settings, the temporary public-graph-only review procedure, and Heroku Review App prerequisites and cost proposal.
