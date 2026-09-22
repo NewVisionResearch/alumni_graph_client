@@ -193,8 +193,16 @@ That response means the client reached the login endpoint. Confirm that the loca
 
 Login succeeded for the lab 1 (NewVisionResearch) admin account and opened the dashboard. A single **Fetch New Publications** operation for Rebecca A. Melrose (local alumn 111) completed through the browser, Rails, local Redis, Sidekiq, and PubMed. Sidekiq reported completion in approximately 1.9 seconds; job status was `complete`, progress was 1 of 1, and the dashboard returned to the publication list. SQL confirmed that the researcher remained in lab 1 with one publication. This validates the existing-query refresh path, not researcher creation/editing, large batches, mail, automated tests, or deployment.
 
-The test used database `localhost` through `/tmp:5432` and Redis `redis://127.0.0.1:6379/0`. A private local database backup was created before the refresh. The test worker was stopped afterward; the local web application and Redis remained running. No application code was changed or committed.
+The test used database `localhost` through `/tmp:5432` and Redis `redis://127.0.0.1:6379/0`. A private local database backup was created before the refresh. The test worker was stopped afterward; the local web application and Redis remained running. No application code was changed during that local refresh check. Later releases are recorded separately below.
 
 ## Releasing changes
 
-See [RELEASE.md](RELEASE.md) for the inspected hosting configuration, staging prerequisites, focused-commit workflow, release checks, and rollback procedure. Hosted staging is not yet provisioned.
+See [RELEASE.md](RELEASE.md) for current hosting, focused commits, release checks and rollback. [PREVIEWS.md](PREVIEWS.md) explains why the current Netlify preview is not isolated staging. Any additional paid staging resources require Stefanie's approval.
+
+## Graph-name capitalization
+
+Canvas labels and graph search results format legacy lowercase names as normal names, such as Joseph M. Castellano. The formatter preserves existing capitalization, initials, apostrophes, hyphens and accented letters. Stored names, node identifiers and graph links do not change. Preferred internal capitalization cannot always be inferred from legacy lowercase text.
+
+Six focused formatting tests and the production build passed with the pinned runtime; Netlify preview verification also passed. Client PR #13 contains the setup baseline and visual fix in separate commits. Merging main automatically publishes on Netlify; record the resulting production deploy in RELEASE.md.
+
+Client verification on September 22, 2026: the full current suite passed (2 suites, 10 tests: 6 name-formatting cases and 4 routing checks). The obsolete Learn React placeholder was replaced with routing checks that isolate canvas/network behavior. The production build passed. React Router emitted future-version notices; no runtime migration was made.

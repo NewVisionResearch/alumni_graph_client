@@ -1,54 +1,29 @@
 # Pull request previews
 
-Verified September 22, 2026. A pull request preview lets a reviewer see proposed code before main is merged. It is not automatically an isolated data environment.
+Updated September 22, 2026. A code preview is not automatically an isolated data environment.
 
-## Netlify: already enabled
+## Netlify
 
-Project: jocular-stardust-058a50, connected to NewVisionResearch/alumni_graph_client.
+Project `jocular-stardust-058a50` builds PRs targeting client `main`. Push a topic branch, open a PR and inspect the actual Netlify preview check. Verify the candidate SHA, runtime, build result, graph, search and details before the authorized merge. Main builds publish automatically.
 
-1. Commit and test on a topic branch. Push that branch to GitHub; never push main for a preview.
-2. Open a pull request targeting main. Netlify is configured to build PR previews for this target. Keep the PR unmerged while reviewing.
-3. Open the actual preview link from the Netlify check/deployment on the PR. Confirm the branch, commit SHA, build status, Node version, and API destination. Do not infer success from a URL pattern.
-4. Review the graph labels, case-insensitive search, and researcher details. The capitalization branch depends on the setup commits; review setup separately before the final fix release. If a PR is based on the setup branch instead of main, the existing Netlify target settings may not create a preview.
-5. After review and release approval, merging main triggers a separate production build and automatic publication. The preview itself does not replace the production website.
+**All contexts currently use https://alumni-graph-api.herokuapp.com/api/v1.** Preview dashboard edits and fetch jobs would affect production. Use the public graph only until a separately configured test API exists; do not sign in to test writes through previews.
 
-Current REACT_APP_BASE_URL is the SAME in all contexts: https://alumni-graph-api.herokuapp.com/api/v1. Therefore a preview presently reads production data and could write production data if someone signs in and edits through it. For the current visual-only check, use the public graph without signing in or performing dashboard actions. Do not describe this preview as isolated staging or use it to test researcher creation, editing, deletion, or fetch jobs.
+Client PR #13 preview deploy `6ab2fbcb18f57b0008c2c83a` built successfully in 41 seconds with Node v22.23.2 and npm 10.9.8. Public graph routing, capitalized labels, case-insensitive search and researcher details passed in Chrome. This is preview evidence, not a production deployment ID.
 
-Before full workflow testing, point the Deploy Previews context to an isolated test API and rebuild. Production must retain its production endpoint. A Netlify preview alone does not create a Rails API, database, or worker.
+[Verified preview](https://deploy-preview-13--jocular-stardust-058a50.netlify.app/graph/1).
 
-## Heroku: Review Apps require configuration
+## Heroku Review Apps: not configured
 
-The connected GitHub repository alone does not enable Review Apps. Production alumni-graph-api currently has no pipeline and the repository has no app.json.
+The GitHub connection alone does not create Review Apps. The API has no pipeline or app.json. Production now runs Heroku-24; Ruby 3.2.1 is available but unsupported. No isolated staging or Review App has been provisioned.
 
-Required setup:
-1. Create a compatible Heroku pipeline and connect NewVisionResearch/alumni_graph_api. Start with manual Review App creation to avoid provisioning a paid app for every PR.
-2. Add and review an app.json on a dedicated infrastructure branch. Define the stack/buildpack, web and worker formation, separate data add-ons, generated app secret, and required non-production environment variables. Do not copy production credentials into this file or pipeline settings.
-3. Resolve runtime compatibility independently. Production Heroku-20 cannot rebuild. Current Heroku documentation lists Ruby 3.2.1 as available but deprecated on newer stacks; availability is not support. Choose and test a supported stack/Ruby combination before relying on Review Apps. Keep runtime and preview-infrastructure changes in separate commits.
-4. Provide isolated PostgreSQL and Redis, synthetic graph data, and a test administrator with a privately generated password. db/seeds.rb currently has no usable sample dataset. Never seed review apps from the production dump without explicit data review.
-5. Ensure mail cannot reach real recipients. Production configuration currently requires SMTP variables at boot. The app reads REDISCLOUD_URL; Heroku Key-Value Store normally supplies REDIS_URL, so plan and test the mapping instead of assuming it works. Verify TLS/client compatibility for the chosen Redis service without disabling certificate verification as a shortcut.
-6. Create a review app for the API PR, inspect its actual URL/build, and point the matching Netlify preview to it. These are separate repositories, so their preview URLs are not paired automatically. A stable staging API is an alternative that avoids per-PR URL coordination.
-7. Verify graph/auth/job behavior using test data, then record candidate SHAs and test results. Follow RELEASE.md for the approved production release. Remove review resources when finished; do not assume manually created Review Apps automatically disappear when the PR closes.
+Future setup requires:
 
-### Cost proposal — not provisioned or authorized
+1. Stefanie's approval for any additional spending, then a compatible pipeline and reviewed app.json with stack/buildpack and web/worker formation. Prefer manual creation initially to avoid paid resources for every PR.
+2. Separate PostgreSQL and Redis, synthetic or explicitly approved sanitized data, and test admin/mail configuration. Never attach production stores or copy production credentials into files.
+3. A tested mapping for the API's REDISCLOUD_URL if the chosen service supplies REDIS_URL. Do not weaken TLS checks. SMTP variables are required at boot; prevent test mail reaching real recipients.
+4. Actual API build/runtime verification, then a Netlify preview configured for that API. These separate repositories do not pair their preview URLs automatically. A stable staging API is an alternative.
+5. Relevant graph/auth/job tests using test data, recorded candidate SHAs, and cleanup of review resources when finished.
 
-Current published Cedar pricing suggests a small full API environment with Basic web ($7/month), Basic worker ($7/month), PostgreSQL Essential-0 ($5/month), and Key-Value Store Mini ($3/month): approximately $22/month if kept running, before taxes or extra usage/services. An initial web-only formation would be approximately $15/month but cannot exercise background jobs. Plan availability, compatibility, and review-app add-on overrides must be verified at provisioning; do not treat this estimate as a billing cap.
+The earlier approximately $22/month estimate was for an additional complete staging environment, not a stack upgrade. It was an estimate, not an approved budget or current quote. Recheck pricing and compatibility before any provisioning. Existing production resources were retained during the stack upgrade.
 
-A new paid staging/review environment needs an approved budget before resources are provisioned. No paid services, pipeline, or review app were created during this inspection.
-
-## Progress
-
-- Client fix/graph-name-capitalization: local commit 6ea7a41, six focused tests passed, production build passed, local Chrome checks passed.
-- GitHub push attempted: HTTPS credentials unavailable in this terminal. SSH also lacked a verified host/authentication setup. No host-verification bypass was attempted.
-- Published client branch after GitHub sign-in; draft PR: https://github.com/NewVisionResearch/alumni_graph_client/pull/13
-- Netlify Deploy Preview succeeded in 41 seconds. Deploy ID: 6ab2fbcb18f57b0008c2c83a. Build log confirms Node v22.23.2 from .nvmrc and npm 10.9.8.
-- Review URL: https://deploy-preview-13--jocular-stardust-058a50.netlify.app/graph/1
-- Immutable deploy: https://6ab2fbcb18f57b0008c2c83a--jocular-stardust-058a50.netlify.app/graph/1
-- Hosted Chrome checks passed: direct graph route, capitalized canvas labels, case-insensitive search for castellano, and Joseph M. Castellano researcher details. No login, dashboard writes, or fetch jobs were exercised against production.
-- Production remains commit 6e92fbc; PR remains draft and unmerged. Heroku environment choice, budget, and provisioning remain pending.
-
-## Official references
-
-- https://docs.netlify.com/deploy/deploy-types/deploy-previews/
-- https://devcenter.heroku.com/articles/github-integration-review-apps
-- https://devcenter.heroku.com/articles/ruby-support-reference
-- https://www.heroku.com/pricing/
+See [RELEASE.md](RELEASE.md) for release and rollback steps.

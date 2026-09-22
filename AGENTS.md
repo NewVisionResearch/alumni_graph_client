@@ -35,6 +35,18 @@ Graph data comes from displayed shared-publication relationships within a lab, n
 
 ## Verification and documentation
 
-`npm run build` passed September 22, 2026 on the pinned runtime; it builds locally and does not deploy. For UI changes, test the affected interaction and run the production build when relevant. Do not claim npm test passed; the automated suite was not run during recovery.
+`npm run build` passed September 22, 2026 on the pinned runtime; it builds locally and does not deploy. For UI changes, test the affected interaction and run the production build when relevant. Six graph-name formatting tests passed after recovery. State the tested scope; this is not comprehensive UI coverage.
 
-Also verified: npm ci, fresh-terminal nvm selection, graph loading, lab 1 login, saving Castellano's supplied query, and completed publication refreshes (1/1 and 30/30). The 30-publication refresh reduced Castellano's list from 32 to 30. Creation/deletion, display-checkbox changes, broader browser/error-state coverage, mail, and deployment remain unvalidated. Keep technical details in README/developer MOP; the parent Collaboration Map MOP is for nontechnical staff.
+Also verified: npm ci, fresh-terminal nvm selection, graph loading, lab 1 login, saving Castellano's supplied query, and completed publication refreshes (1/1 and 30/30). The 30-publication refresh reduced Castellano's list from 32 to 30. Creation/deletion, display-checkbox changes, broader browser/error-state coverage, mail and broader workflows remain unvalidated. Deployment evidence is recorded separately below. Keep technical details in README/developer MOP; the parent Collaboration Map MOP is for nontechnical staff.
+
+## Releases and cleanup
+
+Read RELEASE.md and PREVIEWS.md before release work. Netlify main automatically publishes; Heroku main requires a manual deploy. User authorization persists across turns. Do not provision anything that increases spending without Stefanie's approval. Previews currently call the production API and are suitable only for public read-only checks.
+
+API production is Heroku-24, release v165 / 423722a5, with healthy web/worker and verified graph response. Ruby 3.2.1 remains unsupported; keep runtime changes separate from unrelated fixes. The logging regression has 2 tests / 22 assertions; no production fetch job or login was retested during that release. The API deployment record explains the Linux lockfile prerequisite and failed Heroku-26 compilation.
+
+Use fresh main for new branches and focused commits. Remove only merged task branches or proven equivalent branches; preserve unrelated branches and local data. Do not commit credentials, dumps or generated build output.
+
+Graph presentation lives in src/services/formatGraphName.js and its tests; GraphController and SearchBar use it for labels only. Never change node IDs or saved names to implement display capitalization.
+
+Client verification on September 22, 2026: the full current suite passed (2 suites, 10 tests: 6 name-formatting cases and 4 routing checks). The obsolete Learn React placeholder was replaced with routing checks that isolate canvas/network behavior. The production build passed. React Router emitted future-version notices; no runtime migration was made.
