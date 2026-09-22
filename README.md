@@ -206,3 +206,5 @@ Canvas labels and graph search results format legacy lowercase names as normal n
 Six focused formatting tests and the production build passed with the pinned runtime; Netlify preview verification also passed. Client PR #13 contains the setup baseline and visual fix in separate commits. Merging main automatically publishes on Netlify; record the resulting production deploy in RELEASE.md.
 
 Client verification on September 22, 2026: the full current suite passed (2 suites, 10 tests: 6 name-formatting cases and 4 routing checks). The obsolete Learn React placeholder was replaced with routing checks that isolate canvas/network behavior. The production build passed. React Router emitted future-version notices; no runtime migration was made.
+
+Current client production: PR #13 merged as cde8586; Netlify deploy 6ab306cbd75b36000853a38c passed graph, search and details checks. See [RELEASE.md](RELEASE.md) for the full release record.

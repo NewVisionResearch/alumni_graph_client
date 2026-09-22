@@ -59,3 +59,11 @@ API: use an available prior Heroku release only after checking current database/
 - [Heroku releases](https://devcenter.heroku.com/articles/releases)
 
 Client verification on September 22, 2026: the full current suite passed (2 suites, 10 tests: 6 name-formatting cases and 4 routing checks). The obsolete Learn React placeholder was replaced with routing checks that isolate canvas/network behavior. The production build passed. React Router emitted future-version notices; no runtime migration was made.
+
+## Client production release — September 22, 2026
+
+Client PR #13 merged as **cde8586**. Netlify production deploy **6ab306cbd75b36000853a38c** published successfully in 47 seconds. [Live graph](https://jocular-stardust-058a50.netlify.app/graph/1). Public Chrome checks passed for direct graph routing, capitalized canvas labels, case-insensitive search for castellano, and Joseph M. Castellano's researcher details. No dashboard writes or fetch jobs were performed. The full current test suite passed: 2 suites / 10 tests; the local production build passed.
+
+The earlier preview deploy 6ab2fbcb18f57b0008c2c83a was marked published when inspected before this merge; the new build restores a main-based production release. The older main deploy 666213252772720008daeffe (6e92fbc) is recorded as a historical rollback candidate, subject to availability and compatibility checks.
+
+API production remains v165 / 423722a5 on Heroku-24. Later repository documentation commits do not change the deployed application. This release-record update is documentation only; its client PR and merge use [skip netlify] to avoid rebuilding identical assets.
