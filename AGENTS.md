@@ -50,3 +50,5 @@ Use fresh main for new branches and focused commits. Remove only merged task bra
 Graph presentation lives in src/services/formatGraphName.js and its tests; GraphController and SearchBar use it for labels only. Never change node IDs or saved names to implement display capitalization.
 
 Client verification on September 22, 2026: the full current suite passed (2 suites, 10 tests: 6 name-formatting cases and 4 routing checks). The obsolete Learn React placeholder was replaced with routing checks that isolate canvas/network behavior. The production build passed. React Router emitted future-version notices; no runtime migration was made.
+
+Client PR #13 is merged and production deploy 6ab306cbd75b36000853a38c / cde8586 passed public graph/search/details checks. Full current client suite: 2 suites / 10 tests; this does not certify dashboard writes or jobs. The API and client setup/release guides are on main. GitHub reported existing dependency vulnerability alerts during cleanup; investigate them as a separate maintenance task, not with an automatic forced update.
