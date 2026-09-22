@@ -1,70 +1,208 @@
-# Getting Started with Create React App
+# Collaboration Map client
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+React front end for the New Vision Research Collaboration Map. It renders alumni, publications, and collaboration relationships supplied by the companion Rails API in `alumni_graph_api`.
 
-## Available Scripts
+## Local architecture
 
-In the project directory, you can run:
+| Service | Local address | Purpose |
+| --- | --- | --- |
+| React client | `http://localhost:3001` | Browser UI and collaboration graph |
+| Rails API | `http://localhost:3000` | Authentication and JSON API |
+| PostgreSQL | `localhost:5432` | Data store used by the Rails API |
 
-### `yarn start`
+The client does not connect to PostgreSQL directly. In local development it calls the Rails API under `http://localhost:3000/api/v1`.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Tested runtime
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+- nvm 0.40.8
+- Node **v22.23.2**, recorded in `.nvmrc`
+- npm **10.9.8**
+- Create React App through **react-scripts 5.0.1** (locked in `package-lock.json`)
 
-### `yarn test`
+Node 22 was tested successfully on the fresh Mac: `npm ci` passed and the graph loaded against the restored local API database. A fresh terminal also selected v22.23.2 and npm 10.9.8 through `nvm use`. Node 18 is not required by these results. The production build was subsequently verified on September 22, 2026: `npm run build` compiled successfully with Node v22.23.2 and npm 10.9.8.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## First-time macOS setup
 
-### `yarn build`
+### 1. Install and activate nvm
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Check Xcode Command Line Tools with `xcode-select -p`. If missing, run `xcode-select --install` and complete installation before proceeding. Then open a terminal in the client repository:
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+```bash
+cd "$HOME/Projects/NewVisionResearch/alumni_graph_client"
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+command -v nvm
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+If nvm is missing, install the version used for this setup from the official `nvm-sh/nvm` repository:
 
-### `yarn eject`
+```bash
+curl -fsSL https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.8/install.sh \
+  | PROFILE="$HOME/.zshrc" bash
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+Activate it in the current terminal:
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```bash
+export NVM_DIR="$HOME/.nvm"
+. "$NVM_DIR/nvm.sh"
+nvm --version
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+Expect `0.40.8` for this installation. During the validated setup the installer reported writing startup lines to `~/.zprofile`; verify fresh-terminal behavior below instead of assuming nvm is loaded automatically.
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+### 2. Select the tested Node version
 
-## Learn More
+The existing `.nvmrc` contains `v22.23.2`:
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+```bash
+cat .nvmrc
+nvm install
+nvm use
+node -v
+npm -v
+which node
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+Expect Node `v22.23.2`, npm `10.9.8`, and a Node path under `~/.nvm/versions/node/v22.23.2/bin/`. `.nvmrc` selects Node, not npm independently. Investigate a version mismatch before installing dependencies. For an older checkout without `.nvmrc`, run `nvm install 22.23.2` and `nvm use 22.23.2`; after verification, create the missing pin with `node -v > .nvmrc`. Do not overwrite an existing pin without reviewing it.
 
-### Code Splitting
+### 3. Install locked dependencies and configure the API
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+```bash
+npm ci
+```
 
-### Analyzing the Bundle Size
+Keep `package-lock.json`. `npm ci` replaces existing `node_modules` and installs the locked dependencies; no separate deletion is needed. If installation fails, inspect the error before changing dependencies or the lockfile.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+Create or retain a local client `.env` with:
 
-### Making a Progressive Web App
+```dotenv
+REACT_APP_BASE_URL=http://localhost:3000/api/v1
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+`REACT_APP_*` settings are browser-visible. Never copy API credentials into the client environment. Restart the development server after changing `.env`.
 
-### Advanced Configuration
+### 4. Start the development server
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+Leave PostgreSQL and the Rails API running, then use a separate client terminal:
 
-### Deployment
+```bash
+HOST=localhost PORT=3001 npm start
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+Open `http://localhost:3001/graph/1` to check the collaboration graph against the restored database. Rails uses port 3000; the client uses 3001. The development server reloads when source files change.
 
-### `yarn build` fails to minify
+### 5. Check the production build
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Stop the client server with Ctrl+C, then run:
+
+```bash
+node -v
+npm -v
+npm run build
+```
+
+This creates the local production bundle in `build/`; it does not deploy. Record the result and any warnings separately from the successful development-server check. If it fails, investigate before updating dependencies. Restart development with `HOST=localhost PORT=3001 npm start` when needed.
+
+### 6. Verify a fresh terminal
+
+Open a new terminal (including a new VS Code terminal) without manually sourcing nvm:
+
+```bash
+cd "$HOME/Projects/NewVisionResearch/alumni_graph_client"
+command -v nvm
+nvm use
+node -v
+npm -v
+```
+
+Expected: `nvm`, Node `v22.23.2`, and npm `10.9.8`. If nvm is absent, ensure these lines appear once in `~/.zshrc`, which interactive zsh terminals read, then reopen the terminal:
+
+```bash
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+```
+
+A login shell also reads `~/.zprofile`; loading nvm only there may miss some interactive terminals.
+
+## Recommended startup order
+
+1. Start PostgreSQL 17 on port 5432.
+2. Start the Rails API on port 3000.
+3. Start this client on port 3001.
+4. Start Redis and the Sidekiq worker only when background publication work is needed.
+
+See the API repository README for PostgreSQL, database restore, Rails, Redis, and Sidekiq setup.
+
+## Scripts
+
+```bash
+npm start       # development server (set PORT=3001 locally)
+npm test        # interactive test runner
+npm run build   # production build in build/
+```
+
+`npm run eject` is irreversible and is not part of normal development.
+
+## Troubleshooting
+
+### A prerequisite command is not found
+
+- `nvm`: follow the activation and fresh-terminal checks above. Use `command -v nvm` because nvm is a shell function.
+- `node` or `npm`: run `nvm install` and `nvm use` from this repository, then check versions and `which node`.
+- `git` or compiler tools during setup: finish the Xcode Command Line Tools installation.
+- API prerequisites such as `brew`, `rbenv`, `bundle`, or PostgreSQL tools: follow the companion API README's first-time macOS setup.
+
+### `SemVer is not a constructor`
+
+This startup error was previously observed under Node 26. That observation does not prove a single cause or establish a Node 18 requirement. Return to the tested Node version and reinstall the locked dependencies:
+
+```bash
+nvm use
+node -v
+npm -v
+npm ci
+HOST=localhost PORT=3001 npm start
+```
+
+Expect v22.23.2 and npm 10.9.8. If the error persists, preserve the full error and inspect the runtime and dependency installation. Do not delete `package-lock.json`, run `npm audit fix --force`, or upgrade `react-scripts` as a routine setup fix.
+
+### The UI loads but API requests fail
+
+- Confirm `REACT_APP_BASE_URL` is `http://localhost:3000/api/v1`.
+- Confirm Rails is listening on port 3000.
+- Restart the React development server after changing `.env`.
+- Inspect the browser Network panel and the Rails terminal together.
+
+### `publications.forEach is not a function`
+
+The graph code expects publications to be an array. During environment recovery this error occurred when the API/database path was unhealthy and the client received a non-array error response. Check Rails and PostgreSQL before changing the graph code.
+
+### Login returns `401 Unauthorized`
+
+That response means the client reached the login endpoint. Confirm that the local database was restored and contains the expected user data; an empty schema will not recognize production-era accounts.
+
+## Security
+
+- Never commit `.env`, credentials, tokens, database dumps, or production data.
+- Keep the client pointed at the local API during development.
+- Treat browser-visible `REACT_APP_*` values as public configuration; never place secrets in them.
+- Do not publish local changes, dependency updates, or database artifacts without an explicit review.
+
+## Functional validation — September 22, 2026
+
+Login succeeded for the lab 1 (NewVisionResearch) admin account and opened the dashboard. A single **Fetch New Publications** operation for Rebecca A. Melrose (local alumn 111) completed through the browser, Rails, local Redis, Sidekiq, and PubMed. Sidekiq reported completion in approximately 1.9 seconds; job status was `complete`, progress was 1 of 1, and the dashboard returned to the publication list. SQL confirmed that the researcher remained in lab 1 with one publication. This validates the existing-query refresh path, not researcher creation/editing, large batches, mail, automated tests, or deployment.
+
+The test used database `localhost` through `/tmp:5432` and Redis `redis://127.0.0.1:6379/0`. A private local database backup was created before the refresh. The test worker was stopped afterward; the local web application and Redis remained running. No application code was changed during that local refresh check. Later releases are recorded separately below.
+
+## Releasing changes
+
+See [RELEASE.md](RELEASE.md) for current hosting, focused commits, release checks and rollback. [PREVIEWS.md](PREVIEWS.md) explains why the current Netlify preview is not isolated staging. Any additional paid staging resources require Stefanie's approval.
+
+## Graph-name capitalization
+
+Canvas labels and graph search results format legacy lowercase names as normal names, such as Joseph M. Castellano. The formatter preserves existing capitalization, initials, apostrophes, hyphens and accented letters. Stored names, node identifiers and graph links do not change. Preferred internal capitalization cannot always be inferred from legacy lowercase text.
+
+Six focused formatting tests and the production build passed with the pinned runtime; Netlify preview verification also passed. Client PR #13 contains the setup baseline and visual fix in separate commits. Merging main automatically publishes on Netlify; record the resulting production deploy in RELEASE.md.
+
+Client verification on September 22, 2026: the full current suite passed (2 suites, 10 tests: 6 name-formatting cases and 4 routing checks). The obsolete Learn React placeholder was replaced with routing checks that isolate canvas/network behavior. The production build passed. React Router emitted future-version notices; no runtime migration was made.
